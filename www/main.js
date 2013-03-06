@@ -1,6 +1,21 @@
 function init() {
-	document.addEventListener("deviceready", deviceReady, true);
-	delete init;
+    if (isAndroid()) {
+        $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
+    }
+    else if (isiOS()) {
+        $("script").attr("src", "cordova/ios/cordova-2.5.0.js").appendTo("head");
+    }
+
+    document.addEventListener("deviceready", deviceReady, true);
+    delete init;
+}
+
+function isAndroid(){
+    return navigator.userAgent.indexOf("Android") > 0;
+}
+
+function isiOS(){
+    return ( navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPad") > 0 || navigator.userAgent.indexOf("iPod") > 0);
 }
 
 function checkPreAuth() {
@@ -46,12 +61,8 @@ function handleLogin() {
 }
 
 function deviceReady() {
-	console.log("deviceReady");
-    var uagent = navigator.userAgent.toLowerCase();
-    console.log("uagent: " + uagent);
 
 	$("#loginPage").on("pageinit",function() {
-		console.log("pageinit run");
 		$("#loginForm").on("submit",handleLogin);
 		checkPreAuth();
 	});
