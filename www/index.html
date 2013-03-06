@@ -1,11 +1,22 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Auth Demo 2</title>
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/latest/jquery.mobile.min.css" />
-	<script type="text/javascript" charset="utf-8" src="cordova-2.5.0.js"></script>
+	<!-- <script type="text/javascript" charset="utf-8" src="cordova-2.5.0.js"></script> -->
+
+    <script type="text/javascript">
+        var uagent = navigator.userAgent.toLowerCase();
+        if(uagent.search("ipad") > -1 || uagent.search("iphone") > -1) {
+            document.write('<script type="text/javascript" charset="utf-8" src="cordova/ios/cordova-2.5.0.js"></script>');
+        } else if(uagent.search("android") > -1) {
+            document.write('<script type="text/javascript" charset="utf-8" src="cordova/android/cordova-2.5.0.js"></script>');
+        }
+    </script>
+
+
 	<script src="js/jquery-1.7.2.min.js"></script>
 	<script src="js/jquery.mobile-1.1.0.min.js"></script>
 	<script src="main.js"></script>
@@ -23,7 +34,7 @@
         <h1>Auth Demo</h1>
     </div>
 
-    <div data-role="content">    
+    <div data-role="content">
 
         <form id="loginForm">
         <div data-role="fieldcontain" class="ui-hide-label">
@@ -38,7 +49,7 @@
 
         <input type="submit" value="Login" id="submitButton">
         </form>
-        
+
     </div>
 
     <div data-role="footer">

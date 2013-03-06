@@ -14,7 +14,7 @@ function checkPreAuth() {
 }
 
 function handleLogin() {
-    var form = $("#loginForm");    
+    var form = $("#loginForm");
     //disable the button so we can't resubmit while we wait
     $("#submitButton",form).attr("disabled","disabled");
     var u = $("#username", form).val();
@@ -24,12 +24,13 @@ function handleLogin() {
         $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p,pathname:pn}, function(res) {
         	console.log(typeof(res));
         	console.log(res);
-        	
+
             if(res.status == 'success') {
                 //store
                 window.localStorage["username"] = u;
-                window.localStorage["password"] = p;             
+                window.localStorage["password"] = p;
                 $.mobile.changePage("some.html");
+                //window.location.replace("some.html");
             } else if(res.status == 'error') {
             	navigator.notification.alert(res.message);
             } else {
@@ -46,10 +47,20 @@ function handleLogin() {
 
 function deviceReady() {
 	console.log("deviceReady");
+    var uagent = navigator.userAgent.toLowerCase();
+    console.log("uagent: " + uagent);
+
 	$("#loginPage").on("pageinit",function() {
 		console.log("pageinit run");
 		$("#loginForm").on("submit",handleLogin);
 		checkPreAuth();
 	});
 	$.mobile.changePage("#loginPage");
+}
+
+function logout() {
+    //navigator.notification.alert("clicked logout");
+    window.localStorage["username"] = '';
+    window.localStorage["password"] = '';
+    window.location.replace("index.html");
 }
