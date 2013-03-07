@@ -1,27 +1,23 @@
 function init() {
-    if (isAndroid()) {
-        $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
-    }
-    else if (isiOS()) {
-        $("script").attr("src", "cordova/ios/cordova-2.5.0.js").appendTo("head");
-    }
+    checkOS();
 
     document.addEventListener("deviceready", deviceReady, true);
     delete init;
 }
 
-function isAndroid(){
-    return navigator.userAgent.indexOf("Android") > 0;
-}
-
-function isiOS(){
-    return ( navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPad") > 0 || navigator.userAgent.indexOf("iPod") > 0);
+function checkOS() {
+    if(navigator.userAgent.indexOf("Android") > 0) {
+        $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
+    }
+    else if(navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPad") > 0 || navigator.userAgent.indexOf("iPod") > 0) {
+        $("script").attr("src", "cordova/ios/cordova-2.5.0.js").appendTo("head");
+    }
 }
 
 function checkPreAuth() {
 	console.log("checkPreAuth");
     var form = $("#loginForm");
-    if(window.localStorage["username"] != '' && window.localStorage["password"] != '') {
+    if(window.localStorage["username"] != '' && window.localStorage["password"] != '' && window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
         $("#username", form).val(window.localStorage["username"]);
         $("#password", form).val(window.localStorage["password"]);
         handleLogin();
@@ -49,12 +45,12 @@ function handleLogin() {
             } else if(res.status == 'error') {
             	navigator.notification.alert(res.message);
             } else {
-                navigator.notification.alert("Your login failed", function() {});
+                navigator.notification.alert("Log in mislukt", function() {});
             }
          $("#submitButton").removeAttr("disabled");
         },"json");
     } else {
-        navigator.notification.alert("You must enter a username and password", function() {});
+        navigator.notification.alert("E-mail adres en wachtwoord invoeren", function() {});
         $("#submitButton").removeAttr("disabled");
     }
     return false;
