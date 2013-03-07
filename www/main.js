@@ -21,7 +21,7 @@ function isiOS(){
 function checkPreAuth() {
 	console.log("checkPreAuth");
     var form = $("#loginForm");
-    if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
+    if(window.localStorage["username"] != '' && window.localStorage["password"] != '') {
         $("#username", form).val(window.localStorage["username"]);
         $("#password", form).val(window.localStorage["password"]);
         handleLogin();
