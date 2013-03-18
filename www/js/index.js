@@ -1,49 +1,90 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicity call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+function init() {
+    checkOS();
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+    document.addEventListener("deviceready", deviceReady, true);
+    delete init;
+}
 
-        console.log('Received Event: ' + id);
+function deviceReady() {
+    checkCredentials();
+}
+
+function checkOS() {
+    if(navigator.userAgent.indexOf("Android") > 0) {
+        $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
     }
-};
+    else if(navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPad") > 0 || navigator.userAgent.indexOf("iPod") > 0) {
+        $("script").attr("src", "cordova/ios/cordova-2.5.0.js").appendTo("head");
+    }
+}
+
+function checkCredentials() {
+    console.log('check credentials');
+
+    if(window.localStorage["username"] == undefined && window.localStorage["password"] == undefined) {
+        // send to login window, first login
+        console.log('username and password undefined');
+    } else if(window.localStorage["username"] != undefined && window.localStorage["password"] == undefined) {
+        // send to login, username known but password undefined (probably logged out)
+        console.log('username defined, password undefined');
+        // set form var
+        //var form = $("#login-form");
+        // fill in the username from local storage
+
+        //$("input[name='username']").val(window.localStorage["username"]);
+
+        document.getElementById('login-form-username').value = window.localStorage["username"];// $("input[name='username']").val(window.localStorage["username"]);
+    } else if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
+        // login automatically, username and password known
+        console.log('username and password defined');
+        //var form = $("#login-form");
+        //$("#login-form-username", form).val(window.localStorage["username"]);
+        //$("#login-form-password", form).val(window.localStorage["password"]);
+        document.getElementById('login-form-username').value = window.localStorage["username"];
+        document.getElementById('login-form-password').value = window.localStorage["password"];
+        login();
+    }
+}
+
+function login() {
+    //
+    console.log("login");
+    /*window.localStorage["username"] = 'sander';
+    window.localStorage["password"] = 'test';
+    window.location.replace("menu.html");*/
+
+    var form = $("#login-form");
+    //disable the button so we can't resubmit while we wait
+    $("#login-form-submit",form).attr("disabled","disabled");
+    var u = $("#login-form-username", form).val();
+    var p = $("#login-form-password", form).val();
+    //var pn = 'sander';
+
+    if(u != '' && p!= '') {
+        console.log('if');
+        //$.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p,pathname:pn}, function(res) {
+        $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p}, function(res) {
+            console.log('post');
+            console.log(typeof(res));
+            console.log(res);
+
+            if(res.status == 'success') {
+                //store
+                window.localStorage["username"] = u;
+                window.localStorage["password"] = p;
+                //$.mobile.changePage("some.html");
+                window.location.replace("menu.html");
+            } else if(res.status == 'error') {
+                navigator.notification.alert(res.message);
+            } else {
+                navigator.notification.alert("Log in mislukt", function() {});
+            }
+         $("#login-form-submit").removeAttr("disabled");
+        },"json");
+    } else {
+        console.log('else');
+        navigator.notification.alert("E-mail adres en wachtwoord invoeren", function() {});
+        $("#login-form-submit").removeAttr("disabled");
+    }
+    return false;
+}
