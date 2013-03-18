@@ -2,11 +2,20 @@ function init() {
     checkOS();
 
     document.addEventListener("deviceready", deviceReady, true);
-    delete init;
+    //delete init;
 }
 
 function deviceReady() {
+    document.addEventListener("online", onOnline, false);
+    document.addEventListener("offline", onOffline, false);
+    document.addEventListener("pause", onPause, false);
+    document.addEventListener("resume", onResume, false);
+
     checkCredentials();
+}
+
+function something() {
+    console.log('something');
 }
 
 function checkOS() {
@@ -18,6 +27,24 @@ function checkOS() {
     }
 }
 
+function onOnline() {
+    // set app to 'online' in some kind of variable
+    console.log('you\'re online :D');
+}
+
+function onOffline() {
+    // set app to 'offline' in some kind of variable
+    console.log('you\'re offline :(');
+}
+
+function onPause() {
+    console.log('pause');
+}
+
+function onResume() {
+    console.log('resume');
+}
+
 function checkCredentials() {
     console.log('check credentials');
 
@@ -25,7 +52,7 @@ function checkCredentials() {
         // send to login window, first login
         console.log('username and password undefined');
     } else if(window.localStorage["username"] != undefined && window.localStorage["password"] == undefined) {
-        // send to login, username known but password undefined (probably logged out)
+        // fill in username, username known but password undefined (probably logged out)
         console.log('username defined, password undefined');
         // set form var
         //var form = $("#login-form");
@@ -62,6 +89,7 @@ function login() {
 
     if(u != '' && p!= '') {
         console.log('if');
+        $.mobile.loading('show');
         //$.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p,pathname:pn}, function(res) {
         $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p}, function(res) {
             console.log('post');
@@ -73,11 +101,17 @@ function login() {
                 window.localStorage["username"] = u;
                 window.localStorage["password"] = p;
                 //$.mobile.changePage("some.html");
+
+                $.mobile.loading('hide');
+
+
                 window.location.replace("menu.html");
             } else if(res.status == 'error') {
                 navigator.notification.alert(res.message);
+                $.mobile.loading('hide');
             } else {
                 navigator.notification.alert("Log in mislukt", function() {});
+                $.mobile.loading('hide');
             }
          $("#login-form-submit").removeAttr("disabled");
         },"json");
