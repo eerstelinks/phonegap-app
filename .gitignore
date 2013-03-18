@@ -16,3 +16,5 @@ android/bin/resources.ap_
 android/bin/eerstelinks.apk
 
 ios/eerstelinks.xcodeproj/project.xcworkspace/xcuserdata/san.xcuserdatad/UserInterfaceState.xcuserstate
+
+*.xcuserstate
