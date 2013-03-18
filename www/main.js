@@ -1,11 +1,11 @@
 function init() {
-    addOSCordovaVersion();
+    checkOS();
 
     document.addEventListener("deviceready", deviceReady, true);
     delete init;
 }
 
-function addOSCordovaVersion() {
+function checkOS() {
     if(navigator.userAgent.indexOf("Android") > 0) {
         $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
     }
@@ -30,9 +30,9 @@ function handleLogin() {
     $("#submitButton",form).attr("disabled","disabled");
     var u = $("#username", form).val();
     var p = $("#password", form).val();
-    // var pn = 'sander';
+    var pn = 'sander';
     if(u != '' && p!= '') {
-        $.post("http://eerstelinks/api/v1/authenticate", {username:u,password:p }, function(res) {
+        $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p,pathname:pn}, function(res) {
         	console.log(typeof(res));
         	console.log(res);
 
