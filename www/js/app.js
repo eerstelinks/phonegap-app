@@ -8,6 +8,8 @@ var app = {
 
     checkOS: function() {
         // check OS version and load correct cordova.js
+        console.log('checkOS');
+
         if(navigator.userAgent.indexOf("Android") > 0) {
             $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
         }
@@ -27,13 +29,13 @@ var app = {
         document.addEventListener('online', this.onOnline, false);
         document.addEventListener('offline', this.onOffline, false);
     },
-
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        app.checkCredentials();
+        console.log('onDeviceReady');
+        this.checkCredentials();
     },
 
     onPause: function() {
@@ -56,10 +58,9 @@ var app = {
         console.log('checkCredentials');
 
         if(window.localStorage["username"] == undefined && window.localStorage["password"] == undefined) {
-            // send to login window, first login
-            console.log('username and password undefined');
-        }
-        else if(window.localStorage["username"] != undefined && window.localStorage["password"] == undefined) {
+        // send to login window, first login
+        console.log('username and password undefined');
+        } else if(window.localStorage["username"] != undefined && window.localStorage["password"] == undefined) {
             // fill in username, username known but password undefined (probably logged out)
             console.log('username defined, password undefined');
             // set form var
@@ -69,8 +70,7 @@ var app = {
             //$("input[name='username']").val(window.localStorage["username"]);
 
             document.getElementById('login-form-username').value = window.localStorage["username"];// $("input[name='username']").val(window.localStorage["username"]);
-        }
-        else if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
+        } else if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
             // login automatically, username and password known
             console.log('username and password defined');
             //var form = $("#login-form");
