@@ -11,23 +11,20 @@
     <script type="text/javascript" src="js/menu.js"></script>
 </head>
 
-<body onLoad="init();">
+<body>
 
 <!-- main menu page -->
-<div id="menu-page" data-role="page" style="height: 100%; width: 100%; position: absolute;">
+<div id="menu-page" data-role="page">
     <div data-role="header">
-        <h3>Main menu</h3>
+        <h3>Menu</h3>
         <a data-role="button" href="#" class="ui-btn-right" onClick="logout();">uitloggen</a>
     </div>
 
     <div data-role="content">
 
-        <!-- <input type="button" onClick="test();" id="login-form-submit" value="loading on"> -->
-        <!-- <input type="button" onClick="test2();" id="login-form-submit" value="loading off"> -->
-    </div>
-
-    <div data-role="footer" style="position: absolute; bottom: 0px; left: 0; width: 100%;">
-        <h4>&copy; eerstelinks.nl</h4>
+        <input type="button" onClick="testOn();" id="login-form-submit" value="loading on">
+        <input type="button" onClick="testOff();" id="login-form-submit" value="loading off">
+        <input type="button" onClick="test45();" id="take-picture" value="Photo nemen">
     </div>
 </div>
 <!-- end main menu page -->

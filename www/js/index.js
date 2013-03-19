@@ -1,11 +1,15 @@
 function init() {
+    console.log('init');
+
     checkOS();
 
-    document.addEventListener("deviceready", deviceReady, true);
-    //delete init;
+    document.addEventListener("deviceready", deviceReady, false);
+    // delete init; ???
 }
 
 function deviceReady() {
+    console.log('deviceReady');
+
     document.addEventListener("online", onOnline, false);
     document.addEventListener("offline", onOffline, false);
     document.addEventListener("pause", onPause, false);
@@ -14,11 +18,9 @@ function deviceReady() {
     checkCredentials();
 }
 
-function something() {
-    console.log('something');
-}
-
 function checkOS() {
+    console.log('checkOS');
+
     if(navigator.userAgent.indexOf("Android") > 0) {
         $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
     }
@@ -29,12 +31,12 @@ function checkOS() {
 
 function onOnline() {
     // set app to 'online' in some kind of variable
-    console.log('you\'re online :D');
+    console.log('online :D');
 }
 
 function onOffline() {
     // set app to 'offline' in some kind of variable
-    console.log('you\'re offline :(');
+    console.log('offline :(');
 }
 
 function onPause() {
@@ -46,7 +48,7 @@ function onResume() {
 }
 
 function checkCredentials() {
-    console.log('check credentials');
+    console.log('checkCredentials');
 
     if(window.localStorage["username"] == undefined && window.localStorage["password"] == undefined) {
         // send to login window, first login
@@ -75,50 +77,66 @@ function checkCredentials() {
 
 function login() {
     //
-    console.log("login");
-    /*window.localStorage["username"] = 'sander';
-    window.localStorage["password"] = 'test';
-    window.location.replace("menu.html");*/
+    console.log('login');
 
-    var form = $("#login-form");
+    //var form = $("#login-form");
     //disable the button so we can't resubmit while we wait
-    $("#login-form-submit",form).attr("disabled","disabled");
-    var u = $("#login-form-username", form).val();
-    var p = $("#login-form-password", form).val();
-    //var pn = 'sander';
+    $("#login-form-submit").attr("disabled","disabled");
+    var u = $("#login-form-username").val();
+    var p = $("#login-form-password").val();
 
     if(u != '' && p!= '') {
         console.log('if');
         $.mobile.loading('show');
         //$.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p,pathname:pn}, function(res) {
         $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p}, function(res) {
-            console.log('post');
-            console.log(typeof(res));
-            console.log(res);
+            //console.log('post');
+            //console.log(typeof(res));
+            //console.log(res);
 
             if(res.status == 'success') {
                 //store
                 window.localStorage["username"] = u;
                 window.localStorage["password"] = p;
-                //$.mobile.changePage("some.html");
 
+                // stop loading animation
                 $.mobile.loading('hide');
-
-
-                window.location.replace("menu.html");
+                // replace page with menu.html (for android back button)
+                //window.location.replace("menu.html");
+                $.mobile.changePage('#menu-page')
             } else if(res.status == 'error') {
+                $.mobile.loading('hide');
                 navigator.notification.alert(res.message);
-                $.mobile.loading('hide');
             } else {
-                navigator.notification.alert("Log in mislukt", function() {});
                 $.mobile.loading('hide');
+                navigator.notification.alert("Log in mislukt", function() {});
             }
          $("#login-form-submit").removeAttr("disabled");
         },"json");
     } else {
-        console.log('else');
+        //console.log('else');
         navigator.notification.alert("E-mail adres en wachtwoord invoeren", function() {});
         $("#login-form-submit").removeAttr("disabled");
     }
     return false;
+}
+
+function test24() {
+    console.log('i hate JS');
+}
+
+function logout() {
+    //
+    console.log('logout');
+    delete window.localStorage["password"];
+    //window.location.replace("index.html");
+    refreshPage();
+    $.mobile.changePage('#login-page');
+}
+
+function refreshPage() {
+    $.mobile.changePage(window.location.href, { allowSamePageTransition : true,
+                                                transition              : 'none',
+                                                showLoadMsg             : false,
+                                                reloadPage              : true });
 }
