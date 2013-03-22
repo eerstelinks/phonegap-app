@@ -13,8 +13,6 @@ initialize: function() {
 // --------
 checkOS: function() {
     // check OS version and load correct cordova.js
-    console.log('checkOS');
-
     if(navigator.userAgent.indexOf("Android") > 0) {
         $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
     }
@@ -27,14 +25,14 @@ checkOS: function() {
 // onDeviceReady: when 'device ready' event is received load the other event listeners and call checkCredentials()
 // --------------
 onDeviceReady: function() {
-    console.log('onDeviceReady');
-    //$.mobile.loading('show');
+    console.log('device ready');
 
     document.addEventListener('pause', app.onPause, false);
     document.addEventListener('resume', app.onResume, false);
     document.addEventListener('online', app.onOnline, false);
     document.addEventListener('offline', app.onOffline, false);
-    document.addEventListener("backbutton", app.onBackButton, false);
+    document.addEventListener('backbutton', app.onBackButton, false);
+    document.addEventListener('menubutton', app.onMenuButton, false);
 
     app.checkCredentials();
 },
@@ -84,6 +82,14 @@ onBackButton: function() {
     }
 },
 
+// -------------
+// onMenuButton: detects menu button trigger for Android devices
+// -------------
+onMenuButton: function() {
+    console.log('menu button');
+    // maybe send user to a 'settings' page if/when one is needed/implemented
+},
+
 // ----------------
 // checkConnection: checks internet connection and returns a boolean (might be better to check for 'unknown' and 'none')
 // ----------------
@@ -105,7 +111,7 @@ checkConnection: function() {
 // exitApp: exits the application (not pause but exit)
 // --------
 exitApp: function() {
-    // exits app
+    console.log('exit app');
     navigator.app.exitApp();
 },
 
@@ -119,21 +125,21 @@ exitApp: function() {
 // -----------------
 checkCredentials: function() {
     console.log('checkCredentials');
+    $.mobile.loading('show');
 
     if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
         // login automatically, username and password known
         console.log('username and password defined');
-        $("#login-form-username").val(window.localStorage["username"]);
-        $("#login-form-password").val(window.localStorage["password"]);
-        // if username and password are stored -> user has logged in before -> go to 'menu'
-        app.login();
-        $.mobile.changePage('#menu-page');
+        app.login('checkCredentials');
     } else if(window.localStorage["username"] != undefined && window.localStorage["password"] == undefined) {
         // fill in username, username known but password undefined (probably logged out)
         console.log('username defined, password undefined');
         $("#login-form-username").val(window.localStorage["username"]);
+        $.mobile.loading('hide');
+        $.mobile.changePage('#login-page');
     } else {
-        // do nothing
+        $.mobile.loading('hide');
+        $.mobile.changePage('#login-page');
     }
 },
 
@@ -144,21 +150,36 @@ checkCredentials: function() {
 //        if the username + password combination is correct we receive a JSON object with the username/pathnames/session
 //        if the credentials are incorrect give a warning message to the user
 // ------
-login: function() {
+login: function(from) {
     console.log('login');
+    console.log('from: ' + from);
 
-    // disable the login button while we check the username and password
-    $("#login-form-submit").attr("disabled","disabled");
+    // login was called from login form
+    if(from == 'login-form') {
+        // disable the login button while we check the username and password
+        $("#login-form-submit").attr("disabled","disabled");
 
-    // retrieve form values
-    var u = $("#login-form-username").val();
-    var p = $("#login-form-password").val();
-
-    // if username and password not empty
-    if(u != '' && p!= '') {
         // show loading animation
         $.mobile.loading('show');
 
+        // retrieve form values
+        var u = $("#login-form-username").val();
+        var p = $("#login-form-password").val();
+    } else if(from == 'checkCredentials') /* login was called from checkCredentials() */ {
+        // loading animation was already toggled in checkCredentials
+
+        var u = window.localStorage["username"];
+        var p = window.localStorage["password"];
+    } else /* set defaults just in case */ {
+        // show loading animation
+        $.mobile.loading('show');
+
+        var u = '';
+        var p = '';
+    }
+
+    // if username and password not empty
+    if(u != '' && p!= '') {
         // submimt post request to the server
         $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p}, function(res) {
             console.log(res);
@@ -171,14 +192,14 @@ login: function() {
                 window.localStorage["session"] = res.session;
                 window.localStorage["pathnames"] = res.pathnames;
 
-                // stop loading animation
-                $.mobile.loading('hide');
-
                 console.log('login succes');
                 console.log('username: ' + window.localStorage["username"]);
                 console.log('password: ' + window.localStorage["password"]);
                 console.log('pathnames: ' + window.localStorage["pathnames"]);
-                console.log('session: ' + window.localStorage["session"])
+                console.log('session: ' + window.localStorage["session"]);
+
+                // stop loading animation
+                $.mobile.loading('hide');
 
                 // load menu page
                 $.mobile.changePage('#menu-page');
@@ -200,6 +221,9 @@ login: function() {
             $("#login-form-submit").removeAttr("disabled");
         },"json");
     } else /* if username or password is empty show error message */ {
+        // stop loading animation
+        $.mobile.loading('hide');
+
         // show error message
         navigator.notification.alert("E-mail adres en wachtwoord invoeren");
 
@@ -214,29 +238,35 @@ login: function() {
 // -------
 logout: function() {
     console.log('logout');
+
+    // show loading animation
+    $.mobile.loading('show');
+
     // delete stored user info
     delete window.localStorage["password"];
     delete window.localStorage["pathnames"];
     delete window.localStorage["session"];
+    delete window.localStorage["pathnames"]
 
-    // reset the password field on the login page
+    // send post to server to destroy session
+    // this is why the loading animation is needed
+
+    // reset the login form
     $("#login-form-password").val('');
+    $("#login-form-username").val(window.localStorage["username"]);
 
     // go to login page
+    $.mobile.loading('hide');
     $.mobile.changePage('#login-page');
 },
 
-testOn: function() {
-    console.log('testOn');
-    $.mobile.loading('show');
-    //navigator.notification.alert('page #: ' + $.mobile.activePage.attr('id'));
-    navigator.notification.alert('connection?: ' + app.checkConnection());
+toTest: function() {
+    console.log('toTest');
+    $.mobile.changePage('#test-page');
 },
 
-testOff: function() {
-    console.log('testOff');
-    $.mobile.loading('hide');
-    delete window.localStorage["logged_in"];
-    navigator.notification.alert('logged_in: ' + window.localStorage["logged_in"]);
+toMenu: function() {
+    console.log('toMenu');
+    $.mobile.changePage('#menu-page');
 }
 };
