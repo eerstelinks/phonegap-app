@@ -124,12 +124,13 @@ exitApp: function() {
 //        if neither username or password is known do nothing/send the user to the login page
 // -----------------
 checkCredentials: function() {
-    console.log('checkCredentials');
+    console.log('check credentials');
     $.mobile.loading('show');
 
     if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
         // login automatically, username and password known
         console.log('username and password defined');
+        $.mobile.loading('hide');
         app.login('checkCredentials');
     } else if(window.localStorage["username"] != undefined && window.localStorage["password"] == undefined) {
         // fill in username, username known but password undefined (probably logged out)
@@ -152,74 +153,82 @@ checkCredentials: function() {
 // ------
 login: function(from) {
     console.log('login');
-    console.log('from: ' + from);
+
+    var u = '';
+    var p = '';
+
+    // show loading animation
+    $.mobile.loading('show');
 
     // login was called from login form
     if(from == 'login-form') {
+        console.log('from login-form');
         // disable the login button while we check the username and password
         $("#login-form-submit").attr("disabled","disabled");
-
-        // show loading animation
-        $.mobile.loading('show');
 
         // retrieve form values
         var u = $("#login-form-username").val();
         var p = $("#login-form-password").val();
     } else if(from == 'checkCredentials') /* login was called from checkCredentials() */ {
-        // loading animation was already toggled in checkCredentials
+        console.log('from check credentials');
 
+        // retrieve username and password form local storage
         var u = window.localStorage["username"];
         var p = window.localStorage["password"];
-    } else /* set defaults just in case */ {
-        // show loading animation
-        $.mobile.loading('show');
-
-        var u = '';
-        var p = '';
     }
 
     // if username and password not empty
     if(u != '' && p!= '') {
-        // submimt post request to the server
-        $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p}, function(res) {
-            console.log(res);
+        // try / catch connection
+        // should check for internet connection too
+        try {
+            // console.log('try');
+            // submimt post request to the server
+            $.post("http://eerstelinks.nl/api/v1/authenticate", {username:u,password:p}, function(res) {
+                //console.log(res);
 
-            // if the 'status' in the JSON object is 'succes'
-            if(res.status == 'success') {
-                //store user info
-                window.localStorage["username"] = u;
-                window.localStorage["password"] = p;
-                window.localStorage["session"] = res.session;
-                window.localStorage["pathnames"] = res.pathnames;
+                // if the 'status' in the JSON object is 'succes'
+                if(res.status == 'success') {
+                    //store user info
+                    window.localStorage["username"] = u;
+                    window.localStorage["password"] = p;
+                    window.localStorage["session"] = res.session;
+                    window.localStorage["pathnames"] = res.pathnames;
 
-                console.log('login succes');
-                console.log('username: ' + window.localStorage["username"]);
-                console.log('password: ' + window.localStorage["password"]);
-                console.log('pathnames: ' + window.localStorage["pathnames"]);
-                console.log('session: ' + window.localStorage["session"]);
+                    console.log('login succes');
+                    console.log('username: ' + window.localStorage["username"]);
+                    console.log('password: ' + window.localStorage["password"]);
+                    console.log('pathnames: ' + window.localStorage["pathnames"]);
+                    console.log('session: ' + window.localStorage["session"]);
 
-                // stop loading animation
-                $.mobile.loading('hide');
+                    // stop loading animation
+                    $.mobile.loading('hide');
 
-                // load menu page
-                $.mobile.changePage('#menu-page');
-            } else if(res.status == 'error') /* if status is 'error' */ {
-                // stop loading animation
-                $.mobile.loading('hide');
+                    // load menu page
+                    $.mobile.changePage('#menu-page');
+                } else if(res.status == 'error') /* if status is 'error' */ {
+                    // stop loading animation
+                    $.mobile.loading('hide');
 
-                // show error message to user
-                navigator.notification.alert(res.message);
-            } else /* else (unknown error) show error message to user */ {
-                // hide loading animation
-                $.mobile.loading('hide');
+                    // show error message to user
+                    navigator.notification.alert(res.message);
+                } else /* else (unknown error) show error message to user */ {
+                    // hide loading animation
+                    $.mobile.loading('hide');
 
-                // error message to user
-                navigator.notification.alert("Log in mislukt");
-            }
+                    // error message to user
+                    navigator.notification.alert("Log in mislukt");
+                }
 
-            // re-enable the login button
-            $("#login-form-submit").removeAttr("disabled");
-        },"json");
+                // re-enable the login button
+                $("#login-form-submit").removeAttr("disabled");
+            },"json");
+        } catch (err) /* catch for POST connection */ {
+            // catch error
+            // should make this a bit prettier (maybe quit app or something)
+            navigator.notification.alert('There was an error connecting to the server: ' + err.message);
+            console.log('catch error: ' + err.message);
+        }
     } else /* if username or password is empty show error message */ {
         // stop loading animation
         $.mobile.loading('hide');
@@ -261,12 +270,21 @@ logout: function() {
 },
 
 toTest: function() {
-    console.log('toTest');
+    console.log('to test');
     $.mobile.changePage('#test-page');
 },
 
 toMenu: function() {
-    console.log('toMenu');
+    console.log('to menu');
     $.mobile.changePage('#menu-page');
+},
+
+testConn: function() {
+    console.log('test connection');
+    if(app.checkConnection()) {
+        console.log('there is a connection');
+    } else {
+        console.log('there is no connection');
+    }
 }
 };
