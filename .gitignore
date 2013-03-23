@@ -28,3 +28,9 @@ ios/eerstelinks.xcodeproj/project.xcworkspace/xcuserdata/san.xcuserdatad/UserInt
 *.ap_
 
 *.apk
+
+android/bin/eerstelinks.apk
+
+android/bin/resources.ap_
+
+ios/eerstelinks.xcodeproj/project.xcworkspace/xcuserdata/san.xcuserdatad/UserInterfaceState.xcuserstate
