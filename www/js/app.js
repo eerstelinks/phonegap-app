@@ -1,3 +1,6 @@
+var pictureSource;   // picture source
+var destinationType; // sets the format of returned value
+
 var app = {
 
 // -----------
@@ -26,6 +29,9 @@ checkOS: function() {
 // --------------
 onDeviceReady: function() {
     console.log('device ready');
+
+    pictureSource=navigator.camera.PictureSourceType;
+    destinationType=navigator.camera.DestinationType;
 
     document.addEventListener('pause', app.onPause, false);
     document.addEventListener('resume', app.onResume, false);
@@ -269,13 +275,97 @@ logout: function() {
     $.mobile.changePage('#login-page');
 },
 
-uploadPhoto: function() {
-    console.log('upload photo');
+// ----------------------------------------------------------------------
+//
+// Camera functions section
+//
+// ----------------------------------------------------------------------
+onPhotoDataSuccess: function(imageData) {
+    // Uncomment to view the base64 encoded image data
+    // console.log(imageData);
+
+    // Get image handle
+    //
+    var smallImage = document.getElementById('smallImage');
+
+    // Unhide image elements
+    //
+    smallImage.style.display = 'block';
+
+    // Show the captured photo
+    // The inline CSS rules are used to resize the image
+    //
+    smallImage.src = "data:image/jpeg;base64," + imageData;
 },
 
-takePhoto: function() {
-    console.log('take photo');
+// Called when a photo is successfully retrieved
+//
+onPhotoURISuccess: function(imageURI) {
+    // Uncomment to view the image file URI
+    // console.log(imageURI);
+
+    // Get image handle
+    //
+    var largeImage = document.getElementById('largeImage');
+
+    // Unhide image elements
+    //
+    largeImage.style.display = 'block';
+
+    // Show the captured photo
+    // The inline CSS rules are used to resize the image
+    //
+    largeImage.src = imageURI;
 },
+
+// A button will call this function
+//
+capturePhoto: function() {
+    console.log('capture photo');
+    // Take picture using device camera and retrieve image as base64-encoded string
+    navigator.camera.getPicture(app.onPhotoDataSuccess, app.onFail, { quality: 50,
+        destinationType: destinationType.DATA_URL });
+},
+
+// A button will call this function
+//
+capturePhotoEdit: function() {
+    console.log('capture photo edit');
+    // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
+    navigator.camera.getPicture(app.onPhotoDataSuccess, app.onFail, { quality: 20, allowEdit: true,
+        destinationType: destinationType.DATA_URL });
+},
+
+// A button will call this function
+//
+getPhoto: function(source) {
+    console.log('get photo, source: ' + source);
+    // Retrieve image file location from specified source
+    navigator.camera.getPicture(app.onPhotoURISuccess, app.onFail, { quality: 50,
+        destinationType: destinationType.FILE_URI,
+        sourceType: source });
+},
+
+// Called if something bad happens.
+//
+onFail: function(message) {
+    console.log('fail: ' + message);
+    alert('Failed because: ' + message);
+},
+
+uploadText: function() {
+    console.log('upload text');
+},
+
+settings: function() {
+    console.log('settings');
+},
+
+info: function() {
+    console.log('info');
+},
+
+// ------------------[ test functions ]--------------------
 
 toTest: function() {
     console.log('to test');
