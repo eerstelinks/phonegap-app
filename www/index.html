@@ -47,7 +47,32 @@
 
     <div data-role="content">
         <input type="button" onClick="app.toTest();" id="login-form-submit" value="to test page">
-        <input type="button" onClick="app.testConn();" id="login-form-submit" value="test connection">
+
+        <div style="width: 90px; float: left;" onclick="app.uploadPhoto();">
+            <p style="font-size: 12px; text-align: center;"><img src="img/icons/5-content-picture-black.png" style="margin: 0; padding: 0;">
+            <span style="margin:0; padding: 0;">Upload foto</span></p>
+        </div>
+
+        <div style="width: 90px; float: left;" onclick="app.uploadPhoto();">
+            <p style="font-size: 12px; text-align: center;"><img src="img/icons/10-device-access-camera-black.png" style="margin: 0; padding: 0;">
+            <span style="margin:0; padding: 0;">Neem foto</span></p>
+        </div>
+
+        <div style="width: 90px; float: left;" onclick="app.uploadPhoto();">
+            <p style="font-size: 12px; text-align: center;"><img src="img/icons/5-content-new-event-black.png" style="margin: 0; padding: 0;">
+            <span style="margin:0; padding: 0;">Upload tekst</span></p>
+        </div>
+
+        <div style="width: 90px; float: left;" onclick="app.uploadPhoto();">
+            <p style="font-size: 12px; text-align: center;"><img src="img/icons/2-action-settings-black.png" style="margin: 0; padding: 0;">
+            <span style="margin:0; padding: 0;">Instellingen</span></p>
+        </div>
+
+        <div style="width: 90px; float: left;" onclick="app.uploadPhoto();">
+            <p style="font-size: 12px; text-align: center;"><img src="img/icons/2-action-about-black.png" style="margin: 0; padding: 0;">
+            <span style="margin:0; padding: 0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Info&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+        </div>
+
     </div>
 </div>
 <!-- end main menu page -->
@@ -61,6 +86,45 @@
 
     <div data-role="content">
         <input type="button" onClick="app.toMenu();" id="login-form-submit" value="back to menu">
+
+        <ul data-role="listview" data-inset="true">
+            <li>
+                <a href="#" onclick="app.uploadPhoto();">
+                    <img src="img/icons/5-content-picture-black.png">
+                    <h2>Upload foto</h2>
+                    <!-- <p>Upload een foto van uw device</p> -->
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="app.takePhoto();">
+                    <img src="img/icons/10-device-access-camera-black.png">
+                    <h2>Neem foto</h2>
+                    <!-- <p>Neem een foto met uw device</p> -->
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="app.takePhoto();">
+                    <img src="img/icons/5-content-new-event-black.png">
+                    <h2>Upload tekst</h2>
+                    <!-- <p>Neem een foto met uw device</p> -->
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="app.takePhoto();">
+                    <img src="img/icons/2-action-settings-black.png">
+                    <h2>Instellingen</h2>
+                    <!-- <p>Neem een foto met uw device</p> -->
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="app.takePhoto();">
+                    <img src="img/icons/2-action-about-black.png">
+                    <h2>Info</h2>
+                    <!-- <p>Neem een foto met uw device</p> -->
+                </a>
+            </li>
+        </ul>
+
     </div>
 </div>
 <!-- end test page -->

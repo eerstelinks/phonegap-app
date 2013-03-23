@@ -269,6 +269,14 @@ logout: function() {
     $.mobile.changePage('#login-page');
 },
 
+uploadPhoto: function() {
+    console.log('upload photo');
+},
+
+takePhoto: function() {
+    console.log('take photo');
+},
+
 toTest: function() {
     console.log('to test');
     $.mobile.changePage('#test-page');
