@@ -80,6 +80,7 @@
 <!-- test page -->
 <div id="test-page" data-role="page">
     <div data-role="header">
+        <a data-role="button" href="#" class="ui-btn-left" onClick="app.toMenu('test-page');">terug</a>
         <h3>Test page</h3>
         <a data-role="button" href="#" class="ui-btn-right" onClick="app.logout();">uitloggen</a>
     </div>
@@ -132,13 +133,18 @@
 <!-- photo succes page -->
 <div id="photo-succes-page" data-role="page">
     <div data-role="header">
+        <a data-role="button" href="#" class="ui-btn-left" onClick="app.toMenu('photo-succes-page');">terug</a>
         <h3>Test page</h3>
         <a data-role="button" href="#" class="ui-btn-right" onClick="app.logout();">uitloggen</a>
     </div>
 
     <div data-role="content">
-        content here ...
+        <img style="display:none;width:320px;height:380px;margin:0;padding:0;" id="smallImage" src="" />
+        <img style="display:none;width:320px;height:380px;margin:0;padding:0;" id="largeImage" src="" />
+
+        <input type="button" onClick="" id="upload-photo-submit" value="Upload">
     </div>
+
 </div>
 <!-- end photo succes page -->
 

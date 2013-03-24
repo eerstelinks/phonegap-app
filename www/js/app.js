@@ -3,6 +3,11 @@ var destinationType; // sets the format of returned value
 
 var app = {
 
+// vars
+test: 'testregergerg',
+test2: 'test2ergregerg',
+test3: undefined,
+
 // -----------
 // initialize: Application Constructor
 // -----------
@@ -85,6 +90,12 @@ onBackButton: function() {
     if($.mobile.activePage.attr('id') == 'login-page') {
         // if user is on the 'login' page and presses 'back' -> exit app
         app.exitApp();
+    }
+    if ($.mobile.activePage.attr('id') == 'photo-succes-page') {
+        $.mobile.changePage('#menu-page');
+    }
+    if ($.mobile.activePage.attr('id') == 'test-page') {
+        $.mobile.changePage('#menu-page');
     }
 },
 
@@ -295,7 +306,11 @@ onPhotoDataSuccess: function(imageData) {
     // Show the captured photo
     // The inline CSS rules are used to resize the image
     //
+    var largeImage = document.getElementById('largeImage');
+    largeImage.style.display = 'none';
+
     smallImage.src = "data:image/jpeg;base64," + imageData;
+    $.mobile.changePage('#photo-succes-page');
 },
 
 // Called when a photo is successfully retrieved
@@ -314,8 +329,11 @@ onPhotoURISuccess: function(imageURI) {
 
     // Show the captured photo
     // The inline CSS rules are used to resize the image
+    var smallImage = document.getElementById('smallImage');
+    smallImage.style.display = 'none';
     //
     largeImage.src = imageURI;
+    $.mobile.changePage('#photo-succes-page');
 },
 
 // A button will call this function
@@ -323,7 +341,7 @@ onPhotoURISuccess: function(imageURI) {
 capturePhoto: function() {
     console.log('capture photo');
     // Take picture using device camera and retrieve image as base64-encoded string
-    navigator.camera.getPicture(app.onPhotoDataSuccess, app.onFail, { quality: 50,
+    navigator.camera.getPicture(app.onPhotoDataSuccess, app.onFail, { quality: 60,
         destinationType: destinationType.DATA_URL });
 },
 
@@ -341,7 +359,7 @@ capturePhotoEdit: function() {
 getPhoto: function(source) {
     console.log('get photo, source: ' + source);
     // Retrieve image file location from specified source
-    navigator.camera.getPicture(app.onPhotoURISuccess, app.onFail, { quality: 50,
+    navigator.camera.getPicture(app.onPhotoURISuccess, app.onFail, { quality: 60,
         destinationType: destinationType.FILE_URI,
         sourceType: source });
 },
@@ -363,19 +381,29 @@ settings: function() {
 
 info: function() {
     console.log('info');
-},
+    //test = 'test';
+    //test2 = 'test2';
+    app.test3 = 'uhweiughweiughweiuhgewg';
 
-// ------------------[ test functions ]--------------------
+    console.log('test: ' + app.test);
+    console.log('test2: ' + app.test2);
+    console.log('test3: ' + app.test3);
+    var x = screen.width;
+    var y = screen.height;
+    console.log('x: ' + x);
+    console.log('y: ' + y);
+},
 
 toTest: function() {
     console.log('to test');
     $.mobile.changePage('#test-page');
 },
 
-toMenu: function() {
-    console.log('to menu');
+toMenu: function(from) {
+    console.log('to menu, from: ' + from);
     $.mobile.changePage('#menu-page');
 },
+// ------------------[ test functions ]--------------------
 
 testConn: function() {
     console.log('test connection');
