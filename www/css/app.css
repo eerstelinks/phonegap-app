@@ -1,7 +1,45 @@
+/* Loading page */
+
 #loading-page {
     background-color: #000;
-    /* background-image: url(../img/logo100x100.png); */
-    background-image: url(../img/logo/logo100x100.png);
+    background-image: url(../img/logo/logo150x150.png);
     background-repeat: no-repeat;
     background-position: center;
+}
+
+/* Menu page elements */
+
+#menu > div {
+    width: 5em;
+    margin: 0.5em;
+    float: left;
+}
+
+#menu > div > i {
+    display: block;
+    text-align: center;
+}
+
+.menu_vmousedown {
+    text-shadow: 0px 0px 5px #ff7700, 0px 0px 15px #ff7700, 0px 0px 25px #ff7700, 0px 0px 35px #ff7700;
+}
+
+.menu_vmouseup {
+    /* probably not needed */
+}
+
+#menu > div > p {
+    font-size: 0.7em;
+    text-align: center;
+}
+
+/* Check image page */
+
+#checkImage {
+    max-width: 96%;
+    max-height: 96%;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 2%;
+    padding-bottom: 2%;
 }
