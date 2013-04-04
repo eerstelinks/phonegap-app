@@ -570,6 +570,13 @@ toMenu: function(from) {
 },
 // ------------------[ test functions ]--------------------
 
+testLink: function() {
+    console.log('test linkn');
+    // external url
+    //var ref =
+    //window.open(encodeURI('http://apache.org'), '_system');
+},
+
 testConn: function() {
     console.log('test connection');
     if(app.checkConnection()) {
@@ -577,5 +584,14 @@ testConn: function() {
     } else {
         console.log('there is no connection');
     }
-}
+},
+
+annoying: function() {
+    console.log('annoying');
+},
+
+annoying2: function() {
+    console.log('annoying2');
+    window.open(encodeURI('http://apache.org'), '_system');
+},
 };

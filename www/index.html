@@ -112,6 +112,9 @@
     <div data-role="content">
         <!-- content goes here -->
         info blabla
+
+        <button type="button" id="test_button" value="blabla">external link</button>
+
     </div>
 </div>
 <!-- end info page -->
@@ -128,6 +131,8 @@
     <div data-role="content">
         <!-- content goes here -->
         instellingen blabla
+
+        <button type="button" id="test_button3" value="blabla">test</button>
     </div>
 </div>
 <!-- end settings page -->
@@ -211,6 +216,19 @@
         // back to menu button
         $('.back_to_menu_button').on( "tap", function() {
             $.mobile.changePage('#menu-page');
+        });
+
+        // test button
+        $('#test_button').on("vclick", function() {
+            app.annoying();
+        });
+
+        // test button 3
+        $('#test_button3').on("vmousedown", function() {
+            //app.annoying2();
+        });
+        $('#test_button3').on("vmouseup", function() {
+            app.annoying2();
         });
     });
 </script>
