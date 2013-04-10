@@ -1,5 +1,4 @@
 /* Loading page */
-
 #loading-page {
     background-color: #000;
     background-image: url(../img/logo/logo150x150.png);
@@ -8,6 +7,14 @@
 }
 
 /* Menu page elements */
+
+
+#menu-page {
+    background-image: url(../img/logo/logo200x200x0.4.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    /*background-attachment: fixed;*/
+}
 
 #menu > div {
     width: 5em;
@@ -20,12 +27,8 @@
     text-align: center;
 }
 
-.menu_vmousedown {
-    text-shadow: 0px 0px 5px #ff7700, 0px 0px 15px #ff7700, 0px 0px 25px #ff7700, 0px 0px 35px #ff7700;
-}
-
-.menu_vmouseup {
-    /* probably not needed */
+.menu_icon_glow_effect {
+    text-shadow: 0px 0px 5px #ff7700, 0px 0px 15px #ff7700, 0px 0px 25px #ff7700, 0px 0px 35px #ff7700, 0px 0px 45px #ff7700;
 }
 
 #menu > div > p {

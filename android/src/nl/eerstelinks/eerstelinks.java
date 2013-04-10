@@ -29,6 +29,10 @@ public class eerstelinks extends DroidGap
     {
         super.onCreate(savedInstanceState);
         // Set by <content src="index.html" /> in config.xml
+        
+        // clear cache before app start to prevent cache getting too big
+        super.clearCache();
+        
         super.loadUrl(Config.getStartUrl());
         //super.loadUrl("file:///android_asset/www/index.html")
     }

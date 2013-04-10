@@ -1,11 +1,13 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>eerstelinks.nl</title>
 
-    <link rel="stylesheet" href="css/eerstelinks3.min.css" />
+    <!-- <link rel="stylesheet" href="css/eerstelinks3.min.css" /> -->
+    <link rel="stylesheet" href="css/newtest.css" />
+
     <link rel="stylesheet" href="css/jquery.mobile.structure-1.3.0.min.css" />
 
     <link rel="stylesheet" href="css/app.css" />
@@ -14,224 +16,203 @@
 
     <script src="js/jquery-1.8.3.min.js"></script>
 	<script src="js/jquery.mobile-1.3.0.min.js"></script>
-	<script src="js/app.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/ui-actions.js"></script>
+
 </head>
+<body>
 
-<body style="min-height: 100%" data-theme="a">
-
-<!-- loading page -->
-<div id="loading-page" data-role="page" data-theme="a">
-	<!-- blank loading page while checking credentials -->
-</div>
-<!-- end loading page -->
-
-<!-- login page -->
-<div id="login-page" data-role="page" data-theme="a">
-    <div data-role="header">
-        <h1>eerstelinks login</h1>
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                              loading page                                             -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="loading-page" data-role="page">
+    	<!-- blank loading page while checking credentials -->
     </div>
+    <!-- end loading page -->
 
-    <div data-role="content">
-        <form id="login-form">
-            <label for="textinput-hide" class="ui-hidden-accessible">E-mail</label>
-            <input type="text" name="username" id="login-form-username" value="" placeholder="E-mail">
-            <label for="textinput-hide" class="ui-hidden-accessible">Wachtwoord</label>
-            <input type="password" name="password" id="login-form-password" value="" placeholder="Wachtwoord">
-            <input type="button" id="login-form-submit" value="Log in">
-        </form>
-    </div>
-</div>
-<!-- end login page -->
 
-<!-- main menu page -->
-<div id="menu-page" data-role="page" data-theme="a">
-    <div data-role="header">
-        <h3>Menu</h3>
-    </div>
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                login page                                             -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="login-page" data-role="page" data-theme="a">
+        <div data-role="header">
+            <h1>eerstelinks login</h1>
+        </div>
 
-    <div data-role="content" id="menu">
-        <div>
-            <i class="icon-picture icon-4x" id="upload_photo_icon"></i>
-            <p>Upload foto</p>
-        </div>
-        <div>
-            <i class="icon-camera icon-4x" id="capture_photo_icon"></i>
-            <p>Neem foto</p>
-        </div>
-        <div>
-            <i class="icon-info-sign icon-4x" id="info_icon"></i>
-            <p>Info</p>
-        </div>
-        <div>
-            <i class="icon-cogs icon-4x" id="settings_icon"></i>
-            <p>Instellingen</p>
-        </div>
-        <div>
-            <i class="icon-lock icon-4x" id="logout_icon"></i>
-            <p>Uitloggen</p>
+        <div data-role="content">
+            <form id="login-form">
+
+                <label for="textinput-hide" class="ui-hidden-accessible">E-mail</label>
+                <input type="text" name="username" id="login-form-username" value="" placeholder="E-mail">
+
+                <label for="textinput-hide" class="ui-hidden-accessible">Wachtwoord</label>
+                <input type="password" name="password" id="login-form-password" value="" placeholder="Wachtwoord">
+
+                <input type="button" id="login-form-submit" value="Log in">
+            </form>
         </div>
     </div>
-</div>
-<!-- end main menu page -->
+    <!-- end login page -->
 
-<!-- photo success page -->
-<div id="photo-success-page" data-role="page" data-theme="a" data-tap-toggle="false">
-    <div data-role="header" data-position="fixed">
-        <button type="button" class="back_to_menu_button">
-            <i class="icon-chevron-left"></i>
-        </button>
-        <h3>Preview</h3>
-    </div>
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                menu page                                              -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
 
-    <div data-role="content" data-tap-toggle="false" style="margin:0;padding:0;">
-        <!-- empty img placeholder -->
-        <img id="checkImage" src="" />
-    </div>
+    <div id="menu-page" data-role="page" data-theme="a">
+        <div data-role="header" data-theme="a">
+            <h3>Menu</h3>
+        </div>
 
-    <div data-role="footer" data-position="fixed" >
-        <!-- button inside div to force it to use the full width -->
-        <div data-theme="a" style="width: 96%; margin: 0 auto;">
-            <!-- <input data-theme="a" type="button" onClick="" id="upload-photo-submit" value="Upload"> -->
-            <!-- changed <a> to <button> because a long press on an <a> element will prompt download options -->
-            <button data-theme="a" type="submit" onClick="" id="upload-photo-submit">Upload</button>
+        <div data-role="content" id="menu">
+            <div>
+                <i class="icon-picture icon-4x menu_icon" id="upload_photo_icon"></i>
+                <p>Upload foto</p>
+            </div>
+            <div>
+                <i class="icon-camera icon-4x menu_icon" id="capture_photo_icon"></i>
+                <p>Neem foto</p>
+            </div>
+            <div>
+                <i class="icon-info-sign icon-4x menu_icon" id="info_icon"></i>
+                <p>Info</p>
+            </div>
+            <!-- <div>
+                <i class="icon-cogs icon-4x menu_icon" id="settings_icon"></i>
+                <p>Instellingen</p>
+            </div> -->
+            <!-- <div>
+                <i class="icon-comments icon-4x menu_icon" id="feedback_icon"></i>
+                <p>Feedback</p>
+            </div> -->
+            <div id="pathname_choice_icon_div">
+                <i class="icon-reorder icon-4x menu_icon" id="pathname_choice_icon"></i>
+                <p>Actieve website</p>
+            </div>
+            <div>
+                <i class="icon-lock icon-4x menu_icon" id="logout_icon"></i>
+                <p>Uitloggen</p>
+            </div>
         </div>
     </div>
+    <!-- end main menu page -->
 
-</div>
-<!-- end photo succes page -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                       photo succes/preview page                                       -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="photo-success-page" data-role="page" data-theme="a" data-tap-toggle="false">
+        <div data-role="header" data-position="fixed" data-theme="a">
+            <button type="button" class="back_to_menu_button">
+                <i class="icon-chevron-left"></i>
+            </button>
+            <h3>Preview</h3>
+        </div>
 
-<!-- info page -->
-<div id="info-page" data-role="page" data-theme="a">
-    <div data-role="header" data-position="fixed">
-        <button type="button" class="back_to_menu_button">
-            <i class="icon-chevron-left"></i>
-        </button>
-        <h3>Info</h3>
+        <div data-role="content" data-tap-toggle="false" style="margin:0;padding:0;">
+            <!-- empty img placeholder -->
+            <img id="checkImage" src="" />
+        </div>
+
+        <div data-role="footer" data-position="fixed" data-theme="a">
+            <!-- button inside div to force it to use the full width -->
+            <div style="width: 96%; margin: 0 auto;">
+                <button id="upload-photo-submit">
+                    <h3 style="margin: 2px; height: 20px;">Upload</h3>
+                </button>
+            </div>
+        </div>
+
     </div>
+    <!-- end photo succes page -->
 
-    <div data-role="content">
-        <!-- content goes here -->
-        info blabla
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                info page                                              -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="info-page" data-role="page" data-theme="a">
+        <div data-role="header" data-position="fixed" data-theme="a">
+            <button type="button" class="back_to_menu_button">
+                <i class="icon-chevron-left"></i>
+            </button>
+            <h3>Info</h3>
+        </div>
 
-        <button type="button" id="test_button" value="blabla">external link</button>
+        <div data-role="content">
+            <!-- content goes here -->
+            <div style="position: relative; width: 100%; width: 200px; height: 200px; margin: 10px auto;">
+                <!-- logo -->
+                <img src="img/logo/logo200x200.png" style="position: absolute;">
+            </div>
 
+            <button id="link_to_website" style="margin-top: 20px;">
+                eerstelinks.nl
+                <i class="icon-external-link"></i>
+            </button>
+
+            <p style="font-size: 10px; text-align: center;">
+                &copy; <strong>2013</strong> eerstelinks.nl
+            </p>
+        </div>
     </div>
-</div>
-<!-- end info page -->
+    <!-- end info page -->
 
-<!-- settings page -->
-<div id="settings-page" data-role="page" data-theme="a">
-    <div data-role="header" data-position="fixed">
-        <button type="button" class="back_to_menu_button">
-            <i class="icon-chevron-left"></i>
-        </button>
-        <h3>Instellingen</h3>
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                             settings page                                             -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="settings-page" data-role="page" data-theme="a" style="background-color: green !important;">
+        <div data-role="header" data-position="fixed">
+            <button type="button" class="back_to_menu_button">
+                <i class="icon-chevron-left"></i>
+            </button>
+            <h3>Instellingen</h3>
+        </div>
+
+
+        <div data-role="content" id="settings">
+            <!-- content here -->
+            instellingen...
+        </div>
     </div>
+    <!-- end settings page -->
 
-    <div data-role="content">
-        <!-- content goes here -->
-        instellingen blabla
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                             feedback page                                             -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="feedback-page" data-role="page" data-theme="a">
+        <div data-role="header" data-position="fixed" data-theme="a">
+            <button type="button" class="back_to_menu_button">
+                <i class="icon-chevron-left"></i>
+            </button>
+            <h3>Feedback</h3>
+        </div>
 
-        <button type="button" id="test_button3" value="blabla">test</button>
+        <div data-role="content">
+            <form id="feedback-form">
+                <label for="textinput-hide" class="ui-hidden-accessible">Subject</label>
+                <input type="text" name="subject" id="feedback-form-subject" value="" placeholder="Onderwerp">
+
+                <label for="feedback-form-messsage" class="ui-hidden-accessible">Textarea</label>
+                <textarea cols="40" rows="20" name="message" id="feedback-form-messsage" placeholder="Bericht"></textarea>
+
+                <input type="button" id="feedback-form-submit" value="Verzenden" data-theme="a">
+            </form>
+        </div>
     </div>
-</div>
-<!-- end settings page -->
+    <!-- end feedback page -->
 
-<script type="text/javascript">
-    app.initialize();
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                      pathname choice page                                             -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="pathname-choice-page" data-role="page" data-theme="a">
+        <div data-role="header" data-position="fixed" data-theme="a">
+            <h3>Kies website</h3>
+        </div>
 
-    $( function () {
+        <div data-role="content" id="pathname-choice">
+            <!-- content here ... -->
+        </div>
+    </div>
+    <!-- end pathname choice page -->
 
-        // changed onclicks to vmousedown/vmouseup for 2 reasons. 1) the animation and 2) speed (much faster transitions)
-        // when using onclick there is a delay of about 300ms in case the user decides to 'double-click' for example
-        // whereas the jquerymobile events DO NOT cause a delay
-
-        // each button on the menu page needs it's own ID because it needs to call the correct function in app.js after the animation
-        // (once an icon has been linked to a jquerymobile event (tap/vmouse/...) onclick no longer works on that element)
-
-        // should probably move to a different file or into the app.js file
-
-        // see jquerymobile api docs for differences between the events (tap/vmouse/...)
-        // http://api.jquerymobile.com/category/events/
-
-
-        // trying to keep this section for animations and events only and putting the app logic in app.js to keep things seperated
-
-
-        // login page
-        //
-        $('#login-form-submit').on( "tap", function() {
-            app.login('login-form');
-        });
-
-        // Menu icons animation
-        //
-        // upload photo
-        $('#upload_photo_icon').on( "vmousedown", function() {
-            $('#upload_photo_icon').addClass('menu_vmousedown');
-        });
-        $('#upload_photo_icon').on( "vmouseup", function() {
-            $('#upload_photo_icon').removeClass('menu_vmousedown');
-            app.getPhoto();
-        });
-
-        // capture photo
-        $('#capture_photo_icon').on( "vmousedown", function() {
-            $('#capture_photo_icon').addClass('menu_vmousedown');
-        });
-        $('#capture_photo_icon').on( "vmouseup", function() {
-            $('#capture_photo_icon').removeClass('menu_vmousedown');
-            app.capturePhoto();
-        });
-
-        // settings
-        $('#settings_icon').on( "vmousedown", function() {
-            $('#settings_icon').addClass('menu_vmousedown');
-        });
-        $('#settings_icon').on( "vmouseup", function() {
-            $('#settings_icon').removeClass('menu_vmousedown');
-            app.settings();
-        });
-
-        // info
-        $('#info_icon').on( "vmousedown", function() {
-            $('#info_icon').addClass('menu_vmousedown');
-        });
-        $('#info_icon').on( "vmouseup", function() {
-            $('#info_icon').removeClass('menu_vmousedown');
-            app.info();
-        });
-
-        // logout
-        $('#logout_icon').on( "vmousedown", function() {
-            $('#logout_icon').addClass('menu_vmousedown');
-        });
-        $('#logout_icon').on( "vmouseup", function() {
-            $('#logout_icon').removeClass('menu_vmousedown');
-            app.logout();
-        });
-
-        // tap events
-        //
-        // back to menu button
-        $('.back_to_menu_button').on( "tap", function() {
-            $.mobile.changePage('#menu-page');
-        });
-
-        // test button
-        $('#test_button').on("vclick", function() {
-            app.annoying();
-        });
-
-        // test button 3
-        $('#test_button3').on("vmousedown", function() {
-            //app.annoying2();
-        });
-        $('#test_button3').on("vmouseup", function() {
-            app.annoying2();
-        });
-    });
-</script>
+    <script type="text/javascript">app.initialize();</script>
 
 </body>
 </html>
