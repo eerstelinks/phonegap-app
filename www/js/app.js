@@ -282,6 +282,9 @@ var app = {
                                 // stop loading animation
                                 $.mobile.loading('hide');
 
+                                // hide choose-pathname-icon
+                                $('#pathname_choice_icon_div').show();
+
                                 // if active pathname already set go straight to menu page
                                 if (window.localStorage['active-pathname'] == undefined) {
                                     // load menu page
