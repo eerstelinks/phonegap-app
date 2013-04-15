@@ -10,6 +10,7 @@ var app = {
     cordova_version: 'cordova-2.6.0.js',
     authenticate_url: 'http://eerstelinks.nl/api/v1/authenticate',
     image_upload_url: 'http://eerstelinks.nl/api/v1/post/image-ajax',
+    create_block_url: 'http://eerstelinks.nl/api/v1/post/block-data',
     device_language: undefined,
     attempts: 0,
     URI: undefined,
@@ -476,6 +477,8 @@ var app = {
     // onPhotoURISuccess: Called when a photo is successfully retrieved from library or camera
     // ------------------
     onPhotoURISuccess: function(imageURI) {
+        console.log('imageURI: ' + imageURI);
+
         // set class variable URI so that we can use it in case we need to retry an attempt (android glitch)
         app.URI = imageURI;
 
@@ -537,6 +540,7 @@ var app = {
         //params.pathname = "sander";
         params.pathname = window.localStorage['active-pathname'];
         params['file-type'] = 'image';
+        params.noblock = 'true';
 
         options.params = params;
 
@@ -594,14 +598,24 @@ var app = {
             // send on to fail() function to handle error
             app.uploadPhotoError('win but status=error');
         } else {
-            // stop loading animation from uploadPhoto()
-            $.mobile.loading('hide');
+            // create a block container for the image
+            // will be changed later to get user input for the container placement
 
-            //navigator.notification.alert('Photo upload succes');
-            navigator.notification.alert('Upload succes',false,'Succes','ok');
+            if (app.createBlock(1, 2, responseJSON.files.url) == true) {
 
-            // reset the attempt counter
-            app.attempts = 0;
+                //console.log('create block success');
+                $.mobile.loading('hide');
+
+                //navigator.notification.alert('Photo upload succes');
+                navigator.notification.alert('Upload succes',false,'Succes','ok');
+
+                // reset the attempt counter
+                app.attempts = 0;
+            } else /* createBlock returned false */ {
+                //navigator.notification.alert('Photo upload succes');
+                console.log('upload photo success else');
+                navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
+            }
 
             // redirect to menu page
             $.mobile.changePage('#menu-page');
@@ -647,6 +661,50 @@ var app = {
             // redirect to menu page
             $.mobile.changePage('#menu-page');
         }
+    },
+
+    // ------------
+    // createBlock: Send create block to API after succesful image upload
+    // ------------
+    createBlock: function(page, column, url) {
+        //console.log('create block');
+
+        var ret = false;
+
+        // page not used yet
+
+        // if connected to internet then try / catch
+        if (app.isConnected()) {
+            try {
+                var params = {'id':'new',
+                                'type': 'image',
+                                'session': window.localStorage['session'],
+                                'pathname': window.localStorage['active-pathname'],
+                                'column': column,
+                                'image-url': url};
+
+                //$.post(app.create_block_url, params, function(res) {
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'JSON',
+                    url: app.create_block_url,
+                    data: params,
+                    async: false
+                }).done(function(res) {
+                    if (res.status == 'success') {
+                        ret = true;
+                    } else {
+                        //return false;
+                    }
+                });
+            } catch (err) {
+                // console.log('create block catch');
+            }
+        } else /* NOT connected to internet */ {
+            //console.log('create block ELSE');
+        }
+
+        return ret;
     },
 
     // --------------
