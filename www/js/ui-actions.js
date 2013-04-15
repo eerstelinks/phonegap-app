@@ -1,23 +1,22 @@
 $( function () {
 
-    // changed onclicks to vmousedown/vmouseup for 2 reasons. 1) the animation and 2) speed (much faster transitions)
-    // when using onclick there is a delay of about 300ms in case the user decides to 'double-click' for example
-    // whereas the jquerymobile events DO NOT cause a delay
+    // Changed onclicks to vmousedown/vmouseup for 2 reasons.
 
-    // each button on the menu page needs it's own ID because it needs to call the correct function in app.js after the animation
-    // (once an icon has been linked to a jquerymobile event (tap/vmouse/...) onclick no longer works on that element)
+    // 1) Smoother animations (can trigger on down, up or complete sequence).
 
-    // should probably move to a different file or into the app.js file
+    // 2) Speed. Classic onclick has a built in +-300ms delay to capture double-click events which 'tap' does not have.
 
     // see jquerymobile api docs for differences between the events (tap/vmouse/...)
     // http://api.jquerymobile.com/category/events/
 
+    // This file will only contain ui-events (animations, page transitions, etc), all the application logic will be kept in app.js
 
-    // trying to keep this section for animations and events only and putting the app logic in app.js to keep things seperated
-
-    // menu icon animation
-    // -------------------
+    // ----------------------------------------------------------------------------------------------------------
     //
+    //                                               Menu icon animations
+    //
+    // ----------------------------------------------------------------------------------------------------------
+
     $('.menu_icon').on('vmousedown', function() {
         $(this).addClass('menu_icon_glow_effect');
     });
@@ -25,64 +24,80 @@ $( function () {
         $(this).removeClass('menu_icon_glow_effect');
     });
 
-    // tap events
-    // ----------
+    // ----------------------------------------------------------------------------------------------------------
     //
-    // login page
+    //                                               Tap events
+    //
+    // ----------------------------------------------------------------------------------------------------------
+
+    // If user hits login button process login information
     $('#login-form-submit').on('tap', function() {
         app.login('login-form');
     });
 
-    // back to menu button
+    // Back buttons that return to menu page
     $('.back_to_menu_button').on('tap', function() {
         $.mobile.changePage('#menu-page');
     });
 
-    // upload photo
+    // If user hits 'upload' button on menu page
     $('#upload_photo_icon').on('tap', function() {
         app.getPhoto();
     });
 
-    // capture photo
+    // If user hits 'take photo' button on menu page
     $('#capture_photo_icon').on('tap', function() {
         app.capturePhoto();
     });
 
-    // upload photo
+    // If user hits 'upload' button on preview page
     $('#upload-photo-submit').on('tap', function() {
         app.uploadPhoto();
     });
 
-    // settings icon
+    // If user hits 'settings' icon on menu page
     $('#settings_icon').on('tap', function() {
         $.mobile.changePage('#settings-page');
     });
 
-    // feedback icon
+    // If user hits 'feedback' icon on menu page
     $('#feedback_icon').on('tap', function() {
-        $.mobile.changePage('#feedback-page');
+        //$.mobile.changePage('#feedback-page');
+        navigator.notification.alert('device language: ' + app.device_language);
     });
 
-    // info icon
+    // If user hits 'info' icon on menu page
     $('#info_icon').on('tap', function() {
         $.mobile.changePage('#info-page');
     });
 
-    // link to eerstelinks.nl website in external browser
+    // Button to external site on the info page
     $('#link_to_website').on('tap', function() {
-        window.open('http://eerstelinks.nl','_system','location=yes');
+        var ref = window.open('http://eerstelinks.nl','_system','location=yes');
     });
 
-    // logout icon
+    // Register button on the login page (if user doesn't have an account yet for ex)
+    $('#register').on('tap', function() {
+        var ref = window.open('http://eerstelinks.nl/welkom','_system','location=yes');
+    });
+
+    // If user hits the 'logout' icon on the menu page
     $('#logout_icon').on('tap', function() {
         app.logout();
     });
 
-    // pathname choice icon
+    // If user hits the 'choose active website' icon on the menu page
     $('#pathname_choice_icon').on('tap', function() {
         $.mobile.changePage('#pathname-choice-page');
     });
 
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                               PageBeforeShow events
+    //
+    // ----------------------------------------------------------------------------------------------------------
+
+    // Before the pathname-choice-page is loaded generate the buttons
     $('#pathname-choice-page').on('pagebeforeshow', function(event) {
         app.populatePathnameButtons();
     });

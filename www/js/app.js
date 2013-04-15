@@ -1,16 +1,27 @@
 
 var app = {
 
-    // ---------
-    // variables
-    //----------
-    authenticate_url: "http://eerstelinks.nl/api/v1/authenticate",
-    image_upload_url: "http://eerstelinks.nl/api/v1/post/image-ajax",
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                          Variables
+    //
+    // ----------------------------------------------------------------------------------------------------------
+
+    cordova_version: 'cordova-2.6.0.js',
+    authenticate_url: 'http://eerstelinks.nl/api/v1/authenticate',
+    image_upload_url: 'http://eerstelinks.nl/api/v1/post/image-ajax',
+    device_language: undefined,
     attempts: 0,
     URI: undefined,
     device_width: undefined,
     device_height: undefined,
     pathnames: undefined,
+
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                          Functions
+    //
+    // ----------------------------------------------------------------------------------------------------------
 
     // -----------
     // initialize: Application Constructor
@@ -25,11 +36,11 @@ var app = {
     // --------
     checkOS: function() {
         // check OS version and load correct cordova.js
-        if(navigator.userAgent.indexOf("Android") > 0) {
-            $("script").attr("src", "cordova/android/cordova-2.5.0.js").appendTo("head");
+        if(navigator.userAgent.indexOf('Android') > 0) {
+            $('script').attr('src', 'cordova/android/' + app.cordova_version).appendTo('head');
         }
-        else if(navigator.userAgent.indexOf("iPhone") > 0 || navigator.userAgent.indexOf("iPad") > 0 || navigator.userAgent.indexOf("iPod") > 0) {
-            $("script").attr("src", "cordova/ios/cordova-2.5.0.js").appendTo("head");
+        else if(navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0 || navigator.userAgent.indexOf('iPod') > 0) {
+            $('script').attr('src', 'cordova/ios/' + app.cordova_version).appendTo('head');
         }
     },
 
@@ -47,13 +58,24 @@ var app = {
         document.addEventListener('menubutton', app.onMenuButton, false);
 
         app.getDeviceResolution();
+        app.getLanguage();
         app.checkCredentials();
     },
 
-
+    // --------------------
+    // getDeviceResolution: Gets the device resolution
+    // --------------------
     getDeviceResolution: function() {
         app.device_width = screen.width;
         app.device_height = screen.height;
+    },
+
+    // ------------
+    // getLanguage: Gets the device language
+    // ------------
+    getLanguage: function() {
+        lang = navigator.language.split("-");
+        app.device_language = lang[0];
     },
 
     // ----------------------------------------------------------------------------------------------------------
@@ -282,7 +304,7 @@ var app = {
                                 // stop loading animation
                                 $.mobile.loading('hide');
 
-                                // hide choose-pathname-icon
+                                // show choose-pathname-icon (necessary in case hide() was cached)
                                 $('#pathname_choice_icon_div').show();
 
                                 // if active pathname already set go straight to menu page
@@ -656,20 +678,26 @@ var app = {
         //$.mobile.changePage('#feedback-page');
     },
 
-    elementWithIdExists: function(el) {
+    // --------------------
+    // elementWithIdExists: Checks whether an element with the provided ID exists
+    // --------------------
+    elementWithIdExists: function(id) {
         console.log('element with ID exists');
 
-        var tmp = document.getElementById(el);
+        var tmp = document.getElementById(id);
 
         if (tmp != null || tmp != undefined) {
-            console.log('#' + el + ' exists!');
+            console.log('#' + id + ' exists!');
             return true;
         } else {
-            console.log('#' + el + ' does NOT exist :(!');
+            console.log('#' + id + ' does NOT exist :(!');
             return false;
         }
     },
 
+    // ------------------------
+    // populatePathnameButtons: Generates the pathname choice buttons
+    // ------------------------
     populatePathnameButtons: function() {
         console.log('pop buttons');
 
@@ -685,6 +713,9 @@ var app = {
         }
     },
 
+    // ---------------
+    // choosePathname: Triggered when someone 'taps' a pathname choice button
+    // ---------------
     choosePathname: function(pn) {
         console.log('chose pathname: ' + pn);
         window.localStorage['active-pathname'] = pn;
