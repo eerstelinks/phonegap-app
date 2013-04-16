@@ -20,16 +20,18 @@
 <body>
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                              loading page                                             -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="loading-page" data-role="page">
     	<!-- blank loading page while checking credentials -->
     </div>
-    <!-- end loading page -->
-
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                                login page                                             -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="login-page" data-role="page" data-theme="a">
         <div data-role="header">
@@ -53,10 +55,11 @@
             </button>
         </div>
     </div>
-    <!-- end login page -->
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                                menu page                                              -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
 
     <div id="menu-page" data-role="page" data-theme="a">
@@ -104,12 +107,18 @@
                 <i class="icon-lock icon-4x menu_icon" id="logout_icon"></i>
                 <p>Uitloggen</p>
             </div>
+
+            <div id="inappbrowser_icon_div">
+                <i class="icon-truck icon-4x menu_icon" id="inappbrowser_icon"></i>
+                <p>inAppBrowser test</p>
+            </div>
         </div>
     </div>
-    <!-- end main menu page -->
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                       photo succes/preview page                                       -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="photo-success-page" data-role="page" data-theme="a" data-tap-toggle="false">
         <div data-role="header" data-position="fixed" data-theme="a">
@@ -134,10 +143,11 @@
         </div>
 
     </div>
-    <!-- end photo succes page -->
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                                info page                                              -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="info-page" data-role="page" data-theme="a">
         <div data-role="header" data-position="fixed" data-theme="a">
@@ -164,10 +174,11 @@
             </p>
         </div>
     </div>
-    <!-- end info page -->
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                             settings page                                             -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="settings-page" data-role="page" data-theme="a" style="background-color: green !important;">
         <div data-role="header" data-position="fixed">
@@ -182,10 +193,11 @@
             instellingen...
         </div>
     </div>
-    <!-- end settings page -->
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                             feedback page                                             -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="feedback-page" data-role="page" data-theme="a">
         <div data-role="header" data-position="fixed" data-theme="a">
@@ -207,10 +219,11 @@
             </form>
         </div>
     </div>
-    <!-- end feedback page -->
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
     <!--                                      pathname choice page                                             -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="pathname-choice-page" data-role="page" data-theme="a">
         <div data-role="header" data-position="fixed" data-theme="a">
@@ -221,10 +234,11 @@
             <!-- content generated dynamically by app.js -->
         </div>
     </div>
-    <!-- end pathname choice page -->
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
-    <!--                                      social media page                                             -->
+    <!--                                                                                                       -->
+    <!--                                      social media page                                                -->
+    <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="social-media-page" data-role="page" data-theme="a">
         <div data-role="header" data-position="fixed" data-theme="a">
@@ -239,7 +253,45 @@
             Social media page mmmmmmmk
         </div>
     </div>
-    <!-- end social media page -->
+
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
+    <!--                                   choose page and column page                                         -->
+    <!--                                                                                                       -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="choose-page-and-column-page" data-role="page" data-theme="a">
+        <div data-role="header" data-position="fixed" data-theme="a">
+            <!-- might need to change or remove the button -->
+            <button type="button" class="back_to_menu_button">
+                <i class="icon-chevron-left"></i>
+            </button>
+            <h3>Choose page and column</h3>
+        </div>
+
+        <div data-role="content" id="choose-page-and-column">
+            <!-- content here ... -->
+            Choose page and column for photo
+        </div>
+    </div>
+
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
+    <!--                                        inAppBrowser test page                                         -->
+    <!--                                                                                                       -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="inappbrowser-page" data-role="page" data-theme="a">
+        <div data-role="header" data-position="fixed" data-theme="a">
+            <!-- might need to change or remove the button -->
+            <button type="button" class="back_to_menu_button">
+                <i class="icon-chevron-left"></i>
+            </button>
+            <h3>inAppBrowser test page</h3>
+        </div>
+
+        <div data-role="content" id="inappbrowser">
+            <!-- content here ... -->
+        </div>
+    </div>
 
     <script type="text/javascript">app.initialize();</script>
 

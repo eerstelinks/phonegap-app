@@ -62,9 +62,15 @@ $( function () {
 
     // If user hits 'feedback' icon on menu page
     $('#feedback_icon').on('tap', function() {
-        //$.mobile.changePage('#feedback-page');
+        $.mobile.changePage('#feedback-page');
+    });
+
+    // If user hits the 'social media' icon on the menu page -> go to social media page
+    $('#feedback-form-submit').on('tap', function() {
+        // submit feedback via something like app.feedback()
         navigator.notification.alert('device language: ' + app.device_language);
     });
+
 
     // If user hits 'info' icon on menu page
     $('#info_icon').on('tap', function() {
@@ -96,6 +102,18 @@ $( function () {
         $.mobile.changePage('#social-media-page');
     });
 
+
+
+    // If user hits the 'social media' icon on the menu page -> go to social media page
+    $('#inappbrowser_icon').on('tap', function() {
+        //$.mobile.changePage('#inappbrowser-page');
+        // transition div#inappbrowser_icon_div
+
+        $('#inappbrowser_icon_div').animate({'marginLeft': '-5000px'}, 5000);
+    });
+
+
+
     // ----------------------------------------------------------------------------------------------------------
     //
     //                                               PageBeforeShow events
@@ -106,4 +124,9 @@ $( function () {
     $('#pathname-choice-page').on('pagebeforeshow', function(event) {
         app.populatePathnameButtons();
     });
+
+    /*$('#inappbrowser-page').on('pagebeforeshow', function(event) {
+        app.inAppBrowserTest();
+    });*/
+
 });

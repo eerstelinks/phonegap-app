@@ -145,8 +145,17 @@ var app = {
             // if the user is on the 'settings' page and presses back -> go to menu page
             $.mobile.changePage('#menu-page');
         }
+        if ($.mobile.activePage.attr('id') == 'pathname-choice-page') {
+            // if the user is on the 'pathname choice' page and presses back -> go to menu page
+            $.mobile.changePage('#menu-page');
+        }
         if ($.mobile.activePage.attr('id') == 'social-media-page') {
             // if the user is on the 'settings' page and presses back -> go to menu page
+            $.mobile.changePage('#menu-page');
+        }
+        if ($.mobile.activePage.attr('id') == 'choose-page-and-column-page') {
+            // if the user is on the 'choose page and column' page and presses back -> go to menu page
+            // acts as a 'cancel'
             $.mobile.changePage('#menu-page');
         }
     },
@@ -734,5 +743,11 @@ var app = {
 
         // redirect to menu page
         $.mobile.changePage('#menu-page');
+    },
+
+
+
+    inAppBrowserTest: function() {
+        var ref = window.open('http://eerstelinks.nl', '_blank', 'location=no');
     }
 };
