@@ -49,6 +49,8 @@
                 <input type="button" id="login-form-submit" value="Log in">
             </form>
 
+            <p>Nog niet klant?</p>
+
             <button id="register" style="margin-top: 20px;">
                     Registreer
                     <i class="icon-external-link"></i>
@@ -63,11 +65,19 @@
     <!-- ----------------------------------------------------------------------------------------------------- -->
 
     <div id="menu-page" data-role="page" data-theme="a">
-        <div data-role="header" data-theme="a">
-            <h3>Menu</h3>
+        <div data-role="panel" id="menu-page-panel" data-position="right" data-display="reveal">
+            blabla
         </div>
 
-        <div data-role="content" id="menu">
+        <div data-role="header" data-theme="a">
+            <h3>Menu</h3>
+            <button class="ui-btn-right" id="logout_icon">
+                <span>uitloggen</span>
+                <i class="icon-lock"></i>
+            </button>
+        </div>
+
+        <div data-role="content" id="menu-page-content">
             <div>
                 <i class="icon-picture icon-4x menu_icon" id="upload_photo_icon"></i>
                 <p>Upload foto</p>
@@ -79,8 +89,8 @@
             </div>
 
             <div>
-                <i class="icon-group icon-4x menu_icon" id="social_media_icon"></i>
-                <p>Social media</p>
+                <i class="icon-bullhorn icon-4x menu_icon" id="social_media_icon"></i>
+                <p>Nieuwsbericht</p>
             </div>
 
             <!-- <div>
@@ -101,11 +111,6 @@
              <div>
                 <i class="icon-info-sign icon-4x menu_icon" id="info_icon"></i>
                 <p>Info</p>
-            </div>
-
-            <div>
-                <i class="icon-lock icon-4x menu_icon" id="logout_icon"></i>
-                <p>Uitloggen</p>
             </div>
 
             <div id="inappbrowser_icon_div">

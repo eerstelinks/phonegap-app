@@ -23,13 +23,18 @@
     /*background-attachment: fixed;*/
 }
 
-#menu > div {
+#menu-page-panel {
+    background-color: #262822;
+    color: white;
+}
+
+#menu-page-content > div {
     width: 5em;
     margin: 0.5em;
     float: left;
 }
 
-#menu > div > i {
+#menu-page-content > div > i {
     display: block;
     text-align: center;
 }
@@ -38,7 +43,7 @@
     text-shadow: 0px 0px 5px #ff7700, 0px 0px 15px #ff7700, 0px 0px 25px #ff7700, 0px 0px 35px #ff7700, 0px 0px 45px #ff7700;
 }
 
-#menu > div > p {
+#menu-page-content > div > p {
     font-size: 0.7em;
     text-align: center;
 }

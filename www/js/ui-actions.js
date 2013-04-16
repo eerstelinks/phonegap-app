@@ -89,7 +89,8 @@ $( function () {
 
     // If user hits the 'logout' icon on the menu page
     $('#logout_icon').on('tap', function() {
-        app.logout();
+        //app.logout();
+        $('#menu-page-panel').panel('open');
     });
 
     // If user hits the 'choose active website' icon on the menu page
