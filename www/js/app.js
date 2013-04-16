@@ -141,7 +141,11 @@ var app = {
             // if the user is on the 'settings' page and presses back -> go to menu page
             $.mobile.changePage('#menu-page');
         }
-        if ($.mobile.activePage.attr('id') == 'feedback-page-page') {
+        if ($.mobile.activePage.attr('id') == 'feedback-page') {
+            // if the user is on the 'settings' page and presses back -> go to menu page
+            $.mobile.changePage('#menu-page');
+        }
+        if ($.mobile.activePage.attr('id') == 'social-media-page') {
             // if the user is on the 'settings' page and presses back -> go to menu page
             $.mobile.changePage('#menu-page');
         }
@@ -559,7 +563,7 @@ var app = {
             // create a block container for the image
             // will be changed later to get user input for the container placement
 
-            if (app.createBlock(1, 2, responseJSON.files.url) == true) {
+            if (app.createBlock(1, 1, responseJSON.files.url) == true) {
                 //console.log('create block success');
                 $.mobile.loading('hide');
 

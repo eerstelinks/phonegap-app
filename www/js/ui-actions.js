@@ -91,6 +91,11 @@ $( function () {
         $.mobile.changePage('#pathname-choice-page');
     });
 
+    // If user hits the 'social media' icon on the menu page -> go to social media page
+    $('#social_media_icon').on('tap', function() {
+        $.mobile.changePage('#social-media-page');
+    });
+
     // ----------------------------------------------------------------------------------------------------------
     //
     //                                               PageBeforeShow events
