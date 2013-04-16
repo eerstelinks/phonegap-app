@@ -36,7 +36,6 @@ var app = {
     // checkOS: checks whether the OS is iOS or Android and loads the correct cordova version
     // --------
     checkOS: function() {
-        // check OS version and load correct cordova.js
         if(navigator.userAgent.indexOf('Android') > 0) {
             $('script').attr('src', 'cordova/android/' + app.cordova_version).appendTo('head');
         }
@@ -49,8 +48,6 @@ var app = {
     // onDeviceReady: when 'device ready' event is received load the other event listeners and call checkCredentials()
     // --------------
     onDeviceReady: function() {
-        console.log('device ready');
-
         document.addEventListener('pause', app.onPause, false);
         document.addEventListener('resume', app.onResume, false);
         document.addEventListener('online', app.onOnline, false);
@@ -120,8 +117,6 @@ var app = {
     //               will no longer work on the device unless the even is handled here !
     // -------------
     onBackButton: function() {
-        //console.log('back button');
-
         if ($.mobile.activePage.attr('id') == 'loading-page') {
             // if for some reason the user gets stuck on the loading page let the user exit the app
             app.exitApp();
@@ -156,7 +151,6 @@ var app = {
     // onMenuButton: detects menu button trigger for Android devices
     // -------------
     onMenuButton: function() {
-        //console.log('menu button');
         // not implemented yet, may not be necessary
         // update: menu button deprecated since jan 2012 by Google
     },
@@ -165,16 +159,12 @@ var app = {
     // isConnected: checks internet connection and returns a boolean (might be better to check for 'unknown' and 'none')
     // ------------
     isConnected: function() {
-        //console.log('check connection');
-
         var con = navigator.connection.type;
 
         if(con == 'wifi' || con == 'ethernet' || con == 'cell_2g' || con == 'cell_3g' || con == 'cell_4g') {
-            // return true (there is a connection)
             return true;
         } else {
             // con == 'unknown' || con == 'none'
-            // return false (no connection)
             return false;
         }
     },
@@ -183,7 +173,6 @@ var app = {
     // exitApp: exits the application (not pause but exit, kills the app)
     // --------
     exitApp: function() {
-        //console.log('exit app');
         navigator.app.exitApp();
     },
 
@@ -202,8 +191,6 @@ var app = {
     //        if neither username or password is known do nothing/send the user to the login page
     // -----------------
     checkCredentials: function() {
-        //console.log('check credentials');
-
         // show loading animation whilst checking creds
         $.mobile.loading('show');
 
@@ -211,8 +198,6 @@ var app = {
         if (app.isConnected()) {
             // both username and password exist -> go to login() function
             if(window.localStorage['username'] != undefined && window.localStorage['password'] != undefined) {
-                //console.log('username and password defined');
-
                 // hide loading animation
                 $.mobile.loading('hide');
 
@@ -220,7 +205,6 @@ var app = {
                 app.login('checkCredentials');
             } else if(window.localStorage['username'] != undefined && window.localStorage['password'] == undefined) {
                 // username exists but password does not -> send to login() function
-                //console.log('username defined, password undefined');
 
                 // fill in the username in the login form
                 $('#login-form-username').val(window.localStorage['username']);
@@ -255,8 +239,6 @@ var app = {
     //        if the credentials are incorrect give a warning message to the user
     // ------
     login: function(from) {
-        //console.log('login');
-
         // check internet connection
         if (app.isConnected()) {
             var username = '';
@@ -298,19 +280,16 @@ var app = {
                             app.pathnames = pns.split(',');
 
                             // if user has more than 1 pathname let him/her choose active pathname/website
-                            //
                             if(app.pathnames.length > 1) {
-                                console.log('more than 1 pathname!');
-
                                 // stop loading animation
                                 $.mobile.loading('hide');
 
-                                // show choose-pathname-icon (necessary in case hide() was cached)
+                                // show choose-pathname-icon (necessary in case hide() was previously cached)
                                 $('#pathname_choice_icon_div').show();
 
                                 // if active pathname already set go straight to menu page
                                 if (window.localStorage['active-pathname'] == undefined) {
-                                    // load menu page
+                                    // load pathname choice page
                                     $.mobile.changePage('#pathname-choice-page');
                                 } else {
                                     // load menu page
@@ -351,8 +330,7 @@ var app = {
                     },'json');
                 } catch (err) /* catch for POST connection */ {
                     // should make this a bit prettier (maybe quit app or something)
-                    navigator.notification.alert('There was an error connecting to the server: ' + err.message);
-                    //console.log('catch error: ' + err.message);
+                    navigator.notification.alert('Er is een probleem opgetreden, neem contact op met eerstelinks');
                 }
             } else /* if username or password is empty show error message */ {
                 // stop loading animation
@@ -373,8 +351,6 @@ var app = {
     // logout: destroy the stored password/pathnames/session and empty the password field on the login page and redirect the user to the login page
     // -------
     logout: function() {
-        //console.log('logout');
-
         // show loading animation
         $.mobile.loading('show');
 
@@ -384,10 +360,10 @@ var app = {
         delete window.localStorage['session'];
         delete window.localStorage['active-pathname'];
 
-
         // send post to server to destroy session
         // this is why the loading animation is needed
         // still needs to be implemented
+        // update: not sure whether this is needed, keeping placeholder just in case
 
         // reset the login form
         $('#login-form-password').val('');
@@ -398,31 +374,24 @@ var app = {
         $.mobile.changePage('#login-page');
     },
 
-    checkSession: function() {
-        //console.log('check session');
-
+    // ---------------
+    // isValidSession: Checks if session corresponds to session stored in database and returns a boolean
+    // ---------------
+    isValidSession: function() {
         var session = window.localStorage['session'];
         var action = 'checksession';
-        var return_val;
+
+        // set return value on false by default to simplify and shorten the code
+        var ret = false;
 
         // should check for connection first ofc
         $.post(app.authenticate_url, {'session':session,'action':action}, function(res) {
             if (res.status == 'success') {
-                console.log('res.status: ' + res.status);
-                console.log(res.debug);
-                console.log(typeof(res));
-                return_val = true;
-            } else if (res.status == 'error') {
-                console.log('res.status: ' + res.status);
-                console.log(res);
-                console.log('check session error: ' + res.message);
-                return_val = false;
-            } else {
-                console.log('check session else');
+                ret = true;
             }
         },'json');
 
-        return return_val;
+        return ret;
     },
 
     // ----------------------------------------------------------------------------------------------------------
@@ -435,8 +404,6 @@ var app = {
     // capturePhoto: Triggered by a button. Brings up the camera interface
     // -------------
     capturePhoto: function() {
-        //console.log('capture photo');
-
         // needs some more work
         // check docs for 'CameraPopoverOptions' for iOS quirks
         //http://docs.phonegap.com/en/2.5.0/cordova_camera_camera.md.html#Camera
@@ -461,15 +428,17 @@ var app = {
     // getPhoto: Triggered by a button. Brings up the device library to select a photo
     // ---------
     getPhoto: function(source) {
-        //console.log('get photo');
+        // need to look into the, if any, differences between PHOTOLIBRARY and SAVEDPHOTOALBUM, suspect there is no diff for
+        // iOS and Android. Might be diff for other device/OS. Should at least check for WP7.5+ for future support
 
-        // set options for getting photo's from library
+        // set options for getting photo's from library (takes less options than CAMERA)
         var options = {quality: 80,
                        destinationType: Camera.DestinationType.FILE_URI,
                        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
                        targetWidth: 1280,
                        targetHeight: 1280};
 
+        // select photo with specified options
         navigator.camera.getPicture(app.onPhotoURISuccess, app.onCaptureOrGetFail, options);
     },
 
@@ -477,16 +446,13 @@ var app = {
     // onPhotoURISuccess: Called when a photo is successfully retrieved from library or camera
     // ------------------
     onPhotoURISuccess: function(imageURI) {
-        console.log('imageURI: ' + imageURI);
-
         // set class variable URI so that we can use it in case we need to retry an attempt (android glitch)
         app.URI = imageURI;
 
+        // remove source from preview picture (needs to be removed first)
         $('#checkImage').removeAttr('src');
 
-        //  get the checkImage <img> from the photo-success-page and set the source of the img
-        //var checkImage = document.getElementById('checkImage');
-        //checkImage.src = imageURI;
+        // set source of preview picture
         $('#checkImage').attr('src', imageURI);
 
         // Change page to the photo view page
@@ -497,7 +463,7 @@ var app = {
     // onFail: Called when error occurs during camera launch or library launch
     // -------
     onCaptureOrGetFail: function(message) {
-        console.log('fail: ' + message);
+        // Notify user with alert [or] leave as is?
         //navigator.notification.alert('Fout: ' + message);
     },
 
@@ -506,15 +472,10 @@ var app = {
     // ------------
     uploadPhoto: function() {
         // disable upload button while uploading
+        // update: doesn't seem to be working, needs checking
         $('#upload-photo-submit').attr("disabled","disabled");
 
-        imageURI = app.URI;
-
-        console.log('upload photo');
-        console.log('imageURI: ' + imageURI);
-
-        // show loading animation while trying to upload
-        //$.mobile.loading('show');
+        var imageURI = app.URI;
 
         // alternate loading animation with text, needs new theme though
         $.mobile.loading('show',{text: 'uploading', textVisible: true, theme: 'a'});
@@ -547,14 +508,13 @@ var app = {
         // try / catch file upload
         if (app.isConnected()) {
             try {
-                // don't hide loading animation here but in win() or fail()
+                // don't hide loading animation here but in uploadPhotoSuccess() or uploadPhotoFail()
                 var ft = new FileTransfer();
                 ft.upload(imageURI, encodeURI(app.image_upload_url), app.uploadPhotoSuccess, app.uploadPhotoError, options);
             } catch (err) {
                 // hide loading animation and show error
                 $.mobile.loading('hide');
-                //navigator.notification.alert('Probleem met uploaden foto, neem contact op met eerstelinks.');
-                //console.log('catch upload photo error');
+                navigator.notification.alert('Probleem met uploaden foto, neem contact op met eerstelinks.');
             }
         } else /* NOT connected to internet */ {
             navigator.notification.alert('U bent niet verbonden met internet!');
@@ -588,8 +548,6 @@ var app = {
     //                     Warning: this means an error message will be considered a succes too because of the 200 code.
     // -------------------
     uploadPhotoSuccess: function(res) {
-        //console.log('upload photo success');
-
         // convert response string to JSON object
         var responseJSON = jQuery.parseJSON(res.response);
 
@@ -602,18 +560,14 @@ var app = {
             // will be changed later to get user input for the container placement
 
             if (app.createBlock(1, 2, responseJSON.files.url) == true) {
-
                 //console.log('create block success');
                 $.mobile.loading('hide');
 
-                //navigator.notification.alert('Photo upload succes');
                 navigator.notification.alert('Upload succes',false,'Succes','ok');
 
                 // reset the attempt counter
                 app.attempts = 0;
             } else /* createBlock returned false */ {
-                //navigator.notification.alert('Photo upload succes');
-                console.log('upload photo success else');
                 navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
             }
 
@@ -629,26 +583,18 @@ var app = {
     // uploadPhotoError: Called when file upload fails
     // -----------------
     uploadPhotoError: function(error) {
-        //console.log('upload photo error');
-
         // for android quirk -> in case first upload fails attempt the upload again
+
         // first fail -> try again
         if (app.attempts == 0) {
-            console.log('attempts: ' + app.attempts);
-
             // try upload again
             app.attempts = 1;
             app.uploadPhoto(app.URI);
-
         } else if (app.attempts <= 3) /* less than 3 fails -> try again */ {
-            console.log('attempts: ' + app.attempts);
-
             //try upload again
             app.attempts += 1;
             app.uploadPhoto(app.URI);
         } else /* more than 3 failed attempts -> send error message and stop attempts */ {
-            console.log('attempts: ' + app.attempts);
-
             // reset attempts
             app.attempts = 0;
 
@@ -664,11 +610,13 @@ var app = {
     },
 
     // ------------
-    // createBlock: Send create block to API after succesful image upload
+    // createBlock: After a succesful image upload a block needs to be create for the image.
+    //              A JSON object is returned as result for the image upload; in this object is
+    //              'url' that we need create the block.
+    //              A block takes 3 arguments; a page, a column and an url of the image on the server
     // ------------
     createBlock: function(page, column, url) {
-        //console.log('create block');
-
+        // return value, set to false as default to simplify and shorten the code
         var ret = false;
 
         // page not used yet
@@ -683,7 +631,6 @@ var app = {
                                 'column': column,
                                 'image-url': url};
 
-                //$.post(app.create_block_url, params, function(res) {
                 $.ajax({
                     type: 'POST',
                     dataType: 'JSON',
@@ -693,8 +640,6 @@ var app = {
                 }).done(function(res) {
                     if (res.status == 'success') {
                         ret = true;
-                    } else {
-                        //return false;
                     }
                 });
             } catch (err) {
@@ -714,12 +659,18 @@ var app = {
         //console.log('cleanup success');
     },
 
-    // --------------
+    // -------------
     // cleanupError: Called after temp file cleanup error (iOS only)
-    // --------------
+    // -------------
     cleanupError: function() {
         //console.log('cleanup error');
     },
+
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                          Misc functions section
+    //
+    // ----------------------------------------------------------------------------------------------------------
 
     settings: function() {
         //console.log('settings');
@@ -740,8 +691,6 @@ var app = {
     // elementWithIdExists: Checks whether an element with the provided ID exists
     // --------------------
     elementWithIdExists: function(id) {
-        console.log('element with ID exists');
-
         var tmp = document.getElementById(id);
 
         if (tmp != null || tmp != undefined) {
@@ -757,15 +706,16 @@ var app = {
     // populatePathnameButtons: Generates the pathname choice buttons
     // ------------------------
     populatePathnameButtons: function() {
-        console.log('pop buttons');
-
+        // delete all children of #pathname-choice <div> to avoid multiple buttons (cache)
         $('#pathname-choice').empty();
 
+        // for each pathname in pathnames create a button
         for (var i=0; i<app.pathnames.length; i++) {
             var button = $('<button id="' + app.pathnames[i] + '">' + app.pathnames[i] + '</button>');
             $('#pathname-choice').append(button);
             button.button();
 
+            // append on 'tap' event listener
             var script = '<script type="text/javascript">$("#' + app.pathnames[i] + '").on("tap", function() { app.choosePathname("' + app.pathnames[i] + '"); });</script>';
             $('body').append(script);
         }
@@ -775,9 +725,10 @@ var app = {
     // choosePathname: Triggered when someone 'taps' a pathname choice button
     // ---------------
     choosePathname: function(pn) {
-        console.log('chose pathname: ' + pn);
+        // store selected pathname
         window.localStorage['active-pathname'] = pn;
 
+        // redirect to menu page
         $.mobile.changePage('#menu-page');
     }
 };
