@@ -8,24 +8,29 @@
 
 /* Menu page elements */
 
-#login-page {
+/*#login-page {
     background-image: url(../img/logo/logo200x200x0.4.png);
     background-repeat: no-repeat;
     background-position: bottom right;
     /*background-attachment: fixed;*/
-}
+}*/
 
 
-#menu-page {
+/*#menu-page {
     background-image: url(../img/logo/logo200x200x0.4.png);
     background-repeat: no-repeat;
     background-position: bottom right;
     /*background-attachment: fixed;*/
-}
+}*/
 
 #menu-page-panel {
-    background-color: #262822;
-    color: white;
+    height: 100%;
+    min-height: 100%;
+}
+
+#menu-page-panel-content {
+    /* suff */
+    background-color: green;
 }
 
 #menu-page-content > div {
@@ -50,7 +55,7 @@
 
 /* Check image page */
 
-#checkImage {
+#preview_image {
     max-width: 96%;
     max-height: 96%;
     padding-left: 2%;

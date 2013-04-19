@@ -55,25 +55,9 @@ var app = {
         document.addEventListener('backbutton', app.onBackButton, false);
         document.addEventListener('menubutton', app.onMenuButton, false);
 
-        app.getDeviceResolution();
-        app.getLanguage();
+        app.setDeviceResolution();
+        app.setDeviceLanguage();
         app.checkCredentials();
-    },
-
-    // --------------------
-    // getDeviceResolution: Gets the device resolution
-    // --------------------
-    getDeviceResolution: function() {
-        app.device_width = screen.width;
-        app.device_height = screen.height;
-    },
-
-    // ------------
-    // getLanguage: Gets the device language
-    // ------------
-    getLanguage: function() {
-        lang = navigator.language.split("-");
-        app.device_language = lang[0];
     },
 
     // ----------------------------------------------------------------------------------------------------------
@@ -86,7 +70,6 @@ var app = {
     // onPause: triggered when app is 'paused', ie: pressed home button or screen turns off etc.
     // --------
     onPause: function() {
-        //console.log('pause');
     },
 
     // ---------
@@ -174,7 +157,7 @@ var app = {
     isConnected: function() {
         var con = navigator.connection.type;
 
-        if(con == 'wifi' || con == 'ethernet' || con == 'cell_2g' || con == 'cell_3g' || con == 'cell_4g') {
+        if(con == 'wifi' || con == 'ethernet' || con == '2g' || con == '3g' || con == '4g' || con == 'cell') {
             return true;
         } else {
             // con == 'unknown' || con == 'none'
@@ -187,6 +170,35 @@ var app = {
     // --------
     exitApp: function() {
         navigator.app.exitApp();
+    },
+
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                      Getters and setters
+    //
+    // ----------------------------------------------------------------------------------------------------------
+
+    getConnectionType: function() {
+        return navigator.connection.type;
+    },
+
+    setDeviceResolution: function() {
+        app.device_width = screen.width;
+        app.device_height = screen.height;
+    },
+
+    getDeviceResolution: function() {
+        var tmp = {'width':app.device_width, 'height':app.device_height};
+        return tmp;
+    },
+
+    setDeviceLanguage: function() {
+        lang = navigator.language.split("-");
+        app.device_language = lang[0];
+    },
+
+    getDeviceLanguage: function() {
+        return app.device_language;
     },
 
     // ----------------------------------------------------------------------------------------------------------
@@ -434,7 +446,7 @@ var app = {
                        saveToPhotoAlbum: true};
 
         // capture photo with specified options
-        navigator.camera.getPicture(app.onPhotoURISuccess, app.onCaptureOrGetFail, options);
+        navigator.camera.getPicture(app.onCaptureOrGetSuccess, app.onCaptureOrGetFail, options);
     },
 
     // ---------
@@ -444,38 +456,45 @@ var app = {
         // need to look into the, if any, differences between PHOTOLIBRARY and SAVEDPHOTOALBUM, suspect there is no diff for
         // iOS and Android. Might be diff for other device/OS. Should at least check for WP7.5+ for future support
 
+        // update: PHOTOLIBRARY source is bugged in iOS 5, use SAVEDPHOTOALBUM instead
+
+        console.log('get photo');
+
         // set options for getting photo's from library (takes less options than CAMERA)
         var options = {quality: 80,
                        destinationType: Camera.DestinationType.FILE_URI,
-                       sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+                       sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,
                        targetWidth: 1280,
                        targetHeight: 1280};
 
         // select photo with specified options
-        navigator.camera.getPicture(app.onPhotoURISuccess, app.onCaptureOrGetFail, options);
+        navigator.camera.getPicture(app.onCaptureOrGetSuccess, app.onCaptureOrGetFail, options);
     },
 
     // ------------------
     // onPhotoURISuccess: Called when a photo is successfully retrieved from library or camera
     // ------------------
-    onPhotoURISuccess: function(imageURI) {
+    onCaptureOrGetSuccess: function(imageURI) {
+        console.log('on photo uri success: ' + imageURI);
+
         // set class variable URI so that we can use it in case we need to retry an attempt (android glitch)
         app.URI = imageURI;
 
-        // remove source from preview picture (needs to be removed first)
-        $('#checkImage').removeAttr('src');
+        var preview_image = document.getElementById('preview_image');
 
-        // set source of preview picture
-        $('#checkImage').attr('src', imageURI);
+        preview_image.style.display = 'block';
+
+        preview_image.src = imageURI;
 
         // Change page to the photo view page
         $.mobile.changePage('#photo-success-page');
     },
 
-    // -------
-    // onFail: Called when error occurs during camera launch or library launch
-    // -------
+    // -------------------
+    // onCaptureOrGetFail: Called when error occurs during camera launch or library launch
+    // -------------------
     onCaptureOrGetFail: function(message) {
+        console.log('on capture or get fail: ' + message);
         // Notify user with alert [or] leave as is?
         //navigator.notification.alert('Fout: ' + message);
     },
@@ -484,16 +503,26 @@ var app = {
     // uploadPhoto: Attemps to upload the photo
     // ------------
     uploadPhoto: function() {
-        // disable upload button while uploading
-        // update: doesn't seem to be working, needs checking
-        $('#upload-photo-submit').attr("disabled","disabled");
+
+        console.log('upload photo');
+
+        $('#upload-photo-submit').button('disable');
 
         var imageURI = app.URI;
 
-        // alternate loading animation with text, needs new theme though
-        $.mobile.loading('show',{text: 'uploading', textVisible: true, theme: 'a'});
+        console.log('upload photo imageURI: ' + imageURI);
+
+
+        // set loading animation options for uploading photo
+        var loadingAnimationOptions = {text: '',
+                                        textVisible: true,
+                                        theme: 'b',
+                                        html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden...</p>'};
+
+        $.mobile.loading('show', loadingAnimationOptions);
 
         // set options for upload
+        //
         var options = new FileUploadOptions();
         options.fileKey = "files";
         options['file-type']='image';
@@ -532,9 +561,6 @@ var app = {
         } else /* NOT connected to internet */ {
             navigator.notification.alert('U bent niet verbonden met internet!');
         }
-
-        // re-enable upload button
-        $('#upload-photo-submit').removeAttr("disabled");
     },
 
     // ------------
@@ -572,10 +598,9 @@ var app = {
             // create a block container for the image
             // will be changed later to get user input for the container placement
 
-            if (app.createBlock(1, 1, responseJSON.files.url) == true) {
-                //console.log('create block success');
-                $.mobile.loading('hide');
+            $.mobile.loading('hide');
 
+            if (app.createBlock(1, 1, responseJSON.files.url) == true) {
                 navigator.notification.alert('Upload succes',false,'Succes','ok');
 
                 // reset the attempt counter
@@ -588,8 +613,11 @@ var app = {
             $.mobile.changePage('#menu-page');
         }
 
+        // re-enable upload button
+        $('#upload-photo-submit').button('enable');
+
         // iOS specific, cleanup temp file
-        navigator.camera.cleanup( app.cleanupSuccess, app.cleanupError );
+        // navigator.camera.cleanup( app.cleanupSuccess, app.cleanupError );
     },
 
     // -----------------
@@ -620,6 +648,9 @@ var app = {
             // redirect to menu page
             $.mobile.changePage('#menu-page');
         }
+
+        // re-enable upload button
+        $('#upload-photo-submit').button('enable');
     },
 
     // ------------
@@ -633,6 +664,7 @@ var app = {
         var ret = false;
 
         // page not used yet
+        $.mobile.loading('show');
 
         // if connected to internet then try / catch
         if (app.isConnected()) {
@@ -661,6 +693,8 @@ var app = {
         } else /* NOT connected to internet */ {
             //console.log('create block ELSE');
         }
+
+        $.mobile.loading('hide');
 
         return ret;
     },
@@ -729,25 +763,46 @@ var app = {
             button.button();
 
             // append on 'tap' event listener
-            var script = '<script type="text/javascript">$("#' + app.pathnames[i] + '").on("tap", function() { app.choosePathname("' + app.pathnames[i] + '"); });</script>';
+            var script = '<script type="text/javascript">$("#' + app.pathnames[i] + '").fastClick(function(e) { app.setPathname("' + app.pathnames[i] + '"); $.mobile.changePage("#menu-page"); });</script>';
             $('body').append(script);
         }
     },
 
-    // ---------------
-    // choosePathname: Triggered when someone 'taps' a pathname choice button
-    // ---------------
-    choosePathname: function(pn) {
+    // ------------
+    // setPathname: Sets the active pathname
+    // ------------
+    setPathname: function(pn) {
         // store selected pathname
         window.localStorage['active-pathname'] = pn;
 
         // redirect to menu page
-        $.mobile.changePage('#menu-page');
+        // moved the change page to the on('tap') event to keep the function generic
+        //$.mobile.changePage('#menu-page');
     },
 
+    setUsernameInPanel: function() {
+        $('#menu-panel-content-user').empty();
+        $('#menu-panel-content-user').append(window.localStorage['username']);
+    },
 
+    populatePathnameSelectInPanel: function() {
+        $('#active-pathname-select').empty();
 
-    inAppBrowserTest: function() {
-        var ref = window.open('http://eerstelinks.nl', '_blank', 'location=no');
-    }
+        for (var i=0; i<app.pathnames.length; i++) {
+            var tmp = '<option value="' + app.pathnames[i] + '"';
+
+            //
+            if (app.pathnames[i] == window.localStorage['active-pathname']) {
+                tmp += ' selected="selected">';
+            } else {
+                tmp += '>';
+            }
+
+            tmp += app.pathnames[i] + '</option>';
+
+            $('#active-pathname-select').append(tmp);
+        }
+
+        $('#active-pathname-select').selectmenu("refresh", true);
+    },
 };
