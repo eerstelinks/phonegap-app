@@ -310,7 +310,7 @@ var app = {
                                 $.mobile.loading('hide');
 
                                 // show choose-pathname-icon (necessary in case hide() was previously cached)
-                                $('#pathname_choice_icon_div').show();
+                                // $('#pathname_choice_icon_div').show();
 
                                 // if active pathname already set go straight to menu page
                                 if (window.localStorage['active-pathname'] == undefined) {
@@ -330,7 +330,7 @@ var app = {
                                 window.localStorage['active-pathname'] = app.pathnames[0];
 
                                 // hide choose-pathname-icon
-                                $('#pathname_choice_icon_div').hide();
+                                // $('#pathname_choice_icon_div').hide();
 
                                 // load menu page
                                 $.mobile.changePage('#menu-page');
@@ -763,7 +763,7 @@ var app = {
             button.button();
 
             // append on 'tap' event listener
-            var script = '<script type="text/javascript">$("#' + app.pathnames[i] + '").fastClick(function(e) { app.setPathname("' + app.pathnames[i] + '"); $.mobile.changePage("#menu-page"); });</script>';
+            var script = '<script type="text/javascript">$("#' + app.pathnames[i] + '").on("tap", function(event) { event.stopImmediatePropagation(); event.preventDefault(); app.setPathname("' + app.pathnames[i] + '"); $.mobile.changePage("#menu-page"); });</script>';
             $('body').append(script);
         }
     },
