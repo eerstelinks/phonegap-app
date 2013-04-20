@@ -758,7 +758,7 @@ var app = {
 
         // for each pathname in pathnames create a button
         for (var i=0; i<app.pathnames.length; i++) {
-            var button = $('<button id="' + app.pathnames[i] + '">' + app.pathnames[i] + '</button>');
+            var button = $('<button type="button" id="' + app.pathnames[i] + '">' + app.pathnames[i] + '</button>');
             $('#pathname-choice').append(button);
             button.button();
 
