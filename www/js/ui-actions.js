@@ -102,7 +102,7 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        $.mobile.changePage('#info-page');
+        $.mobile.changePage('#info-page', {transition: 'flip'});
     });
 
     // Button to external site on the info page
