@@ -95,7 +95,8 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        navigator.notification.alert('device language: ' + app.device_language);
+        //navigator.notification.alert('device language: ' + app.device_language);
+        app.sendFeedback();
     });
 
     $('#info_icon').on('tap', function(event) {
@@ -151,6 +152,13 @@ $( function () {
         event.preventDefault();
 
         $('#inappbrowser_icon_div').animate({'marginLeft': '-5000px'}, 5000);
+    });
+
+    $('#server_message_remove_icon').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        app.dismissServerMessage();
     });
 
     // ----------------------------------------------------------------------------------------------------------

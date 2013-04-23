@@ -92,6 +92,12 @@
         </div>
 
         <div data-role="content" id="menu-page-content">
+            <div id="server_message_div">
+                <!-- empty div for server messages -->
+                <p style="width: 80%; float: left; text-align: left;" id="server_message_p"></p>
+                <i class="icon-remove" id="server_message_remove_icon" style="float: right; padding: 12px;"></i>
+            </div>
+
             <div>
                 <i class="icon-picture icon-4x menu_icon" id="upload_photo_icon"></i>
                 <p>Upload foto</p>
@@ -102,22 +108,22 @@
                 <p>Neem foto</p>
             </div>
 
-            <div>
+            <!-- <div>
                 <i class="icon-bullhorn icon-4x menu_icon" id="social_media_icon"></i>
                 <p>Nieuwsbericht</p>
-            </div>
+            </div> -->
 
             <div>
                 <i class="icon-comments icon-4x menu_icon" id="feedback_icon"></i>
                 <p>Feedback</p>
             </div>
-
-            <div id="info_icon_div" style="position: absolute; bottom: 10px; right: 10px; width: 30px; height: 30px;">
-                <i class="icon-info-sign icon-2x menu_icon" id="info_icon"></i>
-                <!-- <p>Info</p> -->
-            </div>
-
         </div>
+
+        <div id="info_icon_div" style="position: absolute; bottom: 10px; right: 10px; width: 30px; height: 30px;">
+            <i class="icon-info-sign icon-2x menu_icon" id="info_icon"></i>
+            <!-- <p>Info</p> -->
+        </div>
+
     </div>
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
@@ -197,9 +203,6 @@
 
         <div data-role="content">
             <form id="feedback-form">
-                <label for="textinput-hide" class="ui-hidden-accessible">Subject</label>
-                <input type="text" name="subject" id="feedback-form-subject" value="" placeholder="Onderwerp">
-
                 <label for="feedback-form-messsage" class="ui-hidden-accessible">Textarea</label>
                 <textarea cols="40" rows="20" name="message" id="feedback-form-messsage" placeholder="Bericht"></textarea>
 
@@ -262,6 +265,6 @@
         </div>
     </div>
 
-    <script type="text/javascript">app.initialize();</script>
+    <script type="text/javascript">app.init();</script>
 </body>
 </html>

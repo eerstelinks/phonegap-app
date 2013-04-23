@@ -1,3 +1,18 @@
+#server_message_div {
+    width: 100% !important;
+    background-color: #fbc39e !important;
+    border: solid 1px #ff6600 !important;
+    clear: both !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
+}
+
+#server_message_p {
+    margin-left: 20px;
+    font-size: 14px !important;
+}
+
+
 /* Loading page */
 #loading-page {
     background-color: #000;
