@@ -161,6 +161,20 @@ $( function () {
         app.dismissServerMessage();
     });
 
+    $('#stats_icon').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        $.mobile.changePage('#stats-page');
+    });
+
+    $('#choose-section-column-button').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        $.mobile.changePage('#choose-section-and-column-page');
+    });
+
     // ----------------------------------------------------------------------------------------------------------
     //
     //                                               PageBeforeShow events

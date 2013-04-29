@@ -78,10 +78,9 @@
 
             <div data-role="fieldcontain">
                 <label for="active-pathname-select">Actieve website</label>
-                <select name="active-pathname-select" id="active-pathname-select" data-mini="true" data-iconpos="right" data-prevent-focus-zoom="true">
+                <select name="active-pathname-select" id="active-pathname-select" data-icon="arrow-d" data-mini="true" data-iconpos="right" data-prevent-focus-zoom="true">
                 </select>
             </div>
-
         </div>
 
         <div data-role="header" data-theme="a" data-position="fixed">
@@ -117,6 +116,11 @@
                 <i class="icon-comments icon-4x menu_icon" id="feedback_icon"></i>
                 <p>Feedback</p>
             </div>
+
+            <div>
+                <i class="icon-bar-chart icon-4x menu_icon" id="stats_icon"></i>
+                <p>Statistieken</p>
+            </div>
         </div>
 
         <div id="info_icon_div" style="position: absolute; bottom: 10px; right: 10px; width: 30px; height: 30px;">
@@ -148,10 +152,8 @@
         <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
             <!-- button inside div to force it to use the full width -->
             <div id="upload-photo-submit-div" style="width: 96%; margin: 0 auto;">
-                <!-- <button id="upload-photo-submit">
-                    <h3 style="margin: 2px; height: 20px;">Upload</h3>
-                </button> -->
                 <button type="button" id="upload-photo-submit" value="Upload" data-role="button">Upload</button>
+                <button type="button" id="choose-section-column-button" value="Kies locatie" data-role="button">Kies locatie</button>
             </div>
         </div>
 
@@ -247,21 +249,41 @@
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <!--                                                                                                       -->
-    <!--                                   choose page and column page                                         -->
+    <!--                                   choose section and column page                                         -->
     <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
-    <div id="choose-page-and-column-page" data-role="page" data-theme="a" data-tap-toggle="false">
+    <div id="choose-section-and-column-page" data-role="page" data-theme="a" data-tap-toggle="false">
         <div data-role="header" data-position="fixed" data-theme="a">
             <!-- might need to change or remove the button -->
             <button type="button" class="back_to_menu_button">
                 <i class="icon-chevron-left"></i>
             </button>
-            <h3>Choose page and column</h3>
+            <h3>Kies locatie</h3>
         </div>
 
-        <div data-role="content" id="choose-page-and-column">
+        <div data-role="content" id="choose-section-and-column">
             <!-- content here ... -->
-            Choose page and column for photo
+            Choose section and column for photo
+        </div>
+    </div>
+
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <!--                                                                                                       -->
+    <!--                                              stats page                                               -->
+    <!--                                                                                                       -->
+    <!-- ----------------------------------------------------------------------------------------------------- -->
+    <div id="stats-page" data-role="page" data-theme="a" data-tap-toggle="false">
+        <div data-role="header" data-position="fixed" data-theme="a">
+            <!-- might need to change or remove the button -->
+            <button type="button" class="back_to_menu_button">
+                <i class="icon-chevron-left"></i>
+            </button>
+            <h3>Statistieken</h3>
+        </div>
+
+        <div data-role="content" id="stats-page">
+            <!-- content here ... -->
+            stats here ...
         </div>
     </div>
 

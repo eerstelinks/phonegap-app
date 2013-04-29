@@ -184,29 +184,32 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
+    // ------------------
+    // getConnectionType: returns the type of connection ('wifi', '3g', ...)
+    // ------------------
     getConnectionType : function() {
         return navigator.connection.type;
     },
 
+    // -------------------
+    // setDeviceResoltion: gets the devide width and height and stores them in variables
+    // -------------------
     setDeviceResolution : function() {
         app.device_width = screen.width;
         app.device_height = screen.height;
     },
 
-    getDeviceResolution : function() {
-        var tmp = {'width':app.device_width, 'height':app.device_height};
-        return tmp;
-    },
-
+    // ------------------
+    // setDeviceLanguage: gets the language of the device
+    // ------------------
     setDeviceLanguage : function() {
         var lang = navigator.language.split("-");
         app.device_language = lang[0];
     },
 
-    getDeviceLanguage : function() {
-        return app.device_language;
-    },
-
+    // -----------------
+    // getServerMessage: connects to the server and retrieves a message/update if there is one
+    // -----------------
     getServerMessage: function() {
         console.log('get server message');
 
@@ -240,7 +243,8 @@ var app = {
                         app.server_message_id = res.id;
                         app.server_message = res.message;
 
-                        if (window.localStorage[app.server_message_id] == undefined ) {
+                        //if (window.localStorage[app.server_message_id] == undefined ) {
+                        if (!app.isServerMessageDismissed(res.id)) {
                             app.showServerMessage(res);
                         } else {
                             app.hideServerMessage();
@@ -255,6 +259,7 @@ var app = {
             }
         } else /* NOT connected to internet */ {
             //console.log('create block ELSE');
+            app.showAlert('Fout', 'Geen internet verbinding!');
         }
 
         $.mobile.loading('hide');
@@ -262,6 +267,9 @@ var app = {
         return ret;
     },
 
+    // ------------------
+    // showServerMessage: sets and shows the message from the server
+    // ------------------
     showServerMessage: function(res) {
         console.log(res);
 
@@ -271,21 +279,42 @@ var app = {
         $('#server_message_div').show();
     },
 
+    // ------------------
+    // hideServerMessage: hides the message from the server
+    // ------------------
     hideServerMessage: function() {
         $('#server_message_div').hide();
     },
 
+    // ---------------------
+    // dismissServerMessage: triggered when user closes the server message
+    //                       stores the message in the local storage so that it isn't shown again
+    // ---------------------
     dismissServerMessage: function() {
         // set message as seen in local storage
         window.localStorage[app.server_message_id] = app.server_message;
 
+        $('#server_message_div').empty();
         $('#server_message_div').hide();
     },
 
-    checkServerMessageDismissed: function() {
+    // -------------------------
+    // isServerMessageDismissed: checks if a message with the given ID has been dismissed
+    // -------------------------
+    isServerMessageDismissed: function(server_message_id) {
+        var ret = false;
+
         // check if server message has already been dismissed or not
+        if (window.localStorage[server_message_id] != undefined && window.localStorage[server_message_id] != '') {
+            ret = true;
+        }
+
+        return ret;
     },
 
+    // ----------
+    // showAlert: generic method for showing alerts
+    // ----------
     showAlert: function(title, server, custom) {
         if (typeof title == 'undefined' || title == '') {
             title = 'Melding';
@@ -848,16 +877,9 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    settings : function() {
-        //console.log('settings');
-        //$.mobile.changePage('#settings-page');
-    },
-
-    info : function() {
-        //console.log('info');
-        //$.mobile.changePage('#info-page');
-    },
-
+    // -------------
+    // sendFeedback: triggered when the user clicks on 'verzenden', send feedback to the server
+    // -------------
     sendFeedback : function() {
         console.log('feedback');
 
@@ -972,7 +994,8 @@ var app = {
         for (var i=0; i<app.pathnames.length; i++) {
             var tmp = '<option value="' + app.pathnames[i] + '"';
 
-            //
+            // if the pathname equals the pathname stored in local storage then this is the current
+            // active website pathname -> pre-select it
             if (app.pathnames[i] == window.localStorage['active-pathname']) {
                 tmp += ' selected="selected">';
             } else {
