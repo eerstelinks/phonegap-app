@@ -13,6 +13,7 @@ var app = {
     create_block_url : 'http://eerstelinks.nl/api/v1/post/block-data',
     feedback_url : 'http://eerstelinks.nl/api/v1/post/app-feedback',
     server_message_url : 'http://eerstelinks.nl/api/v1/get/server-message',
+    all_data_url : 'http://eerstelinks.nl/api/v1/get/all-data',
     device_language : undefined,
     attempts : 0,
     URI : undefined,
@@ -22,6 +23,7 @@ var app = {
     version : '1.2',
     server_message_id : undefined,
     server_message : undefined,
+    active_pathname_structure : undefined,
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -211,7 +213,7 @@ var app = {
     // getServerMessage: connects to the server and retrieves a message/update if there is one
     // -----------------
     getServerMessage: function() {
-        console.log('get server message');
+        // console.log('get server message');
 
         // return value, set to false as default to simplify and shorten the code
         var ret = false;
@@ -237,7 +239,7 @@ var app = {
                 }).done(function(res) {
                     if (res.status == 'success') {
                         ret = true;
-                        console.log('ajax get server message success');
+                        // console.log('ajax get server message success');
 
                         // check if message has already been seen (in local storage) and if message has been seen do NOT show it.
                         app.server_message_id = res.id;
@@ -250,7 +252,7 @@ var app = {
                             app.hideServerMessage();
                         }
                     } else {
-                        console.log('ajax get server message error');
+                        // console.log('ajax get server message error');
                         app.hideServerMessage();
                     }
                 });
@@ -271,7 +273,7 @@ var app = {
     // showServerMessage: sets and shows the message from the server
     // ------------------
     showServerMessage: function(res) {
-        console.log(res);
+        // console.log(res);
 
         $('#server_message_p').append(res.message);
 
@@ -606,7 +608,7 @@ var app = {
 
         // update: PHOTOLIBRARY source is bugged in iOS 5, use SAVEDPHOTOALBUM instead
 
-        console.log('get photo');
+        // console.log('get photo');
 
         // set options for getting photo's from library (takes less options than CAMERA)
         var options = {quality: 80,
@@ -623,7 +625,7 @@ var app = {
     // onPhotoURISuccess: Called when a photo is successfully retrieved from library or camera
     // ------------------
     onCaptureOrGetSuccess : function(imageURI) {
-        console.log('on capture or get success: ' + imageURI);
+        // console.log('on capture or get success: ' + imageURI);
 
         // set class variable URI so that we can use it in case we need to retry an attempt (android glitch)
         app.URI = imageURI;
@@ -642,7 +644,7 @@ var app = {
     // onCaptureOrGetFail: Called when error occurs during camera launch or library launch
     // -------------------
     onCaptureOrGetFail : function(message) {
-        console.log('on capture or get fail: ' + message);
+        // console.log('on capture or get fail: ' + message);
         // Notify user with alert [or] leave as is?
         //navigator.notification.alert('Fout: ' + message);
     },
@@ -881,7 +883,7 @@ var app = {
     // sendFeedback: triggered when the user clicks on 'verzenden', send feedback to the server
     // -------------
     sendFeedback : function() {
-        console.log('feedback');
+        // console.log('feedback');
 
         // return value, set to false as default to simplify and shorten the code
         var ret = false;
@@ -1008,5 +1010,103 @@ var app = {
         }
 
         $('#active-pathname-select').selectmenu('refresh', true);
+    },
+
+    // ----------------------
+    // parseWebsiteStructure: retrieves the website structure from the API
+    // ----------------------
+    parseWebsiteStructure : function() {
+        console.log('parse website structure');
+
+        // page not used yet
+        $.mobile.loading('show');
+
+        // if connected to internet then try / catch
+        if (app.isConnected()) {
+            try {
+                var params = {'type': 'getwebsitestructure',
+                                'pathname': window.localStorage['active-pathname'],
+                                'username': window.localStorage['username'],
+                                'version': app.version};
+
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: app.all_data_url,
+                    data: params,
+                    async: true
+                }).done(function(res) {
+                    if (res.status == 'success') {
+                        console.log('ajax get all data success');
+                        //console.log(res);
+
+                        $('#choose-section-and-column-content-collapsible-set').empty();
+
+                        var tmp = '';
+
+                        // for each sexy we need to add the following structure:
+                        // <div data-role="collapsible">
+                        //      <h3>name of collapsible</h3>
+                        //      <p>collapsible content</p>
+                        // </div>
+
+                        // search for sexies
+                        var sexies = res.sexies;
+                        for (var sexy in sexies) {
+                            console.log('sexy' + sexies[sexy].sexy_id);
+
+                            tmp += '<div data-role="collapsible" style="margin: 0; padding: 0;">';
+                            tmp += '<h3>' + sexies[sexy].sexy_name + '</h3><p style="padding: 0; margin: 0;">';
+
+                            // search for columns
+                            var columns = sexies[sexy].columns;
+                            for (var column in columns) {
+                                console.log('column' + columns[column].meta.column_id);
+
+                                var col_width = columns[column].meta.width;
+                                var div_col_width = ((col_width / 12) * 100) - 3;
+
+                                tmp += '<div style="margin: 2px; padding: 2px; background-color: #ff6600; width: ' + div_col_width + '%; height: 100px; float: left;"><p style="padding:0; margin:0;">' + col_width + '</p>';
+
+                                // search for blocks
+                                var blocks = columns[column].blocks;
+                                for (var block in blocks) {
+                                    console.log('block' + blocks[block].block_id);
+
+                                    tmp += '<div style="margin-left: 5%; width: 95%; height: 30px; background-color: white;"></div>';
+                                }
+
+                                tmp += '</div>';
+                            }
+
+                            tmp += '</p><div style="clear:both;"></div></div>';
+                        }
+
+                        console.log(tmp);
+                        $('#choose-section-and-column-content-collapsible-set').append(tmp);
+                        // refresh collapsible set to fix styling
+                        $('#choose-section-and-column-content-collapsible-set').collapsibleset( "refresh" );
+
+                        //console.log($('#choose-section-and-column-content-collapsible-set').html());
+                    } else {
+                        console.log('ajax get all data error');
+                    }
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        } else /* NOT connected to internet */ {
+            //console.log('create block ELSE');
+            app.showAlert('Fout', 'Geen internet verbinding!');
+        }
+
+        $.mobile.loading('hide');
+    },
+
+    // ---------
+    // getStats: retrieves statistics via the API
+    // ---------
+    getStats: function() {
+        console.log('get stats');
     }
 };

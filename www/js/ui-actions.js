@@ -191,11 +191,17 @@ $( function () {
         app.populatePathnameSelectInPanel();
     });
 
+    $('#choose-section-and-column-page').on('pagebeforeshow', function(event) {
+        app.parseWebsiteStructure();
+    });
+
+    $('#stats-page').on('pagebeforeshow', function(event) {
+        app.getStats();
+    });
+
     $("#active-pathname-select").change(function() {
         // get 'selected' item and store in local storage
         var tmp = $('#active-pathname-select option:selected').val();
-
-        // send to app.choosePathname
         app.setPathname(tmp);
     });
 });
