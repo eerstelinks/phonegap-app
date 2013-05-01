@@ -152,7 +152,7 @@
         <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
             <!-- button inside div to force it to use the full width -->
             <div id="upload-photo-submit-div" style="width: 96%; margin: 0 auto;">
-                <button type="button" id="upload-photo-submit" value="Upload" data-role="button">Upload</button>
+                <!-- <button type="button" id="upload-photo-submit" value="Upload" data-role="button">Upload</button> -->
                 <button type="button" id="choose-section-column-button" value="Kies locatie" data-role="button">Kies locatie</button>
             </div>
         </div>
@@ -249,7 +249,7 @@
 
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <!--                                                                                                       -->
-    <!--                                   choose section and column page                                         -->
+    <!--                                   choose section and column page                                      -->
     <!--                                                                                                       -->
     <!-- ----------------------------------------------------------------------------------------------------- -->
     <div id="choose-section-and-column-page" data-role="page" data-theme="a" data-tap-toggle="false">
@@ -261,10 +261,17 @@
             <h3>Kies locatie</h3>
         </div>
 
-        <div data-role="content" id="choose-section-and-column">
+        <div data-role="content" id="choose-section-and-column" data-tap-toggle="false">
             <!-- content here ... -->
             <div data-role="collapsible-set" id="choose-section-and-column-content-collapsible-set" data-content-theme="b">
                 <!-- collapsible will be filled by JS -->
+            </div>
+        </div>
+
+        <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
+            <!-- button inside div to force it to use the full width -->
+            <div id="upload-photo-submit-div" style="width: 96%; margin: 0 auto;">
+                <button type="button" id="upload-photo-submit" value="Upload" data-role="button" disabled>Upload</button>
             </div>
         </div>
     </div>

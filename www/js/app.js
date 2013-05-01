@@ -1013,6 +1013,12 @@ var app = {
         $('#active-pathname-select').selectmenu('refresh', true);
     },
 
+    // should change code ->
+
+    // retrieve web structure (return boolean true or false) and set the res.sexies (or whatever) as global variable
+
+    // then if (retrieveWebStructure()) { parseWebStructure } else { generate some kind of error }
+
     // ----------------------
     // parseWebsiteStructure: retrieves the website structure from the API
     // ----------------------
@@ -1035,7 +1041,7 @@ var app = {
                     dataType: 'JSON',
                     url: app.all_data_url,
                     data: params,
-                    async: true
+                    async: false
                 }).done(function(res) {
                     if (res.status == 'success') {
                         console.log('ajax get all data success');
@@ -1081,23 +1087,35 @@ var app = {
                                 // to make the code generic
                                 // not pixel perfect yet but very close (~99.6% instead of 100%)
 
+                                // update:
+
                                 // calculate the width of 1 column depending on whether there are 12 or less columns (decided by the offset)
                                 // if there is no offest this would look like:
                                 // 100 / 12 = 8.33% (of which we later subtract the proper amount according to the number of columns)
+
                                 // if the offset is 1 then the calculation would be:
                                 // 100 / (12 - (2*1)) = 10%
+
                                 var col_width_percentage = (100 / (12 - (2 * app.column_offset)));
                                 //var div_col_width = (col_width * 8.33) - 2;
                                 var div_col_width = (col_width * col_width_percentage) - 2;
 
-                                tmp += '<div style="margin: 1%; padding: 0; background-color: #ff6600; width: ' + div_col_width + '%; height: 100px; float: left;">' + col_width;
+                                tmp += '<div style="margin: 1%; padding: 0; background-color: #ff6600; width: ' + div_col_width + '%; min-height: 100px; float: left;">';
 
-                                // search for blocks
-                                var blocks = columns[column].blocks;
-                                for (var block in blocks) {
-                                    console.log('block' + blocks[block].block_id);
 
-                                    tmp += '<div style="margin: 2%; width: 96%; height: 30px; background-color: white;"></div>';
+                                // if the column is 'is_art' then add some way of notifiying the user and do not create the
+                                // sub block elements
+                                if (columns[column].meta.is_art == "1") {
+                                    tmp += '<p style="text-align: center; background-color: green;">media</p>';
+                                } else {
+                                    // if the column does not contain a media element then generate the block elements
+                                    // search for blocks
+                                    var blocks = columns[column].blocks;
+                                    for (var block in blocks) {
+                                        console.log('block' + blocks[block].block_id);
+
+                                        tmp += '<div style="margin: 2%; width: 96%; height: 50px; background-color: white;"></div>';
+                                    }
                                 }
 
                                 tmp += '</div>';
