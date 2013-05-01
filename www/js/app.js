@@ -24,6 +24,7 @@ var app = {
     server_message_id : undefined,
     server_message : undefined,
     active_pathname_structure : undefined,
+    column_offset : 0,
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -1055,39 +1056,64 @@ var app = {
                         for (var sexy in sexies) {
                             console.log('sexy' + sexies[sexy].sexy_id);
 
-                            tmp += '<div data-role="collapsible" style="margin: 0; padding: 0;">';
-                            tmp += '<h3>' + sexies[sexy].sexy_name + '</h3><p style="padding: 0; margin: 0;">';
+                            // create the collapsible group
+                            // set the title -> name of the sexy
+                            // open the div where the collapsible stuff goes
+
+                            // specifies the offset of the colums, to be used when calculating the width (%) of the columns
+                            app.column_offset = sexies[sexy].column_offset;
+
+                            tmp += '<div data-role="collapsible">';
+                            tmp += '<h3>' + sexies[sexy].sexy_name + '</h3><div class="where_the_fuck_are_you">';
 
                             // search for columns
                             var columns = sexies[sexy].columns;
                             for (var column in columns) {
                                 console.log('column' + columns[column].meta.column_id);
 
-                                var col_width = columns[column].meta.width;
-                                var div_col_width = ((col_width / 12) * 100) - 3;
+                                // inside the collapsible area ->
 
-                                tmp += '<div style="margin: 2px; padding: 2px; background-color: #ff6600; width: ' + div_col_width + '%; height: 100px; float: left;"><p style="padding:0; margin:0;">' + col_width + '</p>';
+                                var col_width = columns[column].meta.width;
+
+                                // 8.33 represents 100/12 (the number of columns) of which we subtract 2% for the margin 1% (both left and right)
+                                // of the div
+                                // should be replaced later with a variable sent by the API indicating the number of cols for that sexy
+                                // to make the code generic
+                                // not pixel perfect yet but very close (~99.6% instead of 100%)
+
+                                // calculate the width of 1 column depending on whether there are 12 or less columns (decided by the offset)
+                                // if there is no offest this would look like:
+                                // 100 / 12 = 8.33% (of which we later subtract the proper amount according to the number of columns)
+                                // if the offset is 1 then the calculation would be:
+                                // 100 / (12 - (2*1)) = 10%
+                                var col_width_percentage = (100 / (12 - (2 * app.column_offset)));
+                                //var div_col_width = (col_width * 8.33) - 2;
+                                var div_col_width = (col_width * col_width_percentage) - 2;
+
+                                tmp += '<div style="margin: 1%; padding: 0; background-color: #ff6600; width: ' + div_col_width + '%; height: 100px; float: left;">' + col_width;
 
                                 // search for blocks
                                 var blocks = columns[column].blocks;
                                 for (var block in blocks) {
                                     console.log('block' + blocks[block].block_id);
 
-                                    tmp += '<div style="margin-left: 5%; width: 95%; height: 30px; background-color: white;"></div>';
+                                    tmp += '<div style="margin: 2%; width: 96%; height: 30px; background-color: white;"></div>';
                                 }
 
                                 tmp += '</div>';
                             }
 
-                            tmp += '</p><div style="clear:both;"></div></div>';
+                            tmp += '</div><div style="clear:both;"></div></div>';
                         }
 
-                        console.log(tmp);
+                        //console.log(tmp);
+
+
                         $('#choose-section-and-column-content-collapsible-set').append(tmp);
                         // refresh collapsible set to fix styling
                         $('#choose-section-and-column-content-collapsible-set').collapsibleset( "refresh" );
 
-                        //console.log($('#choose-section-and-column-content-collapsible-set').html());
+                        console.log($('#choose-section-and-column-content-collapsible-set').html());
                     } else {
                         console.log('ajax get all data error');
                     }
