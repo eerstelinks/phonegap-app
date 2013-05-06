@@ -489,6 +489,7 @@ var app = {
                             // show error message to user
                             //navigator.notification.alert(res.message);
                             app.showAlert('Fout', res.message);
+                            $.mobile.changePage('#menu-page');
                         } else /* else (unknown error) show error message to user */ {
                             // hide loading animation
                             $.mobile.loading('hide');
@@ -496,6 +497,7 @@ var app = {
                             // error message to user
                             // navigator.notification.alert('Log in mislukt');
                             app.showAlert('Fout', 'Log in mislukt');
+                            $.mobile.changePage('#menu-page');
                         }
 
                         // re-enable the login button
