@@ -1,3 +1,59 @@
+/* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; } */
+
+.collapsible-content {
+    width: 100%;
+    overflow: hidden;
+}
+
+.collapsible-content-column {
+    min-height: 50px;
+    float: left;
+    background-color: #ffffff;
+    margin: 0;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+    border: 3px solid #323232;
+    padding: 3px;
+    padding-bottom: 1000px;
+    margin-bottom: -1000px;
+}
+
+.collapsible-content-column.art {
+    background-color: #ff6600;
+}
+
+.collapsible-content-column > div {
+    width: 100%;
+    background-color: #ff6600;
+    min-height: 55px;
+    border-bottom: 3px solid #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.collapsible-content-column > div:last-child {
+    width: 100%;
+    background-color: #ff6600;
+    min-height: 55px;
+    margin: 0 auto;
+    border-bottom: 0px;
+    padding: 0;
+}
+
+.collapsible-content-column-block > p {
+    text-align: center;
+    margin: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.collapsible-content-column-block-effect {
+    -webkit-box-shadow: inset 0px 0px 15px 5px rgba(99, 99, 99, 0.5);
+    box-shadow: inset 0px 0px 15px 5px rgba(99, 99, 99, 0.5);
+}
+
+
 #server_message_div {
     width: 100% !important;
     background-color: #fbc39e !important;

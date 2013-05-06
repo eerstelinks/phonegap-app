@@ -14,6 +14,7 @@ var app = {
     feedback_url : 'http://eerstelinks.nl/api/v1/post/app-feedback',
     server_message_url : 'http://eerstelinks.nl/api/v1/get/server-message',
     all_data_url : 'http://eerstelinks.nl/api/v1/get/all-data',
+    delete_block_url : 'http://eerstelinks.nl/api/v1/post/delete-element',
     device_language : undefined,
     attempts : 0,
     URI : undefined,
@@ -25,6 +26,7 @@ var app = {
     server_message : undefined,
     active_pathname_structure : undefined,
     column_offset : 0,
+    photo_location_id: undefined,
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -148,6 +150,9 @@ var app = {
         if ($.mobile.activePage.attr('id') == 'choose-page-and-column-page') {
             // if the user is on the 'choose page and column' page and presses back -> go to menu page
             // acts as a 'cancel'
+            $.mobile.changePage('#menu-page');
+        }
+        if ($.mobile.activePage.attr('id') == 'choose-section-and-column-page') {
             $.mobile.changePage('#menu-page');
         }
     },
@@ -653,8 +658,11 @@ var app = {
     // ------------
     // uploadPhoto: Attemps to upload the photo
     // ------------
-    uploadPhoto : function() {
+    uploadPhoto : function(el_id) {
         $('#upload-photo-submit').button('disable');
+
+        console.log('el_id from uploadPhoto: ' + el_id);
+        app.photo_location_id = el_id;
 
         var imageURI = app.URI;
 
@@ -738,25 +746,92 @@ var app = {
         // convert response string to JSON object
         var responseJSON = jQuery.parseJSON(res.response);
 
+        console.log('app.photo_location_id from uploadPhotoSuccess: ' + app.photo_location_id);
+
         // if status = error
         if (responseJSON.status == 'error') {
             // send on to fail() function to handle error
-            app.uploadPhotoError('win but status=error');
+            app.uploadPhotoError('code 200 but status=error');
         } else {
             // create a block container for the image
             // will be changed later to get user input for the container placement
 
             $.mobile.loading('hide');
 
-            if (app.createBlock('first', 'first', responseJSON.files.url) == true) {
-                //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                app.showAlert('Success', 'Upload success');
+            // if app.photo_location_id = new_block then create a new block in the given column
+            // else if photo_location_id = art then replace the art in the given column
+            // else if photo_location_id = some block id then replace the image in that block with the new image
 
-                // reset the attempt counter
-                app.attempts = 0;
-            } else /* createBlock returned false */ {
-                //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                app.showAlert();
+            var tmp_ar = app.photo_location_id.split('_');
+
+            if (tmp_ar[0] == 'new' && tmp_ar[1] == 'block') {
+
+                if (app.createBlock(tmp_ar[5], tmp_ar[3], responseJSON.files.url, 0, false) == true) {
+                    //navigator.notification.alert('Upload succes',false,'Succes','ok');
+                    app.showAlert('Success', 'Upload success');
+
+                    // reset the attempt counter
+                    app.attempts = 0;
+                } else /* createBlock returned false */ {
+                    //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
+                    app.showAlert();
+                }
+            } else if (tmp_ar[0] == 'art') {
+                // user selected art element -> art photo must be replaced by new photo
+                if (app.createBlock(tmp_ar[4], tmp_ar[2], responseJSON.files.url, 1, false) == true) {
+                    //navigator.notification.alert('Upload succes',false,'Succes','ok');
+                    app.showAlert('Success', 'Upload success');
+
+                    // reset the attempt counter
+                    app.attempts = 0;
+                } else /* createBlock returned false */ {
+                    //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
+                    app.showAlert();
+                }
+
+            } else if (tmp_ar[0] == 'block') {
+                // user selected existing block
+
+                // delete existing block
+                try {
+                    var params = {'type': 'delete-element',
+                                    'pathname': window.localStorage['active-pathname'],
+                                    'username': window.localStorage['username'],
+                                    'version': app.version,
+                                    'session' : window.localStorage['session'],
+                                    'id' : tmp_ar[1]};
+
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'JSON',
+                        url: app.delete_block_url,
+                        data: params,
+                        async: false
+                    }).done(function(res) {
+                        if (res.status == 'success') {
+                            console.log('delete block success');
+                        } else {
+                            console.log('delete block error');
+                            console.log(res);
+                            navigator.notification.alert('Er is een fout opgetreden, neem contact op met eerstelinks.');
+                        }
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+
+                // create new block with the order of the old block
+                if (app.createBlock(tmp_ar[5], tmp_ar[3], responseJSON.files.url, 0, tmp_ar[7]) == true) {
+                    //navigator.notification.alert('Upload succes',false,'Succes','ok');
+                    app.showAlert('Success', 'Upload success');
+
+                    // reset the attempt counter
+                    app.attempts = 0;
+                } else /* createBlock returned false */ {
+                    //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
+                    app.showAlert();
+                }
+
             }
 
             // redirect to menu page
@@ -812,8 +887,10 @@ var app = {
     //              'url' that we need create the block.
     //              A block takes 3 arguments; a page, a column and an url of the image on the server
     // ------------
-    createBlock : function(page, column, url) {
+    createBlock : function(sexy, column, url, isArt, order) {
         // return value, set to false as default to simplify and shorten the code
+        console.log('order: ' + order);
+
         var ret = false;
 
         // page not used yet
@@ -827,11 +904,12 @@ var app = {
                                 'session': window.localStorage['session'],
                                 'pathname': window.localStorage['active-pathname'],
                                 'column': column,
-                                'is_art': '1',
+                                'is_art': isArt,
                                 'image-url': url,
                                 'isapp': 'true',
-                                'sexy': page,
+                                'sexy': sexy,
                                 'column': column,
+                                'order' : order,
                                 'version': app.version};
 
                 $.ajax({
@@ -1025,6 +1103,8 @@ var app = {
     parseWebsiteStructure : function() {
         console.log('parse website structure');
 
+        $.mobile.loading('show');
+
         // page not used yet
         $.mobile.loading('show');
 
@@ -1047,14 +1127,20 @@ var app = {
                         console.log('ajax get all data success');
                         //console.log(res);
 
+                        // empty the div before rendering to clear previous content
                         $('#choose-section-and-column-content-collapsible-set').empty();
 
+                        // the whole structure will be stored in a string which will then be appended to the div
+                        // after that we will call the jqm refresh method to style the elements
                         var tmp = '';
 
-                        // for each sexy we need to add the following structure:
+                        // each collapsible has the following structure:
+                        //
                         // <div data-role="collapsible">
                         //      <h3>name of collapsible</h3>
-                        //      <p>collapsible content</p>
+                        //      <div>
+                        //          collapsible content which will be columns with 0 or more blocks each
+                        //      </div>
                         // </div>
 
                         // search for sexies
@@ -1070,7 +1156,7 @@ var app = {
                             app.column_offset = sexies[sexy].column_offset;
 
                             tmp += '<div data-role="collapsible">';
-                            tmp += '<h3>' + sexies[sexy].sexy_name + '</h3><div class="where_the_fuck_are_you">';
+                            tmp += '<h3>' + sexies[sexy].sexy_name + '</h3><div class="collapsible-content">';
 
                             // search for columns
                             var columns = sexies[sexy].columns;
@@ -1081,14 +1167,6 @@ var app = {
 
                                 var col_width = columns[column].meta.width;
 
-                                // 8.33 represents 100/12 (the number of columns) of which we subtract 2% for the margin 1% (both left and right)
-                                // of the div
-                                // should be replaced later with a variable sent by the API indicating the number of cols for that sexy
-                                // to make the code generic
-                                // not pixel perfect yet but very close (~99.6% instead of 100%)
-
-                                // update:
-
                                 // calculate the width of 1 column depending on whether there are 12 or less columns (decided by the offset)
                                 // if there is no offest this would look like:
                                 // 100 / 12 = 8.33% (of which we later subtract the proper amount according to the number of columns)
@@ -1097,25 +1175,51 @@ var app = {
                                 // 100 / (12 - (2*1)) = 10%
 
                                 var col_width_percentage = (100 / (12 - (2 * app.column_offset)));
-                                //var div_col_width = (col_width * 8.33) - 2;
-                                var div_col_width = (col_width * col_width_percentage) - 2;
-
-                                tmp += '<div style="margin: 1%; padding: 0; background-color: #ff6600; width: ' + div_col_width + '%; min-height: 100px; float: left;">';
-
+                                var div_col_width = (col_width * col_width_percentage);
 
                                 // if the column is 'is_art' then add some way of notifiying the user and do not create the
                                 // sub block elements
                                 if (columns[column].meta.is_art == "1") {
-                                    tmp += '<p style="text-align: center; background-color: green;">media</p>';
+                                    tmp += '<div id="art_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
+                                    tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-film icon-2x"></i></p></div>';
+
+
                                 } else {
+                                    tmp += '<div class="collapsible-content-column" style="width: ' + div_col_width + '%;">';
                                     // if the column does not contain a media element then generate the block elements
                                     // search for blocks
                                     var blocks = columns[column].blocks;
                                     for (var block in blocks) {
                                         console.log('block' + blocks[block].block_id);
+                                        //tmp += '<div class="collapsible-content-column-block">';
+                                        tmp += '<div id="block_' + blocks[block].block_id + '_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '_order_' + blocks[block].order + '" class="collapsible-content-column-block';
 
-                                        tmp += '<div style="margin: 2%; width: 96%; height: 50px; background-color: white;"></div>';
+                                        // per block type, show a different icon to represent the content
+
+                                        if (blocks[block].type == 'image') {
+                                            tmp += ' image"><p><i class="icon-picture icon-2x"></i></p>';
+                                        } else if (blocks[block].type == 'plaintext') {
+                                            tmp += '"><p><i class="icon-align-left icon-2x"></i></p>';
+                                        } else if (blocks[block].type == 'video') {
+                                            tmp += '"><p><i class="icon-play-circle icon-2x"></i></p>';
+                                        } else if (blocks[block].type == 'hours') {
+                                            tmp += '"><p><i class="icon-time icon-2x"></i></p>';
+                                        } else if (blocks[block].type == 'form') {
+                                            tmp += '"><p><i class="icon-list-alt icon-2x"></i></p>';
+                                        } else if (blocks[block].type == 'location') {
+                                            tmp += '"><p><i class="icon-map-marker icon-2x"></i></p>';
+                                        } else {
+                                            // in case of unknown type show a question mark icon
+                                            tmp += '<p><i class="icon-question-sign"></i></p>';
+                                        }
+
+                                        tmp += '</div>';
                                     }
+
+                                    // add 'new block' block (when user selects this a new block will be created for the content)
+                                    tmp += '<div id="new_block_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column-block new">';
+                                    tmp += '<p><i class="icon-plus-sign icon-2x"></i></p>';
+                                    tmp += '</div>';
                                 }
 
                                 tmp += '</div>';
@@ -1124,20 +1228,41 @@ var app = {
                             tmp += '</div><div style="clear:both;"></div></div>';
                         }
 
-                        //console.log(tmp);
-
-
                         $('#choose-section-and-column-content-collapsible-set').append(tmp);
                         // refresh collapsible set to fix styling
                         $('#choose-section-and-column-content-collapsible-set').collapsibleset( "refresh" );
 
-                        console.log($('#choose-section-and-column-content-collapsible-set').html());
+                        // make only the blocks we wish selectable
+                        $('.collapsible-content-column.art').on('tap', function () {
+                            $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
+                            $(this).addClass('collapsible-content-column-block-effect');
+
+                            navigator.notification.alert('Deze foto zal vervangen worden door de geüploadde foto');
+
+                            $('#upload-photo-submit').button('enable');
+                        });
+                        $('.collapsible-content-column-block.image').on('tap', function () {
+                            $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
+                            $(this).addClass('collapsible-content-column-block-effect');
+
+                            navigator.notification.alert('Deze foto zal vervangen worden door de geüploadde foto');
+
+                            $('#upload-photo-submit').button('enable');
+                        });
+                        $('.collapsible-content-column-block.new').on('tap', function () {
+                            $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
+                            $(this).addClass('collapsible-content-column-block-effect');
+                            $('#upload-photo-submit').button('enable');
+                        });
+
+                        // debug: check to see what jquerymobile makes of the markup
+                        //console.log($('#choose-section-and-column-content-collapsible-set').html());
                     } else {
                         console.log('ajax get all data error');
                     }
                 });
             } catch (err) {
-                console.log(err);
+                console.log('test: ' + err);
             }
         } else /* NOT connected to internet */ {
             //console.log('create block ELSE');

@@ -29,6 +29,11 @@ $( function () {
         $(this).removeClass('menu_icon_glow_effect');
     });
 
+    $('.collapsible-content-column-block').on('tap', function() {
+        $(this).addClass('collapsible-content-column-block-effect');
+        navigator.notification.alert('hey');
+    });
+
     // ----------------------------------------------------------------------------------------------------------
     //
     //                                               Tap events
@@ -71,7 +76,9 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        app.uploadPhoto();
+        var el_id = $('.collapsible-content-column-block-effect').attr('id');
+
+        app.uploadPhoto(el_id);
     });
 
     // If user hits 'settings' icon on menu page
@@ -192,6 +199,7 @@ $( function () {
     });
 
     $('#choose-section-and-column-page').on('pagebeforeshow', function(event) {
+        $('#upload-photo-submit').button('disable');
         app.parseWebsiteStructure();
     });
 
