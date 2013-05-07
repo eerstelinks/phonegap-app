@@ -763,12 +763,21 @@ var app = {
             // if app.photo_location_id = new_block then create a new block in the given column
             // else if photo_location_id = art then replace the art in the given column
             // else if photo_location_id = some block id then replace the image in that block with the new image
+            // app.photo_location_id has the following structure:
+
+            // {type_sexyID_columnID_[blockID_order]}
+            //
+            // type = new (for new block)
+            //        art (for media element)
+            //        replace (to replace an existing block)
+            //
+            // blockID and order are optional
 
             var tmp_ar = app.photo_location_id.split('_');
 
-            if (tmp_ar[0] == 'new' && tmp_ar[1] == 'block') {
+            if (tmp_ar[0] == 'new') {
 
-                if (app.createBlock(tmp_ar[5], tmp_ar[3], responseJSON.files.url, 0, false) == true) {
+                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, false) == true) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
                     app.showAlert('Success', 'Upload success');
 
@@ -780,7 +789,7 @@ var app = {
                 }
             } else if (tmp_ar[0] == 'art') {
                 // user selected art element -> art photo must be replaced by new photo
-                if (app.createBlock(tmp_ar[4], tmp_ar[2], responseJSON.files.url, 1, false) == true) {
+                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 1, false) == true) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
                     app.showAlert('Success', 'Upload success');
 
@@ -791,7 +800,7 @@ var app = {
                     app.showAlert();
                 }
 
-            } else if (tmp_ar[0] == 'block') {
+            } else if (tmp_ar[0] == 'replace') {
                 // user selected existing block
 
                 // delete existing block
@@ -801,7 +810,7 @@ var app = {
                                     'username': window.localStorage['username'],
                                     'version': app.version,
                                     'session' : window.localStorage['session'],
-                                    'id' : tmp_ar[1]};
+                                    'id' : tmp_ar[3]};
 
                     $.ajax({
                         type: 'POST',
@@ -823,7 +832,7 @@ var app = {
                 }
 
                 // create new block with the order of the old block
-                if (app.createBlock(tmp_ar[5], tmp_ar[3], responseJSON.files.url, 0, tmp_ar[7]) == true) {
+                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, tmp_ar[4]) == true) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
                     app.showAlert('Success', 'Upload success');
 
@@ -1090,6 +1099,7 @@ var app = {
             $('#active-pathname-select').append(tmp);
         }
 
+        $('#active-pathname-select').selectmenu( "option", "icon", "star" );
         $('#active-pathname-select').selectmenu('refresh', true);
     },
 
@@ -1182,7 +1192,8 @@ var app = {
                                 // if the column is 'is_art' then add some way of notifiying the user and do not create the
                                 // sub block elements
                                 if (columns[column].meta.is_art == "1") {
-                                    tmp += '<div id="art_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
+                                    //tmp += '<div id="art_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
+                                    tmp += '<div id="art_' + sexies[sexy].sexy_id + '_' + columns[column].meta.column_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
                                     tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-film icon-2x"></i></p></div>';
 
 
@@ -1194,7 +1205,8 @@ var app = {
                                     for (var block in blocks) {
                                         console.log('block' + blocks[block].block_id);
                                         //tmp += '<div class="collapsible-content-column-block">';
-                                        tmp += '<div id="block_' + blocks[block].block_id + '_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '_order_' + blocks[block].order + '" class="collapsible-content-column-block';
+                                        //tmp += '<div id="block_' + blocks[block].block_id + '_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '_order_' + blocks[block].order + '" class="collapsible-content-column-block';
+                                        tmp += '<div id="replace_' + sexies[sexy].sexy_id + '_' + columns[column].meta.column_id + '_' + blocks[block].block_id + '_' + blocks[block].order + '" class="collapsible-content-column-block';
 
                                         // per block type, show a different icon to represent the content
 
@@ -1219,7 +1231,8 @@ var app = {
                                     }
 
                                     // add 'new block' block (when user selects this a new block will be created for the content)
-                                    tmp += '<div id="new_block_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column-block new">';
+                                    //tmp += '<div id="new_block_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column-block new">';
+                                    tmp += '<div id="new_' + sexies[sexy].sexy_id + '_' + columns[column].meta.column_id + '" class="collapsible-content-column-block new">';
                                     tmp += '<p><i class="icon-plus-sign icon-2x"></i></p>';
                                     tmp += '</div>';
                                 }
