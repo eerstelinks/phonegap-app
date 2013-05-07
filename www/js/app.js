@@ -7,7 +7,7 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    cordova_version : 'cordova-2.6.0.js',
+    cordova_version : 'cordova-2.5.0.js',
     authenticate_url : 'http://eerstelinks.nl/api/v1/authenticate',
     image_upload_url : 'http://eerstelinks.nl/api/v1/post/image-ajax',
     create_block_url : 'http://eerstelinks.nl/api/v1/post/block-data',
