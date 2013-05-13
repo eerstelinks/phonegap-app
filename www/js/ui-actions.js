@@ -77,8 +77,9 @@ $( function () {
         event.preventDefault();
 
         var el_id = $('.collapsible-content-column-block-effect').attr('id');
+        app.photo_location_id = el_id;
 
-        app.uploadPhoto(el_id);
+        app.uploadPhoto();
     });
 
     // If user hits 'settings' icon on menu page
@@ -180,6 +181,16 @@ $( function () {
         event.preventDefault();
 
         $.mobile.changePage('#choose-section-and-column-page');
+    });
+
+    //
+    // test
+    //
+    $('#test_icon').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        app.uploadPhoto2();
     });
 
     // ----------------------------------------------------------------------------------------------------------

@@ -438,6 +438,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_ENTITLEMENTS = eerstelinks/eerstelinks.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Adriaan van Ossum (36EPB43ML4)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -448,6 +449,7 @@
 				INFOPLIST_FILE = "eerstelinks/eerstelinks-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = eerstelinks;
+				PROVISIONING_PROFILE = "E4592433-AE07-4298-8F99-15CDE6678B34";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;

@@ -660,11 +660,10 @@ var app = {
     // ------------
     // uploadPhoto: Attemps to upload the photo
     // ------------
-    uploadPhoto : function(el_id) {
+    uploadPhoto : function() {
         $('#upload-photo-submit').button('disable');
 
-        console.log('el_id from uploadPhoto: ' + el_id);
-        app.photo_location_id = el_id;
+        console.log('app.photo_location_id from uploadPhoto: ' + app.photo_location_id);
 
         var imageURI = app.URI;
 
@@ -672,53 +671,95 @@ var app = {
         var loadingAnimationOptions = {text: '',
                                         textVisible: true,
                                         theme: 'b',
-                                        html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden...</p>'};
+                                        html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden...</p><p id="photo_upload_progress_bar"></p>'};
 
         $.mobile.loading('show', loadingAnimationOptions);
 
         // set options for upload
         var options = new FileUploadOptions();
         options.fileKey = "files";
-        options['file-type']='image';
         options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
-
-        //options.mimeType="image/jpeg";
         options.mimeType=app.getMimeType(imageURI);
-
-        // chunked mode on false because of android bug/weird behaviour
-        options.chunkedMode = false;
-
-        // gets session variable from local storage
-        var session = window.localStorage['session'];
+        options.chunkedMode = true;
 
         // sets upload parameters
         var params = {};
-        params.session = session
-        //params.pathname = "sander";
+        params.session = window.localStorage['session'];
         params.pathname = window.localStorage['active-pathname'];
         params['file-type'] = 'image';
         params.isapp = 'true';
         params.version = app.version;
         params.noblock = 'true';
 
+        var headers = {'Connection':'close', 'Cache-Control':'no-cache'};
+
         options.params = params;
+        options.headers = headers;
 
         // try / catch file upload
         if (app.isConnected()) {
             try {
                 // don't hide loading animation here but in uploadPhotoSuccess() or uploadPhotoFail()
                 var ft = new FileTransfer();
-                ft.upload(imageURI, encodeURI(app.image_upload_url), app.uploadPhotoSuccess, app.uploadPhotoError, options);
+
+                ft.onprogress = function(progressEvent) {
+                    if (progressEvent.lengthComputable) {
+                        console.log('loaded / total: ' + progressEvent.loaded + ' / ' + progressEvent.total);
+                        var percent = Math.floor((progressEvent.loaded / progressEvent.total) * 100) + '%';
+                        console.log('percent: ' + percent);
+
+                        // change <p> width
+                        $('#photo_upload_progress_bar').css({'width' : percent});
+                    } else {
+                        console.log('length not computable');
+                    }
+
+                }
+
+                console.log('imageURI: ' + imageURI);
+                console.log('app.image_upload_url: ' + app.image_upload_url);
+                console.log('options: ');
+                console.log(options);
+
+                var temp = app.image_upload_url + '?name=sander2';
+
+                ft.upload(imageURI, encodeURI(temp), app.uploadPhotoSuccess, app.uploadPhotoError, options);
+
             } catch (err) {
                 // hide loading animation and show error
                 $.mobile.loading('hide');
                 //navigator.notification.alert('Probleem met uploaden foto, neem contact op met eerstelinks.');
-                app.showAlert('Fout', 'Probleem met uploaden foto, neem contact op met eerstelinks');
+                app.showAlert('Oeps', 'Probleem met uploaden foto, neem contact op met eerstelinks');
+                console.log(err);
             }
         } else /* NOT connected to internet */ {
             //navigator.notification.alert('U bent niet verbonden met internet!');
-            app.showAlert('Fout', 'Geen internet verbinding');
+            app.showAlert('Oeps', 'Geen internet verbinding');
         }
+    },
+
+    uploadPhoto2: function() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://eerstelinks.nl/api/v1/post/image-ajax.php', true);
+
+        xhr.onload = function(e) {
+            console.log(e);
+        };
+
+        var blob = new Blob(['hello world'], {type: 'text/plain'});
+
+        // Listen to the upload progress.
+        var progressBar = document.querySelector('progress');
+
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                //progressBar.value = (e.loaded / e.total) * 100;
+                var percent = (e.loaded / e.total) * 100;
+                console.log(percent);
+            }
+        };
+
+        xhr.send(blob);
     },
 
     // ------------
@@ -745,6 +786,10 @@ var app = {
     //                     Warning: this means an error message will be considered a succes too because of the 200 code.
     // -------------------
     uploadPhotoSuccess : function(res) {
+
+        console.log('uploadPhotoSuccess res:');
+        console.log(res);
+
         // convert response string to JSON object
         var responseJSON = jQuery.parseJSON(res.response);
 
@@ -753,8 +798,10 @@ var app = {
         // if status = error
         if (responseJSON.status == 'error') {
             // send on to fail() function to handle error
-            app.uploadPhotoError('code 200 but status=error');
+            app.uploadPhotoError();
+            console.log('1');
         } else {
+            console.log('2');
             // create a block container for the image
             // will be changed later to get user input for the container placement
 
@@ -775,72 +822,59 @@ var app = {
 
             var tmp_ar = app.photo_location_id.split('_');
 
+            for (var item in tmp_ar) {
+                console.log('array item: ' + tmp_ar[item]);
+            }
+
             if (tmp_ar[0] == 'new') {
 
                 if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, false) == true) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    app.showAlert('Success', 'Upload success');
+                    //app.showAlert('Success', 'Upload success');
+                    console.log('upload success!');
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
                     //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                    app.showAlert();
+                    //app.showAlert();
+                    console.log('upload error')
                 }
             } else if (tmp_ar[0] == 'art') {
                 // user selected art element -> art photo must be replaced by new photo
-                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 1, false) == true) {
+                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 1, false)) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    app.showAlert('Success', 'Upload success');
+                    //app.showAlert('Success', 'Upload success');
+                    console.log('upload success!');
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
                     //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                    app.showAlert();
+                    //app.showAlert();
+                    console.log('upload error!');
                 }
 
             } else if (tmp_ar[0] == 'replace') {
                 // user selected existing block
 
-                // delete existing block
-                try {
-                    var params = {'type': 'delete-element',
-                                    'pathname': window.localStorage['active-pathname'],
-                                    'username': window.localStorage['username'],
-                                    'version': app.version,
-                                    'session' : window.localStorage['session'],
-                                    'id' : tmp_ar[3]};
+                console.log('3: replace');
 
-                    $.ajax({
-                        type: 'POST',
-                        dataType: 'JSON',
-                        url: app.delete_block_url,
-                        data: params,
-                        async: false
-                    }).done(function(res) {
-                        if (res.status == 'success') {
-                            console.log('delete block success');
-                        } else {
-                            console.log('delete block error');
-                            console.log(res);
-                            navigator.notification.alert('Er is een fout opgetreden, neem contact op met eerstelinks.');
-                        }
-                    });
-                } catch (err) {
-                    console.log(err);
-                }
+                // delete existing block
+                app.deleteBlock(tmp_ar[3]);
 
                 // create new block with the order of the old block
-                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, tmp_ar[4]) == true) {
+                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, tmp_ar[4])) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    app.showAlert('Success', 'Upload success');
+                    //app.showAlert('Success', 'Upload success');
+                    console.log('upload success!');
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
                     //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                    app.showAlert();
+                    //app.showAlert('Er ging iets mis, neem contact op met eerstelinks.');
+                    console.log('replace else');
                 }
 
             }
@@ -862,17 +896,18 @@ var app = {
     // uploadPhotoError: Called when file upload fails
     // -----------------
     uploadPhotoError : function(error) {
+        console.log('uploadPhotoError');
         // for android quirk -> in case first upload fails attempt the upload again
 
         // first fail -> try again
         if (app.attempts == 0) {
             // try upload again
             app.attempts = 1;
-            app.uploadPhoto(app.URI);
+            app.uploadPhoto();
         } else if (app.attempts <= 3) /* less than 3 fails -> try again */ {
             //try upload again
             app.attempts += 1;
-            app.uploadPhoto(app.URI);
+            app.uploadPhoto();
         } else /* more than 3 failed attempts -> send error message and stop attempts */ {
             // reset attempts
             app.attempts = 0;
@@ -882,7 +917,8 @@ var app = {
 
             // show error message to user
             //navigator.notification.alert('Er is een fout opgetreden, neem contact op met eerstelinks',false,'Error','ok');
-            app.showAlert('Fout', 'Fout met uploaden foto, neem contact op met eerstelinks');
+            //app.showAlert('Fout', 'Fout met uploaden foto, neem contact op met eerstelinks');
+            console.log('upload error');
 
             // redirect to menu page
             $.mobile.changePage('#menu-page');
@@ -900,6 +936,10 @@ var app = {
     // ------------
     createBlock : function(sexy, column, url, isArt, order) {
         // return value, set to false as default to simplify and shorten the code
+        console.log('order: ' + order);
+        console.log('column: ' + column);
+        console.log('url: ' + url);
+        console.log('isArt: ' + isArt);
         console.log('order: ' + order);
 
         var ret = false;
@@ -931,22 +971,63 @@ var app = {
                     async: false
                 }).done(function(res) {
                     if (res.status == 'success') {
+                        console.log('createBlock ajax success');
                         ret = true;
                     } else {
                         console.log('ajax post error');
                         console.log(res);
                     }
+                }).fail(function(err) {
+                    console.log('createBlock ajax fail');
+                    console.log(err);
                 });
             } catch (err) {
                 console.log(err);
             }
         } else /* NOT connected to internet */ {
             //console.log('create block ELSE');
+            console.log('createBlock not connected to internet');
         }
 
         $.mobile.loading('hide');
 
+        console.log('createBlock just before ret, ret = ' + ret);
         return ret;
+    },
+
+    // ------------
+    // deleteBlock: Deletes a block with given ID
+    // ------------
+    deleteBlock: function(id) {
+        console.log('delete block with ID: ' + id);
+
+        try {
+            var params = {'type': 'delete-element',
+                            'pathname': window.localStorage['active-pathname'],
+                            'username': window.localStorage['username'],
+                            'version': app.version,
+                            'session' : window.localStorage['session'],
+                            'id' : id};
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'JSON',
+                url: app.delete_block_url,
+                data: params,
+                async: true
+            }).done(function(res) {
+                if (res.status == 'success') {
+                    console.log('delete block success');
+                } else {
+                    console.log('delete block error');
+                    console.log(res);
+                    navigator.notification.alert('Er is een fout opgetreden, neem contact op met eerstelinks.');
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+
     },
 
     // --------------
