@@ -8,25 +8,29 @@ var app = {
     // ----------------------------------------------------------------------------------------------------------
 
     cordova_version : 'cordova-2.5.0.js',
-    authenticate_url : 'http://eerstelinks.nl/api/v1/authenticate',
-    image_upload_url : 'http://eerstelinks.nl/api/v1/post/image-ajax',
-    create_block_url : 'http://eerstelinks.nl/api/v1/post/block-data',
-    feedback_url : 'http://eerstelinks.nl/api/v1/post/app-feedback',
-    server_message_url : 'http://eerstelinks.nl/api/v1/get/server-message',
-    all_data_url : 'http://eerstelinks.nl/api/v1/get/all-data',
-    delete_block_url : 'http://eerstelinks.nl/api/v1/post/delete-element',
+    authenticate_url : 'https://eerstelinks.nl/api/v1/authenticate',
+    image_upload_url : 'https://eerstelinks.nl/api/v1/post/image-ajax.php',
+    //image_upload_url : 'https://eerstelinks.nl/api/v1/post/app/image-ajax.php',
+    create_block_url : 'https://eerstelinks.nl/api/v1/post/block-data',
+    feedback_url : 'https://eerstelinks.nl/api/v1/post/app-feedback',
+    server_message_url : 'https://eerstelinks.nl/api/v1/get/server-message',
+    all_data_url : 'https://eerstelinks.nl/api/v1/get/all-data',
+    delete_block_url : 'https://eerstelinks.nl/api/v1/post/delete-element',
+    add_facebook_account_url : 'https://eerstelinks.nl/connect/facebook/login.php',
+    send_error_message_url : 'https://eerstelinks.nl/api/v1/post/app/error-message',
     device_language : undefined,
     attempts : 0,
     URI : undefined,
     device_width : undefined,
     device_height : undefined,
     pathnames : undefined,
-    version : '1.2',
+    version : '2.3',
     server_message_id : undefined,
     server_message : undefined,
     active_pathname_structure : undefined,
     column_offset : 0,
     photo_location_id: undefined,
+    in_app_browser: undefined,
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -234,7 +238,12 @@ var app = {
                                 'session': window.localStorage['session'],
                                 'pathname': window.localStorage['active-pathname'],
                                 'username': window.localStorage['username'],
-                                'version': app.version};
+                                'version': app.version,
+                                'device_name' : device.name,
+                                'device_cordova' : device.cordova,
+                                'device_platform' : device.platform,
+                                'device_version' : device.version,
+                                'device_model' : device.model};
 
                 $.ajax({
                     type: 'GET',
@@ -339,6 +348,37 @@ var app = {
         }
 
         navigator.notification.alert(message, false, title, 'Sluit bericht');
+    },
+
+    // whenever a user encounters an error send an error message to the server if possible
+    sendErrorMessage: function() {
+        console.log('send error message');
+
+        // if connected to internet, send message to server
+        if (app.isConnected()) {
+            var params = {'type': 'send_error_message',
+                            'session': window.localStorage['session'],
+                            'pathname': window.localStorage['active-pathname'],
+                            'username': window.localStorage['username'],
+                            'version': app.version,
+                            'device_name' : device.name,
+                            'device_cordova' : device.cordova,
+                            'device_platform' : device.platform,
+                            'device_version' : device.version,
+                            'device_model' : device.model};
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'JSON',
+                url: app.send_error_message_url,
+                data: params,
+                async: true
+            }).done(function(res) {
+                //
+            });
+        } else /* NOT connected to internet -> store error message in local storage and send later */ {
+            // do some stuff
+        }
     },
 
     // ----------------------------------------------------------------------------------------------------------
@@ -663,6 +703,7 @@ var app = {
     uploadPhoto : function() {
         $('#upload-photo-submit').button('disable');
 
+
         console.log('app.photo_location_id from uploadPhoto: ' + app.photo_location_id);
 
         var imageURI = app.URI;
@@ -680,7 +721,7 @@ var app = {
         options.fileKey = "files";
         options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
         options.mimeType=app.getMimeType(imageURI);
-        options.chunkedMode = true;
+        options.chunkedMode = false;
 
         // sets upload parameters
         var params = {};
@@ -721,9 +762,7 @@ var app = {
                 console.log('options: ');
                 console.log(options);
 
-                var temp = app.image_upload_url + '?name=sander2';
-
-                ft.upload(imageURI, encodeURI(temp), app.uploadPhotoSuccess, app.uploadPhotoError, options);
+                ft.upload(imageURI, encodeURI(app.image_upload_url), app.uploadPhotoSuccess, app.uploadPhotoError, options);
 
             } catch (err) {
                 // hide loading animation and show error
@@ -736,30 +775,6 @@ var app = {
             //navigator.notification.alert('U bent niet verbonden met internet!');
             app.showAlert('Oeps', 'Geen internet verbinding');
         }
-    },
-
-    uploadPhoto2: function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://eerstelinks.nl/api/v1/post/image-ajax.php', true);
-
-        xhr.onload = function(e) {
-            console.log(e);
-        };
-
-        var blob = new Blob(['hello world'], {type: 'text/plain'});
-
-        // Listen to the upload progress.
-        var progressBar = document.querySelector('progress');
-
-        xhr.upload.onprogress = function(e) {
-            if (e.lengthComputable) {
-                //progressBar.value = (e.loaded / e.total) * 100;
-                var percent = (e.loaded / e.total) * 100;
-                console.log(percent);
-            }
-        };
-
-        xhr.send(blob);
     },
 
     // ------------
@@ -830,28 +845,28 @@ var app = {
 
                 if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, false) == true) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    //app.showAlert('Success', 'Upload success');
+                    app.showAlert('Success', 'Upload success');
                     console.log('upload success!');
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
-                    //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                    //app.showAlert();
+                    navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
+
                     console.log('upload error')
                 }
             } else if (tmp_ar[0] == 'art') {
                 // user selected art element -> art photo must be replaced by new photo
                 if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 1, false)) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    //app.showAlert('Success', 'Upload success');
+                    app.showAlert('Success', 'Upload success');
                     console.log('upload success!');
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
-                    //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                    //app.showAlert();
+                    navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
+
                     console.log('upload error!');
                 }
 
@@ -866,14 +881,14 @@ var app = {
                 // create new block with the order of the old block
                 if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, tmp_ar[4])) {
                     //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    //app.showAlert('Success', 'Upload success');
+                    app.showAlert('Success', 'Upload success');
                     console.log('upload success!');
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
                     //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                    //app.showAlert('Er ging iets mis, neem contact op met eerstelinks.');
+                    app.showAlert('Er ging iets mis, neem contact op met eerstelinks.');
                     console.log('replace else');
                 }
 
@@ -917,8 +932,9 @@ var app = {
 
             // show error message to user
             //navigator.notification.alert('Er is een fout opgetreden, neem contact op met eerstelinks',false,'Error','ok');
-            //app.showAlert('Fout', 'Fout met uploaden foto, neem contact op met eerstelinks');
+            app.showAlert('Fout', 'Fout met uploaden foto, neem contact op met eerstelinks');
             console.log('upload error');
+            console.log(error);
 
             // redirect to menu page
             $.mobile.changePage('#menu-page');
@@ -1248,7 +1264,7 @@ var app = {
                             // specifies the offset of the colums, to be used when calculating the width (%) of the columns
                             app.column_offset = sexies[sexy].column_offset;
 
-                            tmp += '<div data-role="collapsible">';
+                            tmp += '<div class="ui-icon-alt" data-role="collapsible">';
                             tmp += '<h3>' + sexies[sexy].sexy_name + '</h3><div class="collapsible-content">';
 
                             // search for columns
@@ -1373,5 +1389,38 @@ var app = {
     // ---------
     getStats: function() {
         console.log('get stats');
+    },
+
+    addFacebookAccount: function() {
+        console.log('add facebook account');
+
+        var url = app.add_facebook_account_url + '?username=' + window.localStorage['username'];
+
+        app.in_app_browser = window.open(url, '_blank', 'location=no');
+        app.in_app_browser.addEventListener('loadstart', app.addFacebookAccountLoadStart);
+        app.in_app_browser.addEventListener('loadstop', app.addFacebookAccountLoadStop);
+        app.in_app_browser.addEventListener('exit', app.addFacebookAccountExit);
+    },
+
+    addFacebookAccountLoadStart: function(ref) {
+        console.log('load start');
+        console.log(ref);
+    },
+
+    addFacebookAccountLoadStop: function(ref) {
+        console.log('load stop');
+        console.log(ref);
+        console.log('ref.url: ' + ref.url);
+
+        if (ref.url == 'http://eerstelinks.nl/connect/facebook/done.php') {
+            console.log('true');
+            app.in_app_browser.close();
+        }
+    },
+
+    addFacebookAccountExit: function(ref) {
+        console.log('ref exit');
+        console.log(ref);
+        app.in_app_browser = null;
     }
 };

@@ -183,6 +183,13 @@ $( function () {
         $.mobile.changePage('#choose-section-and-column-page');
     });
 
+    $('#add_facebook_account').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        app.addFacebookAccount();
+    });
+
     //
     // test
     //
@@ -190,7 +197,7 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        app.uploadPhoto2();
+        app.uploadPhoto3();
     });
 
     // ----------------------------------------------------------------------------------------------------------
