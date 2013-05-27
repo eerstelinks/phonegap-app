@@ -459,16 +459,16 @@ var app = {
                 $('#login-form-submit').attr("disabled","disabled");
 
                 // retrieve form values
-                var username = $('#login-form-username').val();
-                var password = $('#login-form-password').val();
+                username = $('#login-form-username').val();
+                password = $('#login-form-password').val();
             } else if(from == 'checkCredentials') /* login was called from checkCredentials() */ {
                 // retrieve username and password form local storage
-                var username = window.localStorage['username'];
-                var password = window.localStorage['password'];
+                username = window.localStorage['username'];
+                password = window.localStorage['password'];
             }
 
             // if username and password not empty
-            if(username != '' && password!= '') {
+            if(username != '' && password != '') {
                 // try / catch connection
                 try {
                     var params = {'username' : username,
@@ -529,7 +529,7 @@ var app = {
                             // show error message to user
                             //navigator.notification.alert(res.message);
                             app.showAlert('Fout', res.message);
-                            $.mobile.changePage('#menu-page');
+                            $.mobile.changePage('#login-page');
                         } else /* else (unknown error) show error message to user */ {
                             // hide loading animation
                             $.mobile.loading('hide');
@@ -537,7 +537,7 @@ var app = {
                             // error message to user
                             // navigator.notification.alert('Log in mislukt');
                             app.showAlert('Fout', 'Log in mislukt');
-                            $.mobile.changePage('#menu-page');
+                            $.mobile.changePage('#login-page');
                         }
 
                         // re-enable the login button
