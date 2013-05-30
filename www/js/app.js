@@ -7,30 +7,29 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    cordova_version : 'cordova-2.5.0.js',
-    authenticate_url : 'https://eerstelinks.nl/api/v1/authenticate',
-    image_upload_url : 'https://eerstelinks.nl/api/v1/post/image-ajax.php',
-    //image_upload_url : 'https://eerstelinks.nl/api/v1/post/app/image-ajax.php',
-    create_block_url : 'https://eerstelinks.nl/api/v1/post/block-data',
-    feedback_url : 'https://eerstelinks.nl/api/v1/post/app-feedback',
-    server_message_url : 'https://eerstelinks.nl/api/v1/get/server-message',
-    all_data_url : 'https://eerstelinks.nl/api/v1/get/all-data',
-    delete_block_url : 'https://eerstelinks.nl/api/v1/post/delete-element',
-    add_facebook_account_url : 'https://eerstelinks.nl/connect/facebook/login.php',
-    send_error_message_url : 'https://eerstelinks.nl/api/v1/post/app/error-message',
-    device_language : undefined,
-    attempts : 0,
-    URI : undefined,
-    device_width : undefined,
-    device_height : undefined,
-    pathnames : undefined,
-    version : '2.3',
-    server_message_id : undefined,
-    server_message : undefined,
-    active_pathname_structure : undefined,
-    column_offset : 0,
-    photo_location_id: undefined,
-    in_app_browser: undefined,
+    cordova_version             : 'cordova-2.5.0.js',
+    authenticate_url            : 'https://eerstelinks.nl/api/v1/authenticate',
+    image_upload_url            : 'https://eerstelinks.nl/api/v1/post/image-ajax.php',
+    create_block_url            : 'https://eerstelinks.nl/api/v1/post/block-data',
+    feedback_url                : 'https://eerstelinks.nl/api/v1/post/app-feedback',
+    server_message_url          : 'https://eerstelinks.nl/api/v1/get/server-message',
+    all_data_url                : 'https://eerstelinks.nl/api/v1/get/all-data',
+    delete_block_url            : 'https://eerstelinks.nl/api/v1/post/delete-element',
+    add_facebook_account_url    : 'https://eerstelinks.nl/connect/facebook/login.php',
+    send_error_message_url      : 'https://eerstelinks.nl/api/v1/post/app/error-message',
+    device_language             : undefined,
+    attempts                    : 0,
+    URI                         : undefined,
+    device_width                : undefined,
+    device_height               : undefined,
+    pathnames                   : undefined,
+    version                     : '2.3',
+    server_message_id           : undefined,
+    server_message              : undefined,
+    active_pathname_structure   : undefined,
+    column_offset               : 0,
+    photo_location_id           : undefined,
+    in_app_browser              : undefined,
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -1391,6 +1390,9 @@ var app = {
         console.log('get stats');
     },
 
+    // use loadstart or loadstop on 'return.php' to start fetching the facebook accounts from server api
+    // so that when the inAppBrowser closes the newly added account is immediately visible on the page!
+
     addFacebookAccount: function() {
         console.log('add facebook account');
 
@@ -1412,7 +1414,7 @@ var app = {
         console.log(ref);
         console.log('ref.url: ' + ref.url);
 
-        if (ref.url == 'http://eerstelinks.nl/connect/facebook/done.php') {
+        if (ref.url == 'https://eerstelinks.nl/connect/facebook/done.php') {
             console.log('true');
             app.in_app_browser.close();
         }
