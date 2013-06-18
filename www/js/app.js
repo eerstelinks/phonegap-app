@@ -1,4 +1,46 @@
 
+/**
+* @author Sander van Golen <sander@eertelinks.nl>
+* @version 3.0
+* @namespace
+* @property {string} cordova_version                    - the current cordova version
+* @property {string} authenticate_url                   - the url used for authentication
+* @property {string} image_upload_url                   - the url used for uploading images
+* @property {string} create_block_url                   - the url used for creating 'blocks'
+* @property {string} feedback_url                       - the url used for submitting feedback
+* @property {string} server_message_url                 - the url used to check for messages from the server
+* @property {string} all_data_url                       - the url used to get the structure of the 'active' website
+* @property {string} delete_block_url                   - the url used to delete a block
+* @property {string} send_error_message_url             - the url used to send an error message to the server
+* @property {string} add_facebook_account_url           - the url used when opening an inAppBrowser window to add a Facebook account
+* @property {string} get_facebook_accounts_url          - the url used to retrieve all related Facebook accounts from the database
+* @property {string} post_to_facebook_url               - the url used to post a message to Facebook via the server API
+* @property {string} facebook_exit_inappbrowser_url     - the url used to close the inAppBrowser window
+* @property {string} add_twitter_account_url            - the url used when opening an inAppBrowser window to add a Twitter account
+* @property {string} get_twitter_accounts_url           - the url used to retrieve all related Twitter accounts from the database
+* @property {string} post_to_twitter_url                - the url used to post a message to Twitter via the server API
+* @property {string} twitter_exit_inappbrowser_url      - the url used to close the inAppBrowser window
+* @property {string} app_language                       - the language setting of the app
+* @property {number} attempts                           - the number of attempts at uploading an image
+* @property {string} URI                                - the URI of the selected or captured photo
+* @property {string} device_width                       - the width of the device's screen (in pixels)
+* @property {string} device_height                      - the height of the device's screen (in pixels)
+* @property {array} pathnames                           - an array of websites associated with the user account
+* @property {string} version                            - the current version of the app
+* @property {string} server_message_id                  - the ID of the server message
+* @property {string} server_message                     - the server message
+* @property {string} column_offset                      - the offset of columns on the active website
+* @property {string} photo_location_id                  - the location selected by the user (placement for image)
+* @property {string} in_app_browser                     - the inAppBrowser object used to add social media accounts
+* @property {string} facebook_accounts                  - JSON object with Facebook accounts associated with the user account returned by the server API
+* @property {string} twitter_accounts                   - JSON object with Twitter accounts associated with the user account returned by the server API
+* @property {string} social_media_image_url             - url used for social media image
+* @property {boolean} post_to_facebook_success          - boolean: set to true on Facebook ajax post success
+* @property {boolean} post_to_facebook_complete         - boolean: set to true on Facebook ajax post completion
+* @property {string} post_to_twitter_success            - boolean: set to true on Twitter ajax post success
+* @property {string} post_to_twitter_complete           - boolean: set to true on Twitter ajax post completion
+*/
+
 var app = {
 
     // ----------------------------------------------------------------------------------------------------------
@@ -7,29 +49,42 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    cordova_version             : 'cordova-2.5.0.js',
-    authenticate_url            : 'https://eerstelinks.nl/api/v1/authenticate',
-    image_upload_url            : 'https://eerstelinks.nl/api/v1/post/image-ajax.php',
-    create_block_url            : 'https://eerstelinks.nl/api/v1/post/block-data',
-    feedback_url                : 'https://eerstelinks.nl/api/v1/post/app-feedback',
-    server_message_url          : 'https://eerstelinks.nl/api/v1/get/server-message',
-    all_data_url                : 'https://eerstelinks.nl/api/v1/get/all-data',
-    delete_block_url            : 'https://eerstelinks.nl/api/v1/post/delete-element',
-    add_facebook_account_url    : 'https://eerstelinks.nl/connect/facebook/login.php',
-    send_error_message_url      : 'https://eerstelinks.nl/api/v1/post/app/error-message',
-    device_language             : undefined,
-    attempts                    : 0,
-    URI                         : undefined,
-    device_width                : undefined,
-    device_height               : undefined,
-    pathnames                   : undefined,
-    version                     : '2.3',
-    server_message_id           : undefined,
-    server_message              : undefined,
-    active_pathname_structure   : undefined,
-    column_offset               : 0,
-    photo_location_id           : undefined,
-    in_app_browser              : undefined,
+    cordova_version                 : 'cordova-2.5.0.js',
+    authenticate_url                : 'https://eerstelinks.nl/api/v1/authenticate',
+    image_upload_url                : 'https://eerstelinks.nl/api/v1/post/image-ajax',
+    create_block_url                : 'https://eerstelinks.nl/api/v1/post/block-data',
+    feedback_url                    : 'https://eerstelinks.nl/api/v1/post/app-feedback',
+    server_message_url              : 'https://eerstelinks.nl/api/v1/get/server-message',
+    all_data_url                    : 'https://eerstelinks.nl/api/v1/get/all-data',
+    delete_block_url                : 'https://eerstelinks.nl/api/v1/post/delete-element',
+    send_error_message_url          : 'https://eerstelinks.nl/api/v1/post/app/error-message',
+    add_facebook_account_url        : 'https://eerstelinks.nl/connect/facebook/login',
+    get_facebook_accounts_url       : 'https://eerstelinks.nl/api/v1/facebook/get/accounts',
+    post_to_facebook_url            : 'https://eerstelinks.nl/api/v1/facebook/post/publish',
+    facebook_exit_inappbrowser_url  : 'https://eerstelinks.nl/connect/facebook/done',
+    add_twitter_account_url         : 'https://eerstelinks.nl/connect/twitter/login',
+    get_twitter_accounts_url        : 'https://eerstelinks.nl/api/v1/twitter/get/accounts',
+    post_to_twitter_url             : 'https://eerstelinks.nl/api/v1/twitter/post/publish',
+    twitter_exit_inappbrowser_url   : 'https://eerstelinks.nl/connect/twitter/done',
+    app_lang                        : undefined,
+    attempts                        : 0,
+    URI                             : undefined,
+    device_width                    : undefined,
+    device_height                   : undefined,
+    pathnames                       : undefined,
+    version                         : '3.0',
+    server_message_id               : undefined,
+    server_message                  : undefined,
+    column_offset                   : 0,
+    photo_location_id               : undefined,
+    in_app_browser                  : undefined,
+    facebook_accounts               : undefined,
+    twitter_accounts                : undefined,
+    social_media_image_url          : undefined,
+    post_to_facebook_success        : undefined,
+    post_to_facebook_complete       : undefined,
+    post_to_twitter_success         : undefined,
+    post_to_twitter_complete        : undefined,
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -37,18 +92,21 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    // -----------
-    // initialize: Application Constructor
-    // -----------
-    init : function() {
+    /**
+    * Initializes the app and sets the 'device ready' event listener
+    * @constructor
+    */
+    init : function () {
         this.checkOS();
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
 
-    // --------
-    // checkOS: checks whether the OS is iOS or Android and loads the correct cordova version
-    // --------
-    checkOS : function() {
+    /**
+    * Checks which OS is being used.
+    * @function checkOS
+    * @memberOf app
+    */
+    checkOS : function () {
         if(navigator.userAgent.indexOf('Android') > 0) {
             $('script').attr('src', 'cordova/android/' + app.cordova_version).appendTo('head');
         }
@@ -57,10 +115,12 @@ var app = {
         }
     },
 
-    // --------------
-    // onDeviceReady: when 'device ready' event is received load the other event listeners and call checkCredentials()
-    // --------------
-    onDeviceReady : function() {
+    /**
+    * Called once the 'device ready' event has been fired in 'init' and adds additional event listeners.
+    * @method onDeviceReady
+    * @memberOf app
+    */
+    onDeviceReady : function () {
         document.addEventListener('pause', app.onPause, false);
         document.addEventListener('resume', app.onResume, false);
         document.addEventListener('online', app.onOnline, false);
@@ -72,6 +132,7 @@ var app = {
         app.setDeviceLanguage();
         app.checkCredentials();
         app.getServerMessage();
+        app.checkForStoredErrors();
     },
 
     // ----------------------------------------------------------------------------------------------------------
@@ -80,40 +141,46 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    // --------
-    // onPause: triggered when app is 'paused', ie: pressed home button or screen turns off etc.
-    // --------
-    onPause : function() {
+    /**
+    * Triggered when the app is paused.
+    * @function onPause
+    * @memberOf app
+    */
+    onPause : function () {
     },
 
-    // ---------
-    // onResume: triggered when app is resumed from 'paused' state.
-    // ---------
-    onResume : function() {
-        //console.log('resume');
+    /**
+    * Triggered when the app is resumed from paused state.
+    * @function onResume
+    * @memberOf app
+    */
+    onResume : function () {
     },
 
-    // ---------
-    // onOnline: triggered when internet connection is established
-    // ---------
-    onOnline : function() {
-        //console.log('online');
+    /**
+    * Triggered when the device establishes an internet connection (2g/3g/wifi/...)
+    * @function onOnline
+    * @memberOf app
+    */
+    onOnline : function () {
     },
 
-    // ----------
-    // onOffline: triggered when the internet connection is lost
-    // ----------
-    onOffline : function() {
-        //console.log('offline');
+    /**
+    * Triggered when the device loses the internet connection
+    * @function onOffline
+    * @memberOf app
+    */
+    onOffline : function () {
     },
 
-    // -------------
-    // onBackButton: Catches back button calls and redirects users to the correct pages.
-    //               Necessary for android back button usage.
-    //               Warning: By using the onBackButton to capture back button events the back button
-    //               will no longer work on the device unless the even is handled here !
-    // -------------
-    onBackButton : function() {
+    /**
+    * Catches back button calls and redirects user to the correct page.<br>
+    * Warning: By capturing the back button events the back button will no longer work as expected unless
+    * the event is captured for each existing page.
+    * @function onBackButton
+    * @memberOf app
+    */
+    onBackButton : function () {
         if ($.mobile.activePage.attr('id') == 'loading-page') {
             // if for some reason the user gets stuck on the loading page let the user exit the app
             app.exitApp();
@@ -160,18 +227,23 @@ var app = {
         }
     },
 
-    // -------------
-    // onMenuButton: detects menu button trigger for Android devices
-    // -------------
-    onMenuButton : function() {
-        // not implemented yet, may not be necessary
-        // update: menu button deprecated since jan 2012 by Google
+    /**
+    * Captures the menu button event.<br>
+    * Warning: deprecated in Android since january 2012 by Google, as with the back button; by capturing the event it will no
+    * longer work as expected (effectively rendering the button useless)
+    * @function onMenuButton
+    * @memberOf app
+    */
+    onMenuButton : function () {
     },
 
-    // ------------
-    // isConnected: checks internet connection and returns a boolean (might be better to check for 'unknown' and 'none')
-    // ------------
-    isConnected : function() {
+    /**
+    * Checks whether there is an active internet connection.
+    * @function isConnected
+    * @returns {boolean}
+    * @memberOf app
+    */
+    isConnected : function () {
         var con = navigator.connection.type;
 
         if(con == 'wifi' || con == 'ethernet' || con == '2g' || con == '3g' || con == '4g' || con == 'cell') {
@@ -182,10 +254,12 @@ var app = {
         }
     },
 
-    // --------
-    // exitApp: exits the application (not pause but exit, kills the app)
-    // --------
-    exitApp : function() {
+    /**
+    * Exits the application (not paused state but kills the app)
+    * @function exitApp
+    * @memberOf app
+    */
+    exitApp : function () {
         navigator.app.exitApp();
     },
 
@@ -195,35 +269,146 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    // ------------------
-    // getConnectionType: returns the type of connection ('wifi', '3g', ...)
-    // ------------------
-    getConnectionType : function() {
+    /**
+    * Gets the type of the connection
+    * @function getConnectionType
+    * @returns {string} Type of connection
+    * @memberOf app
+    */
+    getConnectionType : function () {
         return navigator.connection.type;
     },
 
-    // -------------------
-    // setDeviceResoltion: gets the devide width and height and stores them in variables
-    // -------------------
-    setDeviceResolution : function() {
+    /**
+    * Sets the width and height of the device
+    * @function setDeviceResolution
+    * @memberOf app
+    */
+    setDeviceResolution : function () {
         app.device_width = screen.width;
         app.device_height = screen.height;
     },
 
-    // ------------------
-    // setDeviceLanguage: gets the language of the device
-    // ------------------
-    setDeviceLanguage : function() {
-        var lang = navigator.language.split("-");
-        app.device_language = lang[0];
+    /**
+    * Sets the language of the device
+    * @function setDeviceLanguage
+    * @memberOf app
+    */
+    setDeviceLanguage : function () {
+        console.log('set device language');
+        var tmp = navigator.language.split("-");
+        var device_language = tmp[0];
+        console.log('device language: ' + device_language);
+
+        console.log('languages object:');
+        console.log(languages);
+
+        /*for (lang in languages) {
+            console.log('lang + tag: ' + lang + ': ' + languages[lang]);
+        }*/
+
+        // is there already a language stored in the localStorage?
+        if (window.localStorage['language'] != undefined) {
+            console.log('if');
+            console.log('stored language: ' + window.localStorage['language']);
+            // yes there is -> use that language
+            app.app_lang = lang[window.localStorage['language']];
+            console.log('app.app_lang:');
+            console.log(app.app_lang);
+
+            app.setUiLanguage();
+        } else {
+            console.log('else');
+            // no there isn't -> get device language
+            // if device language is supported set that as language and store in localStorage
+            var lang_supported = false;
+
+            if (device_language in lang) {
+                console.log('found a match!');
+                app.app_lang = lang[device_language];
+                window.localStorage['language'] = device_language;
+            } else {
+                app.app_lang = lang['nl'];
+                window.localStorage['language'] = 'nl';
+            }
+
+            // app.app_lang = lang[ln];
+            // else set 'en' as default language and store in localStorage
+            // app.app_lang = lang['en'];
+            console.log(app.app_lang['error_close']);
+        }
     },
 
-    // -----------------
-    // getServerMessage: connects to the server and retrieves a message/update if there is one
-    // -----------------
-    getServerMessage: function() {
-        // console.log('get server message');
+    /**
+    * Saves the language of the app when a user chooses a different language
+    * @function changeLanguage
+    * @memberOf app
+    */
+    changeLanguage: function (ln) {
+        console.log('change language to: ' + ln);
+        var tmp = languages[ln];
+        console.log(tmp);
+        app.app_lang = lang[tmp];
+        window.localStorage['language'] = tmp;
+    },
 
+    /**
+    * Changes the language of the app when a user chooses a different language and when starting the app
+    * @function setUiLanguage
+    * @memberOf app
+    */
+    setUiLanguage: function () {
+        // login page UI elements
+        $('#login-form-username').attr('placeholder', app.app_lang.placeholder.username);
+        $('#login-form-password').attr('placeholder', app.app_lang.placeholder.password);
+        $('#login-form-submit').html(app.app_lang.button.login);
+
+        // choose active website page
+        $('#choose_active_website').html(app.app_lang.header.choose_active_website);
+
+        // menu page UI elements
+        $('#upload_photo_icon_text').html(app.app_lang.menu.item.upload_photo);
+        $('#capture_photo_icon_text').html(app.app_lang.menu.item.take_photo);
+        $('#social_media_icon_text').html(app.app_lang.menu.item.social_media);
+        $('#feedback_icon_text').html(app.app_lang.menu.item.feedback);
+
+        // side panel UI elements
+        $('#logout_button_text').html(app.app_lang.panel.logout);
+        $('#active-pathname-select-label').html(app.app_lang.panel.active_website);
+        $('#language_select_label').html(app.app_lang.panel.active_language);
+
+        // photo preview page
+        $('#photo_preview_header').html(app.app_lang.header.photo_preview);
+        $('#choose-section-column-button').html(app.app_lang.button.choose_location);
+
+        // choose location page
+        $('#choose_location_header').html(app.app_lang.header.choose_location);
+        $('#upload-photo-submit').html(app.app_lang.button.upload_photo);
+
+        // social media page (composition)
+        $('#social_media_message_header').html(app.app_lang.header.social_media_message);
+        $('#social-media-messsage').attr('placeholder', app.app_lang.placeholder.social_media_message);
+        $('#social_media_page_choose_accounts').html(app.app_lang.button.social_media_message);
+
+        // social media page (account select + send)
+        $('#social_media_accounts_header').html(app.app_lang.header.social_media_accounts);
+        $('#add_facebook_account_span').html(app.app_lang.button.add_facebook_account);
+        $('#add_twitter_account_span').html(app.app_lang.button.add_twitter_account);
+        $('#social_media_accounts_publish').html(app.app_lang.button.social_media_accounts);
+
+        // feedback page
+        $('#feedback_header').html(app.app_lang.header.feedback);
+        $('#feedback-form-messsage').attr('placeholder', app.app_lang.placeholder.feedback);
+        $('#feedback-form-submit').html(app.app_lang.button.feedback);
+    },
+
+    /**
+    * Gets the latest message from the server API (if there is one)
+    * @function getServerMessage
+    * @returns {boolean} true if there is a server message or false if there is no new server message
+    * @memberOf app
+    */
+    getServerMessage: function () {
         // return value, set to false as default to simplify and shorten the code
         var ret = false;
 
@@ -253,7 +438,6 @@ var app = {
                 }).done(function(res) {
                     if (res.status == 'success') {
                         ret = true;
-                        // console.log('ajax get server message success');
 
                         // check if message has already been seen (in local storage) and if message has been seen do NOT show it.
                         app.server_message_id = res.id;
@@ -274,8 +458,7 @@ var app = {
                 console.log(err);
             }
         } else /* NOT connected to internet */ {
-            //console.log('create block ELSE');
-            app.showAlert('Fout', 'Geen internet verbinding!');
+            // if not connected to internet -> do nothing (otherwise user gets annoying warning for something he/she doesn't understand)
         }
 
         $.mobile.loading('hide');
@@ -283,40 +466,48 @@ var app = {
         return ret;
     },
 
-    // ------------------
-    // showServerMessage: sets and shows the message from the server
-    // ------------------
-    showServerMessage: function(res) {
-        // console.log(res);
-
+    /**
+    * Shows the server message (if there is one)
+    * @function showServerMessage
+    * @memberOf app
+    */
+    showServerMessage: function (res) {
+        // append the message to the <p> element designated for it
         $('#server_message_p').append(res.message);
 
         // show server message
         $('#server_message_div').show();
     },
 
-    // ------------------
-    // hideServerMessage: hides the message from the server
-    // ------------------
-    hideServerMessage: function() {
+    /**
+    * Hides the server message if it has been dismissed
+    * @function hideServerMessage
+    * @memberOf app
+    */
+    hideServerMessage: function () {
         $('#server_message_div').hide();
     },
 
-    // ---------------------
-    // dismissServerMessage: triggered when user closes the server message
-    //                       stores the message in the local storage so that it isn't shown again
-    // ---------------------
-    dismissServerMessage: function() {
+    /**
+    * Triggered when user closes the server message. Stores the message in local storage so that it isn't displayed again
+    * @function dismissServerMessage
+    * @memberOf app
+    */
+    dismissServerMessage: function () {
         // set message as seen in local storage
         window.localStorage[app.server_message_id] = app.server_message;
 
+        // empty the message <div> container and hide the container
         $('#server_message_div').empty();
         $('#server_message_div').hide();
     },
 
-    // -------------------------
-    // isServerMessageDismissed: checks if a message with the given ID has been dismissed
-    // -------------------------
+    /**
+    * Checks whether the message has already been dismissed
+    * @function isServerMessageDismissed
+    * @returns {boolean}
+    * @memberOf app
+    */
     isServerMessageDismissed: function(server_message_id) {
         var ret = false;
 
@@ -328,31 +519,14 @@ var app = {
         return ret;
     },
 
-    // ----------
-    // showAlert: generic method for showing alerts
-    // ----------
-    showAlert: function(title, server, custom) {
-        if (typeof title == 'undefined' || title == '') {
-            title = 'Melding';
-        }
-
-        var message;
-
-        if (typeof server != 'undefined' && server != '') {
-            message = server;
-        } else if (typeof custom != 'undefined' && custom != '') {
-            message = custom;
-        } else {
-            message = 'Oeps, er is iets mis gegaan. Probeer het opnieuw. Laat het a.u.b. weten via de feedback functie.';
-        }
-
-        navigator.notification.alert(message, false, title, 'Sluit bericht');
-    },
-
-    // whenever a user encounters an error send an error message to the server if possible
-    sendErrorMessage: function() {
-        console.log('send error message');
-
+    /**
+    * Sends an error message to the server whenever a user encounter a problem/error.<br>
+    * Note: If the user is not connected to internet the error is stored in local storage and sent when an internet connection is established
+    * @function sendErrorMessage
+    * @param {string} error_message the error message to send back to the server API
+    * @memberOf app
+    */
+    sendErrorMessage: function(error_message) {
         // if connected to internet, send message to server
         if (app.isConnected()) {
             var params = {'type': 'send_error_message',
@@ -364,19 +538,68 @@ var app = {
                             'device_cordova' : device.cordova,
                             'device_platform' : device.platform,
                             'device_version' : device.version,
-                            'device_model' : device.model};
+                            'device_model' : device.model,
+                            'error_message' : error_message};
 
             $.ajax({
                 type: 'POST',
                 dataType: 'JSON',
                 url: app.send_error_message_url,
                 data: params,
-                async: true
-            }).done(function(res) {
-                //
+                async: true,
+                success: function(json) {
+                    // remove errors stored on localStorage (if any)
+                    delete window.localStorage['errors'];
+                },
+                error: function(xhr, status) {
+                    //
+                },
+                complete: function(xhr, status) {
+                    //
+                }
             });
         } else /* NOT connected to internet -> store error message in local storage and send later */ {
-            // do some stuff
+            // if errors already exists then add a new error to the array
+            if (window.localStorage['errors'] == undefined) {
+                // create assoc array (object) from the stored errors
+                var data = localStorage['errors'];
+                var errors = JSON.parse(data);
+
+                // get time in milliseconds to use as key
+                var timeInMilliseconds = new Date().getTime();
+                errors[timeInMilliseconds] = error_message;
+
+                // convert assoc array (object) to string and insert into localstorage
+                var  tmp = JSON.stringify(errors);
+                localStorage['errors'] = tmp;
+            } else /* errors array doesn't exist yet -> create it */ {
+                // create empty associative array (object)
+                var errors = {};
+
+                // get time in milliseconds to use as key
+                var timeInMilliseconds = new Date().getTime();
+                errors[timeInMilliseconds] = error_message;
+
+                // convert assoc array (object) to string and insert into localstorage
+                var  tmp = JSON.stringify(errors);
+                localStorage['errors'] = tmp;
+            }
+        }
+    },
+
+    /**
+    * Checks if there are any stored error messages, loops throught them and sends them using the 'sendErrorMessage' function
+    * {@linkcode app.sendErrorMessage}
+    * @function checkForStoredErrors
+    * @memberOf app
+    */
+    checkForStoredErrors: function () {
+        //
+        var data = window.localStorage['errors'];
+        var tmp = JSON.parse(data);
+
+        for (error in tmp) {
+            app.sendErrorMessage(tmp[error]);
         }
     },
 
@@ -386,14 +609,11 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    // -----------------
-    // checkCredentials:
-    //
-    // usage: checks for existing credentials
-    //        if username and password are stored then submit the credentials to the login() function
-    //        if only the username is known then the user probably logged out so direct the user to the login page and fill in his/her username
-    //        if neither username or password is known do nothing/send the user to the login page
-    // -----------------
+    /**
+    * Checks for existing credentials and either submits existing login credentials or sends the user to the login page.
+    * @function checkCredentials
+    * @memberOf app
+    */
     checkCredentials : function() {
         // show loading animation whilst checking creds
         $.mobile.loading('show');
@@ -430,19 +650,18 @@ var app = {
             $.mobile.loading('hide');
 
             // send an alert to notify the user
-            //navigator.notification.alert('Geen internet verbinding!');
-            app.showAlert('Fout', 'Geen internet verbinding');
+            navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
 
             // go to login page
             $.mobile.changePage('#login-page');
         }
     },
 
-    // ------
-    // login: collect the username and password from the login form and submit a POST request to the server
-    //        if the username + password combination is correct we receive a JSON object with the username/pathnames/session
-    //        if the credentials are incorrect give a warning message to the user
-    // ------
+    /**
+    * Collects the user credentials and attempts to authenticate the user.
+    * @function login
+    * @memberOf app
+    */
     login : function(from) {
         // check internet connection
         if (app.isConnected()) {
@@ -494,9 +713,6 @@ var app = {
                                 // stop loading animation
                                 $.mobile.loading('hide');
 
-                                // show choose-pathname-icon (necessary in case hide() was previously cached)
-                                // $('#pathname_choice_icon_div').show();
-
                                 // if active pathname already set go straight to menu page
                                 if (window.localStorage['active-pathname'] == undefined) {
                                     // load pathname choice page
@@ -507,15 +723,11 @@ var app = {
                                 }
 
                             } else /* if only 1 pathname go directly to menu page */ {
-                                //console.log('just 1 pathname!');
                                 // stop loading animation
                                 $.mobile.loading('hide');
 
                                 // set active pathname
                                 window.localStorage['active-pathname'] = app.pathnames[0];
-
-                                // hide choose-pathname-icon
-                                // $('#pathname_choice_icon_div').hide();
 
                                 // load menu page
                                 $.mobile.changePage('#menu-page');
@@ -526,16 +738,14 @@ var app = {
                             $.mobile.loading('hide');
 
                             // show error message to user
-                            //navigator.notification.alert(res.message);
-                            app.showAlert('Fout', res.message);
+                            navigator.notification.alert(res.message, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                             $.mobile.changePage('#login-page');
                         } else /* else (unknown error) show error message to user */ {
                             // hide loading animation
                             $.mobile.loading('hide');
 
                             // error message to user
-                            // navigator.notification.alert('Log in mislukt');
-                            app.showAlert('Fout', 'Log in mislukt');
+                            navigator.notification.alert(app.app_lang.alert.login_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                             $.mobile.changePage('#login-page');
                         }
 
@@ -544,29 +754,28 @@ var app = {
                     },'json');
                 } catch (err) /* catch for POST connection */ {
                     // should make this a bit prettier (maybe quit app or something)
-                    //navigator.notification.alert('Er is een probleem opgetreden, neem contact op met eerstelinks');
-                    app.showAlert('Fout');
+                    navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                 }
             } else /* if username or password is empty show error message */ {
                 // stop loading animation
                 $.mobile.loading('hide');
 
                 // show error message
-                //navigator.notification.alert('E-mail adres en wachtwoord invoeren');
-                app.showAlert('Fout', 'E-mail en wachtwoord invoeren');
+                navigator.notification.alert(app.app_lang.alert.email_password_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
 
                 // re-enable the login button
                 $('#login-form-submit').removeAttr("disabled");
             }
         } else /* NOT connected to internet */ {
-            //navigator.notification.alert('Geen internet verbinding!');
-            app.showAlert('Fout', 'Geen internet verbinding');
+            navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
         }
     },
 
-    // -------
-    // logout: destroy the stored password/pathnames/session and empty the password field on the login page and redirect the user to the login page
-    // -------
+    /**
+    * Log the user out of the app, destroys stored sessions information and redirects the user to the login page
+    * @function logout
+    * @memberOf app
+    */
     logout : function() {
         // show loading animation
         $.mobile.loading('show');
@@ -591,9 +800,12 @@ var app = {
         $.mobile.changePage('#login-page');
     },
 
-    // ---------------
-    // isValidSession: Checks if session corresponds to session stored in database and returns a boolean
-    // ---------------
+    /**
+    * Checks if the sessions is the same as the sessions stored in the database
+    * @function isValidSession
+    * @returns {boolean}
+    * @memberOf app
+    */
     isValidSession : function() {
         var session = window.localStorage['session'];
         var action = 'checksession';
@@ -622,14 +834,12 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    // -------------
-    // capturePhoto: Triggered by a button. Brings up the camera interface
-    // -------------
+    /**
+    * Triggered by a button, brings up the camera interface
+    * @function capturePhoto
+    * @memberOf app
+    */
     capturePhoto : function() {
-        // needs some more work
-        // check docs for 'CameraPopoverOptions' for iOS quirks
-        //http://docs.phonegap.com/en/2.5.0/cordova_camera_camera.md.html#Camera
-
         // set the options for taking photos
         var options = {quality: 80,
                        destinationType: Camera.DestinationType.FILE_URI,
@@ -646,17 +856,37 @@ var app = {
         navigator.camera.getPicture(app.onCaptureOrGetSuccess, app.onCaptureOrGetFail, options);
     },
 
-    // ---------
-    // getPhoto: Triggered by a button. Brings up the device library to select a photo
-    // ---------
+
+    /**
+    * Triggered by button on 'social media' page, brings up the camera interface
+    * @function socialMediaCapturePhoto
+    * @memberOf app
+    */
+    socialMediaCapturePhoto : function() {
+        // set the options for taking photos
+        var options = {quality: 80,
+                       destinationType: Camera.DestinationType.FILE_URI,
+                       sourceType: Camera.PictureSourceType.CAMERA,
+                       allowEdit: false,
+                       encodingType: Camera.EncodingType.JPEG,
+                       targetWidth: 1280,
+                       targetHeight: 1280,
+                       popoverOptions: CameraPopoverOptions,
+                       correctOrientation: true,
+                       saveToPhotoAlbum: true};
+
+        // capture photo with specified options
+        navigator.camera.getPicture(app.socialMediaOnCaptureOrGetSuccess, app.socialMediaOnCaptureOrGetFail, options);
+    },
+
+    /**
+    * Triggered by a button, brings up the image library to select a photo.<br>
+    * info: PHOTOLIBRARY source is bugged in iOS 5, use SAVEDPHOTOALBUM instead.
+    * @function getPhoto
+    * @param {string} source the source of the image
+    * @memberOf app
+    */
     getPhoto : function(source) {
-        // need to look into the, if any, differences between PHOTOLIBRARY and SAVEDPHOTOALBUM, suspect there is no diff for
-        // iOS and Android. Might be diff for other device/OS. Should at least check for WP7.5+ for future support
-
-        // update: PHOTOLIBRARY source is bugged in iOS 5, use SAVEDPHOTOALBUM instead
-
-        // console.log('get photo');
-
         // set options for getting photo's from library (takes less options than CAMERA)
         var options = {quality: 80,
                        destinationType: Camera.DestinationType.FILE_URI,
@@ -668,12 +898,31 @@ var app = {
         navigator.camera.getPicture(app.onCaptureOrGetSuccess, app.onCaptureOrGetFail, options);
     },
 
-    // ------------------
-    // onPhotoURISuccess: Called when a photo is successfully retrieved from library or camera
-    // ------------------
-    onCaptureOrGetSuccess : function(imageURI) {
-        // console.log('on capture or get success: ' + imageURI);
+    /**
+    * Triggered by button on 'social media' page, brings up the library to select a photo
+    * @function socialMediaGetPhoto
+    * @param {string} source the source of the image
+    * @memberOf app
+    */
+    socialMediaGetPhoto : function(source) {
+        // set options for getting photo's from library (takes less options than CAMERA)
+        var options = {quality: 80,
+                       destinationType: Camera.DestinationType.FILE_URI,
+                       sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,
+                       targetWidth: 1280,
+                       targetHeight: 1280};
 
+        // select photo with specified options
+        navigator.camera.getPicture(app.socialMediaOnCaptureOrGetSuccess, app.socialMediaOnCaptureOrGetFail, options);
+    },
+
+    /**
+    * Called when a photo is successfully retrieved from the library or created by the camera
+    * @function onCaptureOrGetSuccess
+    * @param {string} imageURI the URI of the selected or taken photo
+    * @memberOf app
+    */
+    onCaptureOrGetSuccess : function(imageURI) {
         // set class variable URI so that we can use it in case we need to retry an attempt (android glitch)
         app.URI = imageURI;
 
@@ -687,32 +936,73 @@ var app = {
         $.mobile.changePage('#photo-success-page');
     },
 
-    // -------------------
-    // onCaptureOrGetFail: Called when error occurs during camera launch or library launch
-    // -------------------
-    onCaptureOrGetFail : function(message) {
-        // console.log('on capture or get fail: ' + message);
-        // Notify user with alert [or] leave as is?
-        //navigator.notification.alert('Fout: ' + message);
+    /**
+    * Called when a photo is successfully retrieved from the library or created by the camera from the social media page
+    * @function socialMediaOnCaptureOrGetSuccess
+    * @param {string} imageURI the URI of the selected or taken photo
+    * @memberOf app
+    */
+    socialMediaOnCaptureOrGetSuccess : function(imageURI) {
+        // set class variable URI so that we can use it in case we need to retry an attempt (android glitch)
+        app.URI = imageURI;
+
+        // remove the buttons on the social media page and show a thumbnail of the picture/photo
+        $('#social-media-page-refresh').show();
+        $('#social-media-picture-container').append('<img src="" id="social_media_preview_image" style="max-width:100%;">');
+        $('#social_media_preview_image').attr('src', imageURI);
+
+        // hide the loading animation after 1000 ms
+        setTimeout(app.hideSocialMediaChangePictureAnimation, 1000);
     },
 
-    // ------------
-    // uploadPhoto: Attemps to upload the photo
-    // ------------
+    /**
+    * Called from socialMediaCaptureOrGetSuccess after a 1000ms timeout
+    * @function hideSocialMediaChangePictureAnimation
+    * @memberOf app
+    */
+    hideSocialMediaChangePictureAnimation: function() {
+        $('#social-media-page-refresh').hide();
+    },
+
+    /**
+    * Called from 'getPhoto' or 'capturePhoto' in case they fail
+    * @function onCaptureOrGetFail
+    * @memberOf app
+    */
+    onCaptureOrGetFail : function(message) {
+        // show error msg to user and send error msg to server API
+    },
+
+    /**
+    * Called from 'socialMediaGetPhoto' or 'socialMediaCapturePhoto' in case they fail
+    * @function socialMediaOnCaptureOrGetFail
+    * @memberOf app
+    */
+    socialMediaOnCaptureOrGetFail : function(message) {
+        // send error msg to server and show error msg to user
+    },
+
+    /**
+    * Attempts to upload an image to the server
+    * @function uploadPhoto
+    * @memberOf app
+    */
     uploadPhoto : function() {
+        // disable the submit button so users can't submit again
         $('#upload-photo-submit').button('disable');
 
-
-        console.log('app.photo_location_id from uploadPhoto: ' + app.photo_location_id);
-
+        // store the image URI in the variable in case we need to retry the upload (each upload is attempted 3x)
         var imageURI = app.URI;
 
-        // set loading animation options for uploading photo
-        var loadingAnimationOptions = {text: '',
-                                        textVisible: true,
-                                        theme: 'b',
-                                        html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden...</p><p id="photo_upload_progress_bar"></p>'};
+        // set custom loading animation options for uploading photo
+        var loadingAnimationOptions = {
+            text: '',
+            textVisible: true,
+            theme: 'b',
+            html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden...</p><p id="photo_upload_progress_bar"></p>'
+        };
 
+        // show custom loading animation
         $.mobile.loading('show', loadingAnimationOptions);
 
         // set options for upload
@@ -731,56 +1021,168 @@ var app = {
         params.version = app.version;
         params.noblock = 'true';
 
+        // set headers
         var headers = {'Connection':'close', 'Cache-Control':'no-cache'};
 
+        // include params and headers
         options.params = params;
         options.headers = headers;
 
-        // try / catch file upload
+        // if app is connected to internet, attempt upload
         if (app.isConnected()) {
             try {
                 // don't hide loading animation here but in uploadPhotoSuccess() or uploadPhotoFail()
                 var ft = new FileTransfer();
 
+                // track upload progress and animate the progress bar
                 ft.onprogress = function(progressEvent) {
                     if (progressEvent.lengthComputable) {
-                        console.log('loaded / total: ' + progressEvent.loaded + ' / ' + progressEvent.total);
                         var percent = Math.floor((progressEvent.loaded / progressEvent.total) * 100) + '%';
-                        console.log('percent: ' + percent);
 
                         // change <p> width
                         $('#photo_upload_progress_bar').css({'width' : percent});
                     } else {
-                        console.log('length not computable');
+                        // do nothing
                     }
-
                 }
 
-                console.log('imageURI: ' + imageURI);
-                console.log('app.image_upload_url: ' + app.image_upload_url);
-                console.log('options: ');
-                console.log(options);
-
+                // upload
                 ft.upload(imageURI, encodeURI(app.image_upload_url), app.uploadPhotoSuccess, app.uploadPhotoError, options);
 
             } catch (err) {
                 // hide loading animation and show error
                 $.mobile.loading('hide');
-                //navigator.notification.alert('Probleem met uploaden foto, neem contact op met eerstelinks.');
-                app.showAlert('Oeps', 'Probleem met uploaden foto, neem contact op met eerstelinks');
-                console.log(err);
+                navigator.notification.alert(app.app_lang.alert.photo_upload_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
+                // send error msg to server API
             }
         } else /* NOT connected to internet */ {
-            //navigator.notification.alert('U bent niet verbonden met internet!');
-            app.showAlert('Oeps', 'Geen internet verbinding');
+            navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
         }
     },
 
-    // ------------
-    // getMimeType: returns a string with the mime type of the image
-    //              if unable to get valid extension then return 'jpeg' as guestimate
-    //              on android and ios .gif is not supported in photo library but left it for future use
-    // ------------
+    /**
+    * Attempts to upload an image to the server for social media posting
+    * @function socialMediaUploadPhoto
+    * @memberOf app
+    */
+    socialMediaUploadPhoto : function() {
+        // disable the submit button so users can't submit again
+        $('#social_media_accounts_publish').button('disable');
+
+        // check if image was selected (if image was successfully selected -> preview image would be set)
+        if ( app.elementWithIdExists('social_media_preview_image') ) {
+
+            var imageURI = app.URI;
+
+            // set loading animation options for uploading photo
+            var loadingAnimationOptions = {
+                text: '',
+                textVisible: true,
+                theme: 'b',
+                html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden foto...</p><p id="photo_upload_progress_bar"></p>'
+            };
+
+            // show custom loading animation
+            $.mobile.loading('show', loadingAnimationOptions);
+
+            // set options for upload
+            var options = new FileUploadOptions();
+            options.fileKey = "files";
+            options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+            options.mimeType=app.getMimeType(imageURI);
+            options.chunkedMode = false;
+
+            // sets upload parameters
+            var params = {};
+            params.session = window.localStorage['session'];
+            params.pathname = window.localStorage['active-pathname'];
+            params['file-type'] = 'image';
+            params.isapp = 'true';
+            params.version = app.version;
+            params.noblock = 'true';
+
+            var headers = {'Connection':'close', 'Cache-Control':'no-cache'};
+
+            options.params = params;
+            options.headers = headers;
+
+            // try / catch file upload
+            if (app.isConnected()) {
+                try {
+                    // don't hide loading animation here but in uploadPhotoSuccess() or uploadPhotoFail()
+                    var ft = new FileTransfer();
+
+                    // track upload progress and animate the progress bar
+                    ft.onprogress = function(progressEvent) {
+                        if (progressEvent.lengthComputable) {
+                            // calculate progress percentage
+                            var percent = Math.floor((progressEvent.loaded / progressEvent.total) * 100) + '%';
+
+                            // change <p> width
+                            $('#photo_upload_progress_bar').css({'width' : percent});
+                        } else {
+                            // do nothing
+                        }
+                    }
+
+                    // upload
+                    ft.upload(imageURI, encodeURI(app.image_upload_url), app.socialMediaUploadPhotoSuccess, app.socialMediaUploadPhotoError, options);
+
+                } catch (err) {
+                    // hide loading animation and show error
+                    $.mobile.loading('hide');
+                    navigator.notification.alert(app.app_lang.alert.photo_upload_error, false, app.app_lang.alert_error, app.app_lang.alert_close);
+                    // send error to server
+                }
+            } else /* NOT connected to internet */ {
+                navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert_error, app.app_lang.alert_close);
+            }
+        } else /* image does NOT exist so the user did not select or take a photo but still wishes to post a message */ {
+            // set loading animation options for uploading photo
+
+            // continue to 'postToSocialMedia' -> maybe change this?
+            app.postToSocialMedia();
+        }
+    },
+
+    /**
+    * Called after social media photo upload success
+    * @function socialMediaUploadPhotoSuccess
+    * @param {string} response_server the server response
+    * @memberOf app
+    */
+    socialMediaUploadPhotoSuccess: function(response_server) {
+        // hide loading animation
+        $.mobile.loading('hide');
+
+        var responseJSON = jQuery.parseJSON(response_server.response);
+
+        // extract the return URL from the server message and store it in the variable
+        app.social_media_image_url = 'http://eerstelinks.nl' + responseJSON.files.url;
+
+        // continue to 'postToSocialMedia'
+        app.postToSocialMedia();
+    },
+
+    /**
+    * Called after social media photo upload error
+    * @function socialMediaUploadPhotoError
+    * @param {string} error the server error message
+    * @memberOf app
+    */
+    socialMediaUploadPhotoError: function(error) {
+        // hide loading animation
+        $.mobile.loading('hide');
+        // maybe show error msg to user and/or send error msg to server API
+    },
+
+    /**
+    * Gets the mime type of the image and returns it as string
+    * @function getMimeType
+    * @param {string} imageURI the URI of the image
+    * @returns {string} the mime type of the image
+    * @memberOf app
+    */
     getMimeType : function(imageURI) {
         var extension = imageURI.split('.').pop();
 
@@ -795,27 +1197,21 @@ var app = {
         }
     },
 
-    // -------------------
-    // uploadPhotoSuccess: Is triggered when status code 200 is received from server.
-    //                     Warning: this means an error message will be considered a succes too because of the 200 code.
-    // -------------------
+    /**
+    * Called after photo upload success
+    * @function uploadPhotoSuccess
+    * @param {string} res the server response
+    * @memberOf app
+    */
     uploadPhotoSuccess : function(res) {
-
-        console.log('uploadPhotoSuccess res:');
-        console.log(res);
-
         // convert response string to JSON object
         var responseJSON = jQuery.parseJSON(res.response);
-
-        console.log('app.photo_location_id from uploadPhotoSuccess: ' + app.photo_location_id);
 
         // if status = error
         if (responseJSON.status == 'error') {
             // send on to fail() function to handle error
             app.uploadPhotoError();
-            console.log('1');
         } else {
-            console.log('2');
             // create a block container for the image
             // will be changed later to get user input for the container placement
 
@@ -843,52 +1239,40 @@ var app = {
             if (tmp_ar[0] == 'new') {
 
                 if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, false) == true) {
-                    //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    app.showAlert('Success', 'Upload success');
-                    console.log('upload success!');
+
+                    navigator.notification.alert(app.app_lang.alert.photo_upload_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
-                    navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-
+                    navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                     console.log('upload error')
                 }
             } else if (tmp_ar[0] == 'art') {
                 // user selected art element -> art photo must be replaced by new photo
                 if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 1, false)) {
-                    //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    app.showAlert('Success', 'Upload success');
-                    console.log('upload success!');
+                    navigator.notification.alert(app.app_lang.alert.photo_upload_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
-                    navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-
-                    console.log('upload error!');
+                    navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                 }
 
             } else if (tmp_ar[0] == 'replace') {
                 // user selected existing block
-
-                console.log('3: replace');
 
                 // delete existing block
                 app.deleteBlock(tmp_ar[3]);
 
                 // create new block with the order of the old block
                 if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, tmp_ar[4])) {
-                    //navigator.notification.alert('Upload succes',false,'Succes','ok');
-                    app.showAlert('Success', 'Upload success');
-                    console.log('upload success!');
+                    navigator.notification.alert(app.app_lang.alert.photo_upload_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
                     // reset the attempt counter
                     app.attempts = 0;
                 } else /* createBlock returned false */ {
-                    //navigator.notification.alert('Fout, neem contact op met eerstelinks',false,'Fout','ok');
-                    app.showAlert('Er ging iets mis, neem contact op met eerstelinks.');
-                    console.log('replace else');
+                    navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                 }
 
             }
@@ -899,16 +1283,16 @@ var app = {
 
         // re-enable upload button
         $('#upload-photo-submit').button('enable');
-
-        // iOS specific, cleanup temp file
-        // update: DO NOT USE after each successful upload because it screws up the cache in iOS
-        //
-        // navigator.camera.cleanup( app.cleanupSuccess, app.cleanupError );
     },
 
-    // -----------------
-    // uploadPhotoError: Called when file upload fails
-    // -----------------
+    /**
+    * Called after photo upload error.<br>
+    * Attempts the upload up to 3 times before giving up and generating an error message<br>
+    * info: first introduced for an Android 'bug', might not be necessary anymore since switching to HTTPS
+    * @function uploadPhotoError
+    * @param {string} error error message from the server
+    * @memberOf app
+    */
     uploadPhotoError : function(error) {
         console.log('uploadPhotoError');
         // for android quirk -> in case first upload fails attempt the upload again
@@ -930,10 +1314,7 @@ var app = {
             $.mobile.loading('hide');
 
             // show error message to user
-            //navigator.notification.alert('Er is een fout opgetreden, neem contact op met eerstelinks',false,'Error','ok');
-            app.showAlert('Fout', 'Fout met uploaden foto, neem contact op met eerstelinks');
-            console.log('upload error');
-            console.log(error);
+            navigator.notification.alert(app.app_lang.alert.photo_upload_error, false, app.app_lang.alert_error, app.app_lang.alert_close);
 
             // redirect to menu page
             $.mobile.changePage('#menu-page');
@@ -941,22 +1322,22 @@ var app = {
 
         // re-enable upload button
         $('#upload-photo-submit').button('enable');
+        $('#upload-photo-submit').button('refresh');
     },
 
-    // ------------
-    // createBlock: After a succesful image upload a block needs to be create for the image.
-    //              A JSON object is returned as result for the image upload; in this object is
-    //              'url' that we need create the block.
-    //              A block takes 3 arguments; a page, a column and an url of the image on the server
-    // ------------
+    /**
+    * Sends an ajax request to the server to create a block for the new image
+    * @function createBlock
+    * @param {string} sexy the section that was selected
+    * @param {string} column the column that was selected
+    * @param {string} url the url of the image that was uploaded
+    * @param {string} isArt whether the selected element is an 'art' element (see eerstelinks website structure)
+    * @param {string} order the order of the block (see eerstelinks website structure)
+    * @returns {boolean} true if block successfully created, otherwise false
+    * @memberOf app
+    */
     createBlock : function(sexy, column, url, isArt, order) {
         // return value, set to false as default to simplify and shorten the code
-        console.log('order: ' + order);
-        console.log('column: ' + column);
-        console.log('url: ' + url);
-        console.log('isArt: ' + isArt);
-        console.log('order: ' + order);
-
         var ret = false;
 
         // page not used yet
@@ -990,7 +1371,7 @@ var app = {
                         ret = true;
                     } else {
                         console.log('ajax post error');
-                        console.log(res);
+                        console.log(res.message);
                     }
                 }).fail(function(err) {
                     console.log('createBlock ajax fail');
@@ -1010,12 +1391,13 @@ var app = {
         return ret;
     },
 
-    // ------------
-    // deleteBlock: Deletes a block with given ID
-    // ------------
+    /**
+    * Sends an ajax request to the server to delete the block with the given ID
+    * @function deleteBlock
+    * @param {string} id id of the block to be deleted
+    * @memberOf app
+    */
     deleteBlock: function(id) {
-        console.log('delete block with ID: ' + id);
-
         try {
             var params = {'type': 'delete-element',
                             'pathname': window.localStorage['active-pathname'],
@@ -1032,31 +1414,14 @@ var app = {
                 async: true
             }).done(function(res) {
                 if (res.status == 'success') {
-                    console.log('delete block success');
+                    //console.log('delete block success');
                 } else {
-                    console.log('delete block error');
-                    console.log(res);
-                    navigator.notification.alert('Er is een fout opgetreden, neem contact op met eerstelinks.');
+                    navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                 }
             });
         } catch (err) {
             console.log(err);
         }
-
-    },
-
-    // --------------
-    // cleanupSucces: Called after succesfully cleaning up temp files (iOS only)
-    // --------------
-    cleanupSuccess : function() {
-        //console.log('cleanup success');
-    },
-
-    // -------------
-    // cleanupError: Called after temp file cleanup error (iOS only)
-    // -------------
-    cleanupError : function() {
-        //console.log('cleanup error');
     },
 
     // ----------------------------------------------------------------------------------------------------------
@@ -1065,12 +1430,13 @@ var app = {
     //
     // ----------------------------------------------------------------------------------------------------------
 
-    // -------------
-    // sendFeedback: triggered when the user clicks on 'verzenden', send feedback to the server
-    // -------------
+    /**
+    * Sends feedback to eerstelinks API
+    * @function sendFeedback
+    * @returns {boolean} true if feedback was successfully sent
+    * @memberOf app
+    */
     sendFeedback : function() {
-        // console.log('feedback');
-
         // return value, set to false as default to simplify and shorten the code
         var ret = false;
 
@@ -1096,14 +1462,10 @@ var app = {
                 }).done(function(res) {
                     if (res.status == 'success') {
                         ret = true;
-                        //navigator.notification.alert('Bedankt voor je feedback!');
-                        app.showAlert('Success', 'Bedankt voor je feedback');
+                        navigator.notification.alert(app.app_lang.alert.feedback_thanks, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
                         $.mobile.changePage('#menu-page');
                     } else {
-                        console.log('ajax post error');
-                        console.log(res);
-                        //navigator.notification.alert('Er ging iets mis, neem contact op met eerstelinks.');
-                        app.showAlert('Fout', 'Er ging iets mis, neem console op met eerstelinks');
+                        navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                         $.mobile.changePage('#menu-page');
                     }
                 });
@@ -1111,32 +1473,34 @@ var app = {
                 console.log(err);
             }
         } else /* NOT connected to internet */ {
-            //console.log('create block ELSE');
+            navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
         }
 
         $.mobile.loading('hide');
-
         return ret;
     },
 
-    // --------------------
-    // elementWithIdExists: Checks whether an element with the provided ID exists
-    // --------------------
+    /**
+    * Checks whether an element with given ID exists
+    * @function elementWithIdExists
+    * @returns {boolean}
+    * @memberOf app
+    */
     elementWithIdExists : function(id) {
         var tmp = document.getElementById(id);
 
         if (tmp != null || tmp != undefined) {
-            console.log('#' + id + ' exists!');
             return true;
         } else {
-            console.log('#' + id + ' does NOT exist :(!');
             return false;
         }
     },
 
-    // ------------------------
-    // populatePathnameButtons: Generates the pathname choice buttons
-    // ------------------------
+    /**
+    * Populates the list of websites linked to the user account when a user logs in
+    * @function populatePathnameButtons
+    * @memberOf app
+    */
     populatePathnameButtons : function() {
         // delete all children of #pathname-choice <div> to avoid multiple buttons (cache)
         $('#pathname-choice').empty();
@@ -1145,6 +1509,8 @@ var app = {
         for (var i=0; i<app.pathnames.length; i++) {
             var button = $('<button type="button" id="' + app.pathnames[i] + '">' + app.pathnames[i] + '</button>');
             $('#pathname-choice').append(button);
+
+            // tell jquerymobile to 'buttonify' the button (jqm changes buttons internally)
             button.button();
 
             // append on 'tap' event listener
@@ -1153,29 +1519,32 @@ var app = {
         }
     },
 
-    // ------------
-    // setPathname: Sets the active pathname
-    // ------------
+    /**
+    * Sets the active website (pathname in eerstelinks terms)
+    * @function setPathname
+    * @param pn pathname
+    * @memberOf app
+    */
     setPathname : function(pn) {
         // store selected pathname
         window.localStorage['active-pathname'] = pn;
-
-        // redirect to menu page
-        // moved the change page to the on('tap') event to keep the function generic
-        //$.mobile.changePage('#menu-page');
     },
 
-    // -------------------
-    // setUsernameInPanel: sets the username in the side panel of the menu page
-    // -------------------
+    /**
+    * Sets the users name in the side panel
+    * @function setUsernameInPanel
+    * @memberOf app
+    */
     setUsernameInPanel : function() {
         $('#menu-panel-content-user').empty();
         $('#menu-panel-content-user').append(window.localStorage['username']);
     },
 
-    // ------------------------------
-    // populatePathnameSelectInPanel: Generates the list of pathnames in the <select> in the side panel of the menu page
-    // ------------------------------
+    /**
+    * Populates the drop down menu with websites associated with the users account
+    * @function populatePathnameSelectInPanel
+    * @memberOf app
+    */
     populatePathnameSelectInPanel : function() {
         $('#active-pathname-select').empty();
 
@@ -1199,15 +1568,39 @@ var app = {
         $('#active-pathname-select').selectmenu('refresh', true);
     },
 
-    // should change code ->
+    /**
+    * Populates the drop down menu with supported languages for the app
+    * @function populateLanguageSelectInPanel
+    * @memberOf app
+    */
+    populateLanguageSelectInPanel: function () {
+        $('#language_select').empty();
 
-    // retrieve web structure (return boolean true or false) and set the res.sexies (or whatever) as global variable
+        for (ln in languages) {
+            var tmp = '<option value="' + ln + '"';
 
-    // then if (retrieveWebStructure()) { parseWebStructure } else { generate some kind of error }
+            // if the pathname equals the pathname stored in local storage then this is the current
+            // active website pathname -> pre-select it
+            if (languages[ln] == window.localStorage['language']) {
+                tmp += ' selected="selected">';
+            } else {
+                tmp += '>';
+            }
 
-    // ----------------------
-    // parseWebsiteStructure: retrieves the website structure from the API
-    // ----------------------
+            tmp += ln + '</option>';
+
+            $('#language_select').append(tmp);
+        }
+
+        $('#language_select').selectmenu( "option", "icon", "star" );
+        $('#language_select').selectmenu('refresh', true);
+    },
+
+    /**
+    * Retrieves the website structure via an ajax request and creates a set of collapsible element representing the website structure
+    * @function parseWebsiteStructure
+    * @memberOf app
+    */
     parseWebsiteStructure : function() {
         console.log('parse website structure');
 
@@ -1232,9 +1625,6 @@ var app = {
                     async: false
                 }).done(function(res) {
                     if (res.status == 'success') {
-                        console.log('ajax get all data success');
-                        //console.log(res);
-
                         // empty the div before rendering to clear previous content
                         $('#choose-section-and-column-content-collapsible-set').empty();
 
@@ -1290,7 +1680,7 @@ var app = {
                                 if (columns[column].meta.is_art == "1") {
                                     //tmp += '<div id="art_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
                                     tmp += '<div id="art_' + sexies[sexy].sexy_id + '_' + columns[column].meta.column_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
-                                    tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-film icon-2x"></i></p></div>';
+                                    tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-fullscreen icon-2x"></i></p></div>';
 
 
                                 } else {
@@ -1348,7 +1738,7 @@ var app = {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
 
-                            navigator.notification.alert('Deze foto zal vervangen worden door de geüploadde foto');
+                            navigator.notification.alert(app.app_lang.alert.photo_replace_warning, false, app.app_lang.alert.warning_alert, app.app_lang.alert.warning_close);
 
                             $('#upload-photo-submit').button('enable');
                         });
@@ -1356,73 +1746,524 @@ var app = {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
 
-                            navigator.notification.alert('Deze foto zal vervangen worden door de geüploadde foto');
+                            navigator.notification.alert(app.app_lang.alert.photo_replace_warning, false, app.app_lang.alert.warning_alert, app.app_lang.alert.warning_close);
 
                             $('#upload-photo-submit').button('enable');
                         });
                         $('.collapsible-content-column-block.new').on('tap', function () {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
+
+                            // new block to be created so no 'warning' message necessary
+
                             $('#upload-photo-submit').button('enable');
                         });
 
-                        // debug: check to see what jquerymobile makes of the markup
-                        //console.log($('#choose-section-and-column-content-collapsible-set').html());
+                        // still need to add some logic for photo albums
+
                     } else {
                         console.log('ajax get all data error');
                     }
                 });
             } catch (err) {
-                console.log('test: ' + err);
+                navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
             }
         } else /* NOT connected to internet */ {
-            //console.log('create block ELSE');
-            app.showAlert('Fout', 'Geen internet verbinding!');
+            navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
         }
 
         $.mobile.loading('hide');
     },
 
-    // ---------
-    // getStats: retrieves statistics via the API
-    // ---------
+    /**
+    * Retrieves statistics from the server via an ajax request
+    * @function getStats
+    * @memberOf app
+    */
     getStats: function() {
         console.log('get stats');
     },
 
-    // use loadstart or loadstop on 'return.php' to start fetching the facebook accounts from server api
-    // so that when the inAppBrowser closes the newly added account is immediately visible on the page!
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                          Facebook functions section
+    //
+    // ----------------------------------------------------------------------------------------------------------
 
+    /**
+    * Opens an inAppBrowser window that will be directed to the 'add_facebook_accout_url' on the server
+    * @function addFacebookAccount
+    * @memberOf app
+    */
     addFacebookAccount: function() {
-        console.log('add facebook account');
-
         var url = app.add_facebook_account_url + '?username=' + window.localStorage['username'];
 
-        app.in_app_browser = window.open(url, '_blank', 'location=no');
+        // add event listeners to the inAppBrowser
+        app.in_app_browser = window.open(url, '_blank', 'location=yes');
         app.in_app_browser.addEventListener('loadstart', app.addFacebookAccountLoadStart);
         app.in_app_browser.addEventListener('loadstop', app.addFacebookAccountLoadStop);
         app.in_app_browser.addEventListener('exit', app.addFacebookAccountExit);
     },
 
+    /**
+    * Adds loadStart listener to the inAppbrowser for adding a Facebook account
+    * @function addFacebookAccountLoadStart
+    * @param {object} ref the window reference object
+    * @memberOf app
+    */
     addFacebookAccountLoadStart: function(ref) {
-        console.log('load start');
-        console.log(ref);
-    },
-
-    addFacebookAccountLoadStop: function(ref) {
-        console.log('load stop');
-        console.log(ref);
-        console.log('ref.url: ' + ref.url);
-
-        if (ref.url == 'https://eerstelinks.nl/connect/facebook/done.php') {
-            console.log('true');
+        // if something goes wrong on Facebook site and it redirects the user to facebook.com/home.php -> close the window
+        if (ref.url == 'https://www.facebook.com/home.php') {
+            console.log('load "facebook.com/home.php" start');
             app.in_app_browser.close();
+            app.getFacebookAccounts();
+            app.populateFacebookAccounts();
         }
     },
 
+    /**
+    * Adds loadStop listener to the inAppbrowser for adding a Facebook account
+    * @function addFacebookAccountLoadStop
+    * @param {object} ref the window reference object
+    * @memberOf app
+    */
+    addFacebookAccountLoadStop: function(ref) {
+        // if the inAppBrowser load the exit url we specified -> close the window
+        if (ref.url == app.facebook_exit_inappbrowser_url) {
+            app.in_app_browser.close();
+
+            // fetch all Facebook accounts and repopulate the list
+            app.getFacebookAccounts();
+            app.populateFacebookAccounts();
+        }
+    },
+
+    /**
+    * Adds exit listener to the inAppbrowser for adding a Facebook account
+    * @function addFacebookAccountExit
+    * @param {object} ref the window reference object
+    * @memberOf app
+    */
     addFacebookAccountExit: function(ref) {
-        console.log('ref exit');
-        console.log(ref);
+        // reset the inAppBrowser object
         app.in_app_browser = null;
+    },
+
+    /**
+    * Gets all the Facebook account linked to the user via an ajax request
+    * @function getFacbookAccounts
+    * @memberOf app
+    */
+    getFacebookAccounts: function() {
+        // retrieve facebook accounts linked to this eerstelinks account (check persmissions server side before returning)
+        var params = {
+            'type': 'get_facebook_accounts',
+            'session': window.localStorage['session'],
+            'pathname': window.localStorage['active-pathname'],
+            'username': window.localStorage['username'],
+            'version': app.version
+        };
+
+        $.ajax({
+            async: true,
+            cache: false,
+            data: params,
+            dataType: 'json',
+            timeout: 30000,
+            type: 'GET',
+            url: app.get_facebook_accounts_url,
+            success: function(json) {
+                // store the FB accounts + info in an array so we can use them in 'populateFacebookAccounts'
+                app.facebook_accounts = json;
+                app.populateFacebookAccounts();
+            },
+            error: function(xhr, status) {
+                // do some other stuff for error
+                navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
+            },
+            complete: function(xhr, status) {
+                // when finished, do something
+            }
+        });
+    },
+
+    /**
+    * Populate the list of all Facebook accounts linked to the users account
+    * @function populateFacebookAccounts
+    * @memberOf app
+    */
+    populateFacebookAccounts: function() {
+        // empty the list first
+        $('#facebook_accounts').empty();
+
+        // create empty string that will be filled with html markup which will then be injected into the DOM by jQuery
+        var html = '';
+
+        for (key in app.facebook_accounts) {
+            console.log('key: ' + key);
+            console.log('facebook_accounts[key].facebook_name: ' + app.facebook_accounts[key].facebook_name);
+            console.log('facebook_accounts[key].facebook_id: ' + app.facebook_accounts[key].facebook_id);
+
+            html += '<div id="facebook_id_' + app.facebook_accounts[key].facebook_id + '">';
+            html += '<i class="icon-facebook-sign"></i>&nbsp;'
+            html += '<span>' + app.facebook_accounts[key].facebook_name + '</span>';
+            html += '&nbsp;<i class="icon-ok"></i>';
+            html += '</div>';
+        }
+
+        $('#facebook_accounts').append(html);
+
+        // add event listeners to each item in the list
+        for (key in app.facebook_accounts) {
+            var div_id = '#facebook_id_' + app.facebook_accounts[key].facebook_id;
+
+            $(div_id).on('tap', function (event) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+
+                $(this).toggleClass('facebook_account_is_selected');
+            });
+        }
+    },
+
+    /**
+    * Send message to server API which then posts to the Facebook accounts
+    * @function postToFacebook
+    * @memberOf app
+    */
+    postToFacebook: function() {
+        // set loading animation options for uploading photo
+        var loadingAnimationOptions = {
+            text: '',
+            textVisible: true,
+            theme: 'b',
+            html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />post naar social media...</p>'
+        };
+
+        // show custom loading animation
+        $.mobile.loading('show', loadingAnimationOptions);
+
+        var selected_facebook_ids = new Array();
+
+        // send only the ID's without the 'is_selected_' prefix
+        $('.facebook_account_is_selected').each(function(index) {
+            var tmp = $(this).attr('id').split('_');
+            selected_facebook_ids[index] = tmp[2];
+        });
+
+        // check if array is not empty -> otherwise skip ajax request!
+        if (selected_facebook_ids.length > 0) {
+            // retrieve message from the form
+            var message = $('#social-media-messsage').val();
+            console.log('message: ' + message);
+
+            // retrieve img url
+            var image_url = app.social_media_image_url;
+            console.log('image url: ' + image_url);
+
+            var params = {
+                'session': window.localStorage['session'],
+                'username': window.localStorage['username'],
+                'message': message,
+                'facebook_ids': selected_facebook_ids,
+                'image_url': image_url
+            };
+
+            $.ajax({
+                async: true,
+                cache: false,
+                data: params,
+                dataType: 'json',
+                timeout: 30000,
+                type: 'POST',
+                url: app.post_to_facebook_url,
+                success: function(json) {
+                    app.post_to_facebook_success = true;
+                },
+                error: function(xhr, status) {
+                    app.post_to_facebook_success = false;
+                },
+                complete: function(xhr, status) {
+                    app.post_to_facebook_complete = true;
+                    app.socialMediaPostSuccessOrFail();
+                }
+            });
+        } else { /* else, nothing */
+            // set/fake to complete
+            app.post_to_facebook_complete = true;
+        }
+    },
+
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                          Twitter functions section
+    //
+    // ----------------------------------------------------------------------------------------------------------
+
+    /**
+    * Open an inAppBrowser window which will connect to the 'add_twitter_url' on the server to add a twitter account
+    * @function addTwitterAccount
+    * @memberOf app
+    */
+    addTwitterAccount: function() {
+        // add the users' username to the url (needed server side)
+        var url = app.add_twitter_account_url + '?eerstelinks_username=' + window.localStorage['username'];
+
+        // open inAppBrowser window
+        app.in_app_browser = window.open(url, '_blank', 'location=yes');
+
+        // add event listeners
+        app.in_app_browser.addEventListener('loadstart', app.addTwitterAccountLoadStart);
+        app.in_app_browser.addEventListener('loadstop', app.addTwitterAccountLoadStop);
+        app.in_app_browser.addEventListener('exit', app.addTwitterAccountExit);
+    },
+
+    /**
+    * Adds loadStart listener to the inAppbrowser for adding a Twitter account
+    * @function addTwitterAccountLoadStart
+    * @param {object} ref the window reference object
+    * @memberOf app
+    */
+    addTwitterAccountLoadStart: function(ref) {
+        // do nothing
+    },
+
+    /**
+    * Adds loadStop listener to the inAppbrowser for adding a Twitter account
+    * @function addTwitterAccountLoadStop
+    * @param {object} ref the window reference object
+    * @memberOf app
+    */
+    addTwitterAccountLoadStop: function(ref) {
+        // if the browser has finished loading the specified url -> close the inAppBrowser window
+        if (ref.url == app.twitter_exit_inappbrowser_url ) {
+            app.in_app_browser.close();
+
+            // get all accounts (so we get the newly added account) and repopulate the list
+            app.getTwitterAccounts();
+            app.populateTwitterAccounts();
+        }
+    },
+
+    /**
+    * Adds exit listener to the inAppbrowser for adding a Twitter account
+    * @function addTwitterAccountExit
+    * @param {object} ref the window reference object
+    * @memberOf app
+    */
+    addTwitterAccountExit: function(ref) {
+        // reset the inAppBrowser object
+        app.in_app_browser = null;
+    },
+
+    /**
+    * Gets all the Twitter account linked to the user via an ajax request
+    * @function getTwitterAccounts
+    * @memberOf app
+    */
+    getTwitterAccounts: function() {
+        // retrieve facebook accounts linked to this eerstelinks account (check persmissions server side before returning)
+        var params = {
+            'type': 'get_twitter_accounts',
+            'session': window.localStorage['session'],
+            'pathname': window.localStorage['active-pathname'],
+            'username': window.localStorage['username'],
+            'version': app.version
+        };
+
+        $.ajax({
+            async: true,
+            cache: false,
+            data: params,
+            dataType: 'json',
+            timeout: 30000,
+            type: 'GET',
+            url: app.get_twitter_accounts_url,
+            success: function(json) {
+                // store the FB accounts + info in an array so we can use them in 'populateFacebookAccounts'
+                app.twitter_accounts = json;
+                app.populateTwitterAccounts();
+            },
+            error: function(xhr, status) {
+                navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
+            },
+            complete: function(xhr, status) {
+                // do nothing
+            }
+        });
+    },
+
+    /**
+    * Populate the list of all Twitter accounts linked to the users account
+    * @function populateTwitterAccounts
+    * @memberOf app
+    */
+    populateTwitterAccounts: function() {
+        // empty list first
+        $('#twitter_accounts').empty();
+
+        // string will contain the html markup which will be injected into the DOM by jQuery
+        var html = '';
+
+        for (key in app.twitter_accounts) {
+            html += '<div id="twitter_id_' + app.twitter_accounts[key].twitter_id + '">';
+            html += '<i class="icon-twitter-sign"></i>&nbsp;'
+            html += '<span>&#64;' + app.twitter_accounts[key].twitter_screen_name + '</span>';
+            html += '&nbsp;<i class="icon-ok"></i>';
+            html += '</div>';
+        }
+
+        $('#twitter_accounts').append(html);
+
+        // add event listeners to all items in the list
+        for (key in app.twitter_accounts) {
+
+            var div_id = '#twitter_id_' + app.twitter_accounts[key].twitter_id;
+
+            $(div_id).on('tap', function (event) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+
+                $(this).toggleClass('twitter_account_is_selected');
+            });
+        }
+    },
+
+    /**
+    * Send message to server API which then posts to the Twitter accounts
+    * @function postToTwitter
+    * @memberOf app
+    */
+    postToTwitter: function() {
+        // set loading animation options for uploading photo
+        var loadingAnimationOptions = {
+            text: '',
+            textVisible: true,
+            theme: 'b',
+            html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />post naar social media...</p>'
+        };
+
+        // show custom loading animation
+        $.mobile.loading('show', loadingAnimationOptions);
+
+        var selected_twitter_ids = new Array();
+
+        // add only IDs to the array, without the 'is_selected_' prefix
+        $('.twitter_account_is_selected').each(function(index) {
+            var tmp = $(this).attr('id').split('_');
+            selected_twitter_ids[index] = tmp[2];
+        });
+
+        // check if array is not empty -> otherwise skip ajax request!
+        if (selected_twitter_ids.length > 0) {
+            // get the message from the form
+            var message = $('#social-media-messsage').val();
+            console.log('message: ' + message);
+
+            // get the image url
+            var image_url = app.social_media_image_url;
+            console.log('image url: ' + image_url);
+
+            // set the parameters
+            var params = {
+                'session': window.localStorage['session'],
+                'username': window.localStorage['username'],
+                'message': message,
+                'twitter_ids': selected_twitter_ids,
+                'image_url': image_url
+            };
+
+            // construct the ajax request
+            $.ajax({
+                async: true,
+                cache: false,
+                data: params,
+                dataType: 'json',
+                timeout: 30000,
+                type: 'POST',
+                url: app.post_to_twitter_url,
+                success: function(json) {
+                    // set post to twitter as true (success)
+                    app.post_to_twitter_success = true;
+                },
+                error: function(xhr, status) {
+                    // set post to twitter to false (error)
+                    app.post_to_twitter_success = false;
+                },
+                complete: function(xhr, status) {
+                    // set complete to true and check if social media posting was successful or not
+                    app.post_to_twitter_complete = true;
+                    app.socialMediaPostSuccessOrFail();
+                }
+            });
+        } else { /* else, nothing */
+            // fake complete
+            app.post_to_twitter_complete = true;
+        }
+    },
+
+    // ----------------------------------------------------------------------------------------------------------
+    //
+    //                                          Social media functions section
+    //
+    // ----------------------------------------------------------------------------------------------------------
+
+    /**
+    * Post to the supported social media platforms
+    * @function postToSocialMedia
+    * @memberOf app
+    */
+    postToSocialMedia: function() {
+        // disable submit button until finished
+        $('#social_media_accounts_publish').button('disable');
+
+        // post to the supported social media (can be extended)
+        app.postToFacebook();
+        app.postToTwitter();
+
+        // re-enable the submit button and refresh (jqm 'feature')
+        $('#social_media_accounts_publish').button('enable');
+        $('#social_media_accounts_publish').button('refresh');
+    },
+
+    /**
+    * Checks whether social media posting was succesful or not
+    * @function socialMediaPostSuccessOrFail
+    * @memberOf app
+    */
+    socialMediaPostSuccessOrFail: function() {
+        // check if posting successfull
+        // if both posts have been finished then do stuff (both requests are async)
+        if (app.post_to_facebook_complete == true && app.post_to_twitter_complete == true) {
+
+            // both async requests are complete -> check if both were successful
+            if (app.post_to_facebook_success == true || app.post_to_twitter_success == true) {
+                // congratulate user, posting ok
+                navigator.notification.alert(app.app_lang.alert.message_sent_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
+            }
+
+            if (app.post_to_facebook_success == false || app.post_to_twitter_success == false) {
+                // if either request failed (false) then send error message to user
+                navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
+            }
+
+            // hide loading animation and change page to menu page
+            $.mobile.loading('hide');
+            $.mobile.changePage('#menu-page');
+        }
+    },
+
+    /**
+    * Checks whether the user selected or took a photo and/or wrote something
+    * @function checkSocialMediaMessageOrPicture
+    * @memberOf app
+    */
+    checkSocialMediaMessageOrPicture: function() {
+        // if either photo selected/taken -or- message written -> go to next page
+        if (app.elementWithIdExists('social_media_preview_image') || $('#social-media-messsage').val() != '') {
+            $.mobile.changePage('#social-media-accounts');
+        } else /* give error message */ {
+            navigator.notification.alert(app.app_lang.alert.image_or_message_warning, false, app.app_lang.alert.warning_alert, app.app_lang.alert.warning_close);
+        }
     }
 };

@@ -31,7 +31,6 @@ $( function () {
 
     $('.collapsible-content-column-block').on('tap', function() {
         $(this).addClass('collapsible-content-column-block-effect');
-        navigator.notification.alert('hey');
     });
 
     // ----------------------------------------------------------------------------------------------------------
@@ -155,11 +154,12 @@ $( function () {
     });
 
     // If user hits the 'social media' icon on the menu page -> go to social media page
-    $('#inappbrowser_icon').on('tap', function(event) {
+    $('#truck_icon').on('tap', function(event) {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        $('#inappbrowser_icon_div').animate({'marginLeft': '-5000px'}, 5000);
+        $('#truck_icon_div').animate({'marginLeft': '-5000px'}, 5000);
+        window.localStorage['truck_seen'] = 1;
     });
 
     $('#server_message_remove_icon').on('tap', function(event) {
@@ -183,6 +183,27 @@ $( function () {
         $.mobile.changePage('#choose-section-and-column-page');
     });
 
+    $('#social-media-page-picture').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        app.socialMediaGetPhoto();
+    });
+
+    $('#social-media-page-camera').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        app.socialMediaCapturePhoto();
+    });
+
+    $('#social_media_page_choose_accounts').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        app.checkSocialMediaMessageOrPicture();
+    });
+
     $('#add_facebook_account').on('tap', function(event) {
         event.stopImmediatePropagation();
         event.preventDefault();
@@ -190,15 +211,29 @@ $( function () {
         app.addFacebookAccount();
     });
 
-    //
-    // test
-    //
-    $('#test_icon').on('tap', function(event) {
+    $('#add_twitter_account').on('tap', function(event) {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        app.uploadPhoto3();
+        app.addTwitterAccount();
     });
+
+    $('#social_media_accounts_publish').on('tap', function(event) {
+        console.log('post shit!');
+
+        $.mobile.loading('show');
+
+        app.socialMediaUploadPhoto();
+    });
+
+    $('#test_icon').on('tap', function(event) {
+        console.log('---test---');
+        console.log('app.app_lang:');
+        console.log(app.app_lang);
+
+        console.log(app.app_lang['error_close']);
+    });
+
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -212,8 +247,14 @@ $( function () {
     });
 
     $('#menu-page').on('pagebeforeshow', function(event) {
+
+        if (window.localStorage['truck_seen'] == 1) {
+            $('#truck_icon_div').hide();
+        }
+
         app.setUsernameInPanel();
         app.populatePathnameSelectInPanel();
+        app.populateLanguageSelectInPanel();
     });
 
     $('#choose-section-and-column-page').on('pagebeforeshow', function(event) {
@@ -230,4 +271,24 @@ $( function () {
         var tmp = $('#active-pathname-select option:selected').val();
         app.setPathname(tmp);
     });
+
+    $("#language_select").change(function() {
+        // get 'selected' item and store in local storage
+        var tmp = $('#language_select option:selected').val();
+        app.changeLanguage(tmp);
+
+        app.setUiLanguage();
+    });
+
+    $("#social-media-page").on('pagebeforeshow', function(e) {
+        // get 'selected' item and store in local storage
+        app.getFacebookAccounts();
+        app.getTwitterAccounts();
+
+        $('#social-media-page-refresh').hide();
+        $('#social-media-messsage').val('');
+        $('#social-media-picture-container').empty();
+        app.social_media_image_url = undefined;
+    });
+
 });
