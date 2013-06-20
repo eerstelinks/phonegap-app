@@ -5,6 +5,8 @@
 // ----------------------------------------------------------------------------------------------------------
 
 var nl = {
+    info_version: 'versie <strong>3.1</strong>',
+
     alert: {
         error_alert: 'Oeps..',
         success_alert: 'Goed gedaan',
@@ -34,7 +36,8 @@ var nl = {
             upload_photo: 'Upload foto',
             take_photo: 'Neem foto',
             social_media: 'Nieuwsbericht',
-            feedback: 'Feedback'
+            feedback: 'Feedback',
+            truck: 'Vrachtwagen'
         },
         title: 'Menu'
     },
@@ -57,7 +60,7 @@ var nl = {
         choose_active_website: 'Kies website',
         photo_preview: 'Preview',
         choose_location: 'Kies locatie',
-        social_media_message: 'social media',
+        social_media_message: 'Social media',
         feedback: 'Feedback',
         social_media_accounts: 'Kies accounts'
     }
@@ -70,6 +73,8 @@ var nl = {
 // ----------------------------------------------------------------------------------------------------------
 
 var en = {
+    info_version: 'version <strong>3.1</strong>',
+
     alert: {
         error_alert: 'Oops..',
         success_alert: 'Well done',
@@ -99,7 +104,8 @@ var en = {
             upload_photo: 'Upload photo',
             take_photo: 'Take photo',
             social_media: 'News message',
-            feedback: 'Feedback'
+            feedback: 'Feedback',
+            truck: 'Truck'
         },
         title: 'Menu'
     },
@@ -130,11 +136,13 @@ var en = {
 
 // ----------------------------------------------------------------------------------------------------------
 //
-//                                          francais
+//                                          french
 //
 // ----------------------------------------------------------------------------------------------------------
 
 var fr = {
+    info_version: 'version <strong>3.1</strong>',
+
     alert: {
         error_alert: 'Oups..',
         success_alert: 'Bien fait',
@@ -164,7 +172,8 @@ var fr = {
             upload_photo: 'Envoyer photo',
             take_photo: 'Prendre photo',
             social_media: 'Message',
-            feedback: 'Réaction'
+            feedback: 'Réaction',
+            truck: 'Camion'
         },
         title: 'Menu'
     },

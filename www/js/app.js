@@ -1,7 +1,7 @@
 
 /**
 * @author Sander van Golen <sander@eertelinks.nl>
-* @version 3.0
+* @version 3.1
 * @namespace
 * @property {string} cordova_version                    - the current cordova version
 * @property {string} authenticate_url                   - the url used for authentication
@@ -72,7 +72,7 @@ var app = {
     device_width                    : undefined,
     device_height                   : undefined,
     pathnames                       : undefined,
-    version                         : '3.0',
+    version                         : '3.1',
     server_message_id               : undefined,
     server_message                  : undefined,
     column_offset                   : 0,
@@ -295,47 +295,27 @@ var app = {
     * @memberOf app
     */
     setDeviceLanguage : function () {
-        console.log('set device language');
         var tmp = navigator.language.split("-");
         var device_language = tmp[0];
-        console.log('device language: ' + device_language);
-
-        console.log('languages object:');
-        console.log(languages);
-
-        /*for (lang in languages) {
-            console.log('lang + tag: ' + lang + ': ' + languages[lang]);
-        }*/
 
         // is there already a language stored in the localStorage?
         if (window.localStorage['language'] != undefined) {
-            console.log('if');
-            console.log('stored language: ' + window.localStorage['language']);
             // yes there is -> use that language
             app.app_lang = lang[window.localStorage['language']];
-            console.log('app.app_lang:');
-            console.log(app.app_lang);
-
             app.setUiLanguage();
         } else {
-            console.log('else');
             // no there isn't -> get device language
             // if device language is supported set that as language and store in localStorage
             var lang_supported = false;
 
             if (device_language in lang) {
-                console.log('found a match!');
                 app.app_lang = lang[device_language];
                 window.localStorage['language'] = device_language;
+                app.setUiLanguage();
             } else {
                 app.app_lang = lang['nl'];
                 window.localStorage['language'] = 'nl';
             }
-
-            // app.app_lang = lang[ln];
-            // else set 'en' as default language and store in localStorage
-            // app.app_lang = lang['en'];
-            console.log(app.app_lang['error_close']);
         }
     },
 
@@ -345,9 +325,7 @@ var app = {
     * @memberOf app
     */
     changeLanguage: function (ln) {
-        console.log('change language to: ' + ln);
         var tmp = languages[ln];
-        console.log(tmp);
         app.app_lang = lang[tmp];
         window.localStorage['language'] = tmp;
     },
@@ -361,7 +339,7 @@ var app = {
         // login page UI elements
         $('#login-form-username').attr('placeholder', app.app_lang.placeholder.username);
         $('#login-form-password').attr('placeholder', app.app_lang.placeholder.password);
-        $('#login-form-submit').html(app.app_lang.button.login);
+        $('#login-form-submit').html(app.app_lang.button.login).button().button("refresh");
 
         // choose active website page
         $('#choose_active_website').html(app.app_lang.header.choose_active_website);
@@ -371,6 +349,7 @@ var app = {
         $('#capture_photo_icon_text').html(app.app_lang.menu.item.take_photo);
         $('#social_media_icon_text').html(app.app_lang.menu.item.social_media);
         $('#feedback_icon_text').html(app.app_lang.menu.item.feedback);
+        $('#truck_icon_text').html(app.app_lang.menu.item.truck);
 
         // side panel UI elements
         $('#logout_button_text').html(app.app_lang.panel.logout);
@@ -379,27 +358,30 @@ var app = {
 
         // photo preview page
         $('#photo_preview_header').html(app.app_lang.header.photo_preview);
-        $('#choose-section-column-button').html(app.app_lang.button.choose_location);
+        $('#choose-section-column-button').html(app.app_lang.button.choose_location).button().button("refresh");
 
         // choose location page
         $('#choose_location_header').html(app.app_lang.header.choose_location);
-        $('#upload-photo-submit').html(app.app_lang.button.upload_photo);
+        $('#upload-photo-submit').html(app.app_lang.button.upload_photo).button().button("refresh");
 
         // social media page (composition)
         $('#social_media_message_header').html(app.app_lang.header.social_media_message);
         $('#social-media-messsage').attr('placeholder', app.app_lang.placeholder.social_media_message);
-        $('#social_media_page_choose_accounts').html(app.app_lang.button.social_media_message);
+        $('#social_media_page_choose_accounts').html(app.app_lang.button.social_media_message).button().button("refresh");
 
         // social media page (account select + send)
         $('#social_media_accounts_header').html(app.app_lang.header.social_media_accounts);
         $('#add_facebook_account_span').html(app.app_lang.button.add_facebook_account);
-        $('#add_twitter_account_span').html(app.app_lang.button.add_twitter_account);
-        $('#social_media_accounts_publish').html(app.app_lang.button.social_media_accounts);
+        $('#add_twitter_account_span').html(app.app_lang.button.add_facebook_account);
+        $('#social_media_accounts_publish').html(app.app_lang.button.social_media_accounts).button().button("refresh");
 
         // feedback page
         $('#feedback_header').html(app.app_lang.header.feedback);
         $('#feedback-form-messsage').attr('placeholder', app.app_lang.placeholder.feedback);
-        $('#feedback-form-submit').html(app.app_lang.button.feedback);
+        $('#feedback-form-submit').html(app.app_lang.button.feedback).button().button("refresh");
+
+        // info page
+        $('#version').html(app.app_lang.info_version);
     },
 
     /**
@@ -674,11 +656,14 @@ var app = {
             // login was called from login form
             if(from == 'login-form') {
                 // disable the login button while we check the username and password
-                $('#login-form-submit').attr("disabled","disabled");
+                $('#login-form-submit').button("disable");
 
                 // retrieve form values
                 username = $('#login-form-username').val();
                 password = $('#login-form-password').val();
+
+                console.log('username: ' + username);
+                console.log('password: ' + password);
             } else if(from == 'checkCredentials') /* login was called from checkCredentials() */ {
                 // retrieve username and password form local storage
                 username = window.localStorage['username'];
@@ -750,13 +735,14 @@ var app = {
                         }
 
                         // re-enable the login button
-                        $('#login-form-submit').removeAttr("disabled");
+                        $('#login-form-submit').button("enable");
                     },'json');
                 } catch (err) /* catch for POST connection */ {
                     // should make this a bit prettier (maybe quit app or something)
                     navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                 }
             } else /* if username or password is empty show error message */ {
+                console.log('else -> username or password is empty');
                 // stop loading animation
                 $.mobile.loading('hide');
 
@@ -764,7 +750,7 @@ var app = {
                 navigator.notification.alert(app.app_lang.alert.email_password_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
 
                 // re-enable the login button
-                $('#login-form-submit').removeAttr("disabled");
+                $('#login-form-submit').button("enable");
             }
         } else /* NOT connected to internet */ {
             navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
@@ -951,6 +937,10 @@ var app = {
         $('#social-media-picture-container').append('<img src="" id="social_media_preview_image" style="max-width:100%;">');
         $('#social_media_preview_image').attr('src', imageURI);
 
+        // change max chars to 117 (Twitter max)
+        $('#max_chars').html('117');
+        app.checkMessageChars();
+
         // hide the loading animation after 1000 ms
         setTimeout(app.hideSocialMediaChangePictureAnimation, 1000);
     },
@@ -1066,9 +1056,6 @@ var app = {
     * @memberOf app
     */
     socialMediaUploadPhoto : function() {
-        // disable the submit button so users can't submit again
-        $('#social_media_accounts_publish').button('disable');
-
         // check if image was selected (if image was successfully selected -> preview image would be set)
         if ( app.elementWithIdExists('social_media_preview_image') ) {
 
@@ -1084,6 +1071,10 @@ var app = {
 
             // show custom loading animation
             $.mobile.loading('show', loadingAnimationOptions);
+
+            // disable the submit button so users can't submit again
+            $('#social_media_accounts_publish').button("disable");
+
 
             // set options for upload
             var options = new FileUploadOptions();
@@ -2209,6 +2200,44 @@ var app = {
     // ----------------------------------------------------------------------------------------------------------
 
     /**
+    * Checks the number of chars of the message and shows the number in red if max chars has been surpassed
+    * @function checkMessageChars
+    * @memberOf app
+    */
+    checkMessageChars: function() {
+        var curr_chars = $('#social-media-messsage').val().length;
+        $('#num_chars').html(curr_chars);
+
+        var num_chars = parseInt($('#num_chars').html());
+        var max_chars = parseInt($('#max_chars').html());
+
+        if (num_chars > max_chars) {
+            // if more than max number of chars make chars red
+            $('#num_chars').addClass('char_counter_message_too_long');
+        } else {
+            // if number of chars drops below the max -> remove error class
+            $('#num_chars').removeClass('char_counter_message_too_long');
+        }
+    },
+
+    /**
+    * Checks if any accounts were selected before attempting to post
+    * @function checkIfAccountsSelected
+    * @memberOf app
+    */
+    checkIfAccountsSelected: function() {
+        console.log('checkIfAccountsSelected');
+        // if non accounts selected show warning else go ahead and attempt post
+        //app.socialMediaUploadPhoto();
+
+        if ($('.twitter_account_is_selected').length == 0 && $('.facebook_account_is_selected').length == 0) {
+            navigator.notification.alert('pannekoek, kies wel een account');
+        } else {
+            navigator.notification.alert('minstens een account geselecteerd!');
+        }
+    },
+
+    /**
     * Post to the supported social media platforms
     * @function postToSocialMedia
     * @memberOf app
@@ -2222,8 +2251,9 @@ var app = {
         app.postToTwitter();
 
         // re-enable the submit button and refresh (jqm 'feature')
-        $('#social_media_accounts_publish').button('enable');
-        $('#social_media_accounts_publish').button('refresh');
+        // note: don't reanable the button here because the ajax requests are asynchronous
+        //$('#social_media_accounts_publish').button('enable');
+        //$('#social_media_accounts_publish').button('refresh');
     },
 
     /**
@@ -2240,12 +2270,18 @@ var app = {
             if (app.post_to_facebook_success == true || app.post_to_twitter_success == true) {
                 // congratulate user, posting ok
                 navigator.notification.alert(app.app_lang.alert.message_sent_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
+
+                // reset the success checkers
+                app.post_to_facebook_success = undefined;
+                app.post_to_twitter_success = undefined;
             }
 
             if (app.post_to_facebook_success == false || app.post_to_twitter_success == false) {
                 // if either request failed (false) then send error message to user
                 navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
             }
+
+            $('#social_media_accounts_publish').button('enable');
 
             // hide loading animation and change page to menu page
             $.mobile.loading('hide');

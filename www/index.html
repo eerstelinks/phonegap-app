@@ -7,6 +7,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/eerstelinks.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.3.1.min.css"> -->
     <link rel="stylesheet" href="css/jquery.mobile.structure-1.3.1.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/font-awesome.css" />
@@ -49,13 +50,6 @@
 
                 <button type="button" id="login-form-submit" value="Log in">Log in</button>
             </form>
-
-            <!-- <p>Nog niet klant?</p> -->
-
-            <!-- <button type="button" id="register" style="margin-top: 20px;">
-                Registreer
-                <i class="icon-external-link"></i>
-            </button> -->
         </div>
     </div>
 
@@ -80,6 +74,13 @@
             <div data-role="fieldcontain" data-theme="a">
                 <label id="active-pathname-select-label" for="active-pathname-select" style="width: 100%;">Actieve website</label>
                 <select name="active-pathname-select" id="active-pathname-select" data-icon="plus" data-mini="true" data-iconpos="right" data-prevent-focus-zoom="true">
+
+                <script type="text/javascript">
+                    $( "#active-pathname-select" ).selectmenu({ icon: "arrow-d" });
+                    $( "#active-pathname-select" ).selectmenu({ theme: "b" });
+                    $( "#active-pathname-select" ).selectmenu({ overlayTheme: "a" });
+                </script>
+
                 </select>
             </div>
 
@@ -126,7 +127,7 @@
 
             <div id="truck_icon_div">
                 <i class="icon-truck icon-4x menu_icon" id="truck_icon"></i>
-                <p>Vrachtwagen</p>
+                <p id="truck_icon_text">Vrachtwagen</p>
             </div>
 
             <!-- <div>
@@ -170,7 +171,6 @@
         <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
             <!-- button inside div to force it to use the full width -->
             <div id="upload-photo-submit-div" style="width: 96%; margin: 0 auto;">
-                <!-- <button type="button" id="upload-photo-submit" value="Upload" data-role="button">Upload</button> -->
                 <button type="button" id="choose-section-column-button" value="Kies locatie" data-role="button">Kies locatie</button>
             </div>
         </div>
@@ -197,16 +197,11 @@
                 <img src="img/logo/logo200x200.png" style="position: absolute;">
             </div>
 
-            <!-- <button type="button" id="link_to_website" style="margin-top: 20px;">
-                eerstelinks.nl
-                <i class="icon-external-link"></i>
-            </button> -->
-
             <p style="font-size: 10px; text-align: center;">
                 &copy; <strong>2013</strong> eerstelinks.nl
             </p>
-            <p style="font-size: 10px; text-align: center;">
-                versie <strong>2.4</strong>
+            <p style="font-size: 10px; text-align: center;" id="version">
+                versie <strong>3.1</strong>
             </p>
         </div>
     </div>
@@ -228,7 +223,6 @@
             <form id="feedback-form">
                 <label for="feedback-form-messsage" class="ui-hidden-accessible">Textarea</label>
                 <textarea cols="40" rows="20" name="message" id="feedback-form-messsage" placeholder="Bericht"></textarea>
-
                 <button type="button" id="feedback-form-submit" value="Verzenden">Verzenden</button>
             </form>
         </div>
@@ -279,6 +273,11 @@
                 <div id="social-media-page-refresh" class="social-media-photo-icons">
                     <i class="icon-refresh icon-spin icon-2x"></i>
                 </div>
+
+                <div id="char_counter_div">
+                    <p><span id="num_chars">0</span>/<span id="max_chars">140</span></p>
+                </div>
+
             </div>
             <div id="social-media-picture-container" style="width: 100%;">
             </div>

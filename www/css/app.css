@@ -3,6 +3,23 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
+#char_counter_div {
+    float: right;
+    /*background-color: green;*/
+    color: #cccccc;
+    height: 30px;
+}
+
+#char_counter_div > p {
+    height: 30px;
+    margin: 0;
+    padding: 4px;
+}
+
+.char_counter_message_too_long {
+    color: red !important;
+}
+
 .social-media-photo-icons {
     width: 40px;
     height: 40px;

@@ -219,11 +219,9 @@ $( function () {
     });
 
     $('#social_media_accounts_publish').on('tap', function(event) {
-        console.log('post shit!');
 
-        $.mobile.loading('show');
-
-        app.socialMediaUploadPhoto();
+        app.checkIfAccountsSelected();
+        //app.socialMediaUploadPhoto();
     });
 
     $('#test_icon').on('tap', function(event) {
@@ -289,6 +287,14 @@ $( function () {
         $('#social-media-messsage').val('');
         $('#social-media-picture-container').empty();
         app.social_media_image_url = undefined;
+
+        $('#num_chars').html('0');
+        $('#max_chars').html('140');
+        $('#num_chars').removeClass('char_counter_message_too_long');
+    });
+
+    $('#social-media-messsage').on('input propertychange', function() {
+        app.checkMessageChars();
     });
 
 });
