@@ -85,6 +85,7 @@ var app = {
     post_to_facebook_complete       : undefined,
     post_to_twitter_success         : undefined,
     post_to_twitter_complete        : undefined,
+    message_max_chars               : 140,
 
     // ----------------------------------------------------------------------------------------------------------
     //
@@ -938,7 +939,8 @@ var app = {
         $('#social_media_preview_image').attr('src', imageURI);
 
         // change max chars to 117 (Twitter max)
-        $('#max_chars').html('117');
+        //$('#max_chars').html('117');
+        app.message_max_chars = 117;
         app.checkMessageChars();
 
         // hide the loading animation after 1000 ms
@@ -2206,12 +2208,10 @@ var app = {
     */
     checkMessageChars: function() {
         var curr_chars = $('#social-media-messsage').val().length;
-        $('#num_chars').html(curr_chars);
+        var chars_left = app.message_max_chars - curr_chars;
+        $('#num_chars').html(chars_left);
 
-        var num_chars = parseInt($('#num_chars').html());
-        var max_chars = parseInt($('#max_chars').html());
-
-        if (num_chars > max_chars) {
+        if (chars_left < 0) {
             // if more than max number of chars make chars red
             $('#num_chars').addClass('char_counter_message_too_long');
         } else {

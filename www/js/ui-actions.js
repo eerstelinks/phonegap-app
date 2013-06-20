@@ -288,8 +288,7 @@ $( function () {
         $('#social-media-picture-container').empty();
         app.social_media_image_url = undefined;
 
-        $('#num_chars').html('0');
-        $('#max_chars').html('140');
+        $('#num_chars').html('140');
         $('#num_chars').removeClass('char_counter_message_too_long');
     });
 
