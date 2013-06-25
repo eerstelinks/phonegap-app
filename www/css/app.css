@@ -3,6 +3,12 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
+#upload_animation_text {
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 #char_counter_div {
     float: right;
     /*background-color: green;*/

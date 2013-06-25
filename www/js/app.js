@@ -52,6 +52,9 @@ var app = {
     cordova_version                 : 'cordova-2.5.0.js',
     authenticate_url                : 'https://eerstelinks.nl/api/v1/authenticate',
     image_upload_url                : 'https://eerstelinks.nl/api/v1/post/image-ajax',
+
+    image_upload_url2               : 'http://dev.eerstelinks.nl/api/v1/app/post/image',
+
     create_block_url                : 'https://eerstelinks.nl/api/v1/post/block-data',
     feedback_url                    : 'https://eerstelinks.nl/api/v1/post/app-feedback',
     server_message_url              : 'https://eerstelinks.nl/api/v1/get/server-message',
@@ -373,7 +376,7 @@ var app = {
         // social media page (account select + send)
         $('#social_media_accounts_header').html(app.app_lang.header.social_media_accounts);
         $('#add_facebook_account_span').html(app.app_lang.button.add_facebook_account);
-        $('#add_twitter_account_span').html(app.app_lang.button.add_facebook_account);
+        $('#add_twitter_account_span').html(app.app_lang.button.add_twitter_account);
         $('#social_media_accounts_publish').html(app.app_lang.button.social_media_accounts).button().button("refresh");
 
         // feedback page
@@ -383,6 +386,9 @@ var app = {
 
         // info page
         $('#version').html(app.app_lang.info_version);
+
+        // loading animations
+        //$('#upload_animation_text').html(app.app_lang.loading.upload);
     },
 
     /**
@@ -980,18 +986,21 @@ var app = {
     * @memberOf app
     */
     uploadPhoto : function() {
+        console.log('upload photo');
+
         // disable the submit button so users can't submit again
         $('#upload-photo-submit').button('disable');
 
         // store the image URI in the variable in case we need to retry the upload (each upload is attempted 3x)
         var imageURI = app.URI;
 
+        var loading_text = '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br /><span id="upload_animation_text">' + app.app_lang.loading.upload + '</span></p><p id="photo_upload_progress_bar"></p>';
         // set custom loading animation options for uploading photo
         var loadingAnimationOptions = {
             text: '',
             textVisible: true,
             theme: 'b',
-            html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden...</p><p id="photo_upload_progress_bar"></p>'
+            html: loading_text
         };
 
         // show custom loading animation
@@ -1047,7 +1056,124 @@ var app = {
                 navigator.notification.alert(app.app_lang.alert.photo_upload_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
                 // send error msg to server API
             }
-        } else /* NOT connected to internet */ {
+        } else {
+            // NOT connected to internet
+            navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
+        }
+    },
+
+    uploadPhoto2 : function() {
+        console.log('upload photo 2');
+
+        console.log('app.photo_location_id: ' + app.photo_location_id);
+
+        var tmp = app.photo_location_id.split('_');
+        //console.log(tmp);
+
+        var image_location = {};
+
+        if (tmp[0] == 'art') {
+            // art
+            // tmp array is built as follows ['art', 'type', 'sexyid', sexy_id, 'columnid', column_id, 'blockid', block_id] (all strings)
+            image_location['action'] = 'art';
+            image_location['type'] = tmp[1];
+            image_location['sexy_id'] = tmp[3];
+            image_location['column_id'] = tmp[5];
+            image_location['block_id'] = tmp[7];
+        } else if (tmp[0] == 'replace') {
+            // replace image
+            // tmp array is built as follows ['replace', 'sexyid', sexy_id, 'columnid', column_id, 'blockid', block_id, 'blockorder', block_order] (all strings)
+            image_location['action'] = 'replace';
+            image_location['sexy_id'] = tmp[2];
+            image_location['column_id'] = tmp[4];
+            image_location['block_id'] = tmp[6];
+            image_location['block_order'] = tmp[8];
+        } else if (tmp[0] == 'new') {
+            // image in new block
+            // tmp array is built as follows ['new', 'sexyid', sexy_id, 'columnid', column_id] (all strings)
+            image_location['action'] = 'new';
+            image_location['sexy_id'] = tmp[2];
+            image_location['column_id'] = tmp[4];
+        }
+
+        //console.log(image_location);
+
+        var stringified_image_location = JSON.stringify(image_location);
+
+        // disable the submit button so users can't submit again
+        $('#upload-photo-submit').button('disable');
+
+        // store the image URI in the variable in case we need to retry the upload (each upload is attempted 3x)
+        var imageURI = app.URI;
+
+        var loading_text = '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br /><span id="upload_animation_text">' + app.app_lang.loading.upload + '</span></p><p id="photo_upload_progress_bar"></p>';
+        // set custom loading animation options for uploading photo
+        var loadingAnimationOptions = {
+            text: '',
+            textVisible: true,
+            theme: 'b',
+            html: loading_text
+        };
+
+        // show custom loading animation
+        $.mobile.loading('show', loadingAnimationOptions);
+
+        // set options for upload
+        var options = new FileUploadOptions();
+        options.fileKey = "files";
+        options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+        options.mimeType=app.getMimeType(imageURI);
+        options.chunkedMode = false;
+
+        // sets upload parameters
+        var params               = {};
+        params.session           = window.localStorage['session'];
+        params.pathname          = window.localStorage['active-pathname'];
+        params.image_location    = app.photo_location_id;
+        params['file-type']      = 'image';
+        params['image_location'] = JSON.stringify(image_location);
+        //params['image_location'] = image_location.serialize();
+        //params['image_location'] = str;
+        params.isapp             = 'true';
+        params.version           = app.version;
+        params.noblock           = 'true';
+
+        // set headers
+        var headers = {'Connection':'close', 'Cache-Control':'no-cache'};
+
+        // include params and headers
+        options.params = params;
+        options.headers = headers;
+
+        // if app is connected to internet, attempt upload
+        if (app.isConnected()) {
+            try {
+                // don't hide loading animation here but in uploadPhotoSuccess() or uploadPhotoFail()
+                var ft = new FileTransfer();
+
+                // track upload progress and animate the progress bar
+                ft.onprogress = function(progressEvent) {
+                    if (progressEvent.lengthComputable) {
+                        var percent = Math.floor((progressEvent.loaded / progressEvent.total) * 100) + '%';
+
+                        // change <p> width
+                        $('#photo_upload_progress_bar').css({'width' : percent});
+                    } else {
+                        // do nothing
+                    }
+                }
+
+                // upload
+                ft.upload(imageURI, encodeURI(app.image_upload_url2), app.uploadPhotoSuccess2, app.uploadPhotoError2, options);
+
+            } catch (err) {
+                // hide loading animation and show error
+                $.mobile.loading('hide');
+                navigator.notification.alert(app.app_lang.alert.photo_upload_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
+                // send error msg to server API
+            }
+        } else {
+            // NOT connected to internet
             navigator.notification.alert(app.app_lang.alert.no_internet_connection, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
         }
     },
@@ -1062,13 +1188,14 @@ var app = {
         if ( app.elementWithIdExists('social_media_preview_image') ) {
 
             var imageURI = app.URI;
+            var loading_text = '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />' + app.app_lang.loading.upload_photo + '</p><p id="photo_upload_progress_bar"></p>';
 
             // set loading animation options for uploading photo
             var loadingAnimationOptions = {
                 text: '',
                 textVisible: true,
                 theme: 'b',
-                html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />uploaden foto...</p><p id="photo_upload_progress_bar"></p>'
+                html: loading_text
             };
 
             // show custom loading animation
@@ -1278,6 +1405,12 @@ var app = {
         $('#upload-photo-submit').button('enable');
     },
 
+    uploadPhotoSuccess2: function(res) {
+        console.log('uploadPhotoSuccess2');
+        console.log('res');
+        console.log(res);
+    },
+
     /**
     * Called after photo upload error.<br>
     * Attempts the upload up to 3 times before giving up and generating an error message<br>
@@ -1316,6 +1449,12 @@ var app = {
         // re-enable upload button
         $('#upload-photo-submit').button('enable');
         $('#upload-photo-submit').button('refresh');
+    },
+
+    uploadPhotoError2: function(err) {
+        console.log('uploadPhotoError2');
+        console.log('err');
+        console.log(err);
     },
 
     /**
@@ -1618,6 +1757,9 @@ var app = {
                     async: false
                 }).done(function(res) {
                     if (res.status == 'success') {
+
+                        //console.log(res);
+
                         // empty the div before rendering to clear previous content
                         $('#choose-section-and-column-content-collapsible-set').empty();
 
@@ -1637,7 +1779,7 @@ var app = {
                         // search for sexies
                         var sexies = res.sexies;
                         for (var sexy in sexies) {
-                            console.log('sexy' + sexies[sexy].sexy_id);
+                            //console.log('sexy' + sexies[sexy].sexy_id);
 
                             // create the collapsible group
                             // set the title -> name of the sexy
@@ -1652,7 +1794,7 @@ var app = {
                             // search for columns
                             var columns = sexies[sexy].columns;
                             for (var column in columns) {
-                                console.log('column' + columns[column].meta.column_id);
+                                //console.log('column' + columns[column].meta.column_id);
 
                                 // inside the collapsible area ->
 
@@ -1671,9 +1813,50 @@ var app = {
                                 // if the column is 'is_art' then add some way of notifiying the user and do not create the
                                 // sub block elements
                                 if (columns[column].meta.is_art == "1") {
-                                    //tmp += '<div id="art_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
-                                    tmp += '<div id="art_' + sexies[sexy].sexy_id + '_' + columns[column].meta.column_id + '" class="collapsible-content-column art" style="width: ' + div_col_width + '%;">';
-                                    tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-fullscreen icon-2x"></i></p></div>';
+
+
+
+
+
+
+                                    // an is_art column can contain various block types
+                                    //
+                                    // 1) block type 'image' -> full screen pics -> replace block
+                                    //
+                                    // 2) block type 'album' -> photo album -> add pic to album -> no replace block
+                                    //
+                                    // 3) block type 'video' -> video (full screen) -> replace block
+
+                                    var blocks = columns[column].blocks;
+
+                                    //for (var block in blocks) {
+                                        //console.log('column id: ' + columns[column].meta.column_id);
+                                        //console.log('block id: ' + blocks[0].block_id);
+                                        //console.log('block type: ' + blocks[0].type);
+                                    //}
+
+                                    var col__id = columns[column].meta.column_id;
+                                    var block__id = blocks[0].block_id;
+                                    var block__type = blocks[0].type;
+
+
+                                    if (block__type == 'image') {
+                                        // replace image with new image
+                                        tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art image" style="width: ' + div_col_width + '%;">';
+                                        tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-fullscreen icon-2x"></i></p></div>';
+                                    } else if (block__type == 'album') {
+                                        // add image to album
+                                        tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art album" style="width: ' + div_col_width + '%;">';
+                                        tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-picture icon-1x"></i>&nbsp;<i class="icon-picture icon-1x"></i>&nbsp;<i class="icon-picture icon-1x"></i></p></div>';
+                                    } else if (block__type == 'video') {
+                                        // do nothing -> later add possibility to upload a vid to replace it ?
+                                        tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art video" style="width: ' + div_col_width + '%;">';
+                                        tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-film icon-2x"></i></p></div>';
+                                    }
+
+
+
+
 
 
                                 } else {
@@ -1682,10 +1865,10 @@ var app = {
                                     // search for blocks
                                     var blocks = columns[column].blocks;
                                     for (var block in blocks) {
-                                        console.log('block' + blocks[block].block_id);
+                                        //console.log('block' + blocks[block].block_id);
                                         //tmp += '<div class="collapsible-content-column-block">';
                                         //tmp += '<div id="block_' + blocks[block].block_id + '_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '_order_' + blocks[block].order + '" class="collapsible-content-column-block';
-                                        tmp += '<div id="replace_' + sexies[sexy].sexy_id + '_' + columns[column].meta.column_id + '_' + blocks[block].block_id + '_' + blocks[block].order + '" class="collapsible-content-column-block';
+                                        tmp += '<div id="replace_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + blocks[block].block_id + '_blockorder_' + blocks[block].order + '" class="collapsible-content-column-block';
 
                                         // per block type, show a different icon to represent the content
 
@@ -1711,7 +1894,7 @@ var app = {
 
                                     // add 'new block' block (when user selects this a new block will be created for the content)
                                     //tmp += '<div id="new_block_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '" class="collapsible-content-column-block new">';
-                                    tmp += '<div id="new_' + sexies[sexy].sexy_id + '_' + columns[column].meta.column_id + '" class="collapsible-content-column-block new">';
+                                    tmp += '<div id="new_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '" class="collapsible-content-column-block new">';
                                     tmp += '<p><i class="icon-plus-sign icon-2x"></i></p>';
                                     tmp += '</div>';
                                 }
@@ -1727,7 +1910,8 @@ var app = {
                         $('#choose-section-and-column-content-collapsible-set').collapsibleset( "refresh" );
 
                         // make only the blocks we wish selectable
-                        $('.collapsible-content-column.art').on('tap', function () {
+                        // if the user clicks on an 'is_art' element that contains full screen images
+                        $('.collapsible-content-column.art.image').on('tap', function () {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
 
@@ -1735,6 +1919,29 @@ var app = {
 
                             $('#upload-photo-submit').button('enable');
                         });
+
+                        // if the user clicks on an 'is_art' element that contains an album
+                        $('.collapsible-content-column.art.album').on('tap', function () {
+                            $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
+                            $(this).addClass('collapsible-content-column-block-effect');
+
+                            navigator.notification.alert('Your photo will be added to the album', false, 'Message', 'ok');
+
+                            $('#upload-photo-submit').button('enable');
+                        });
+
+                        // if the user clicks on an 'is_art' element that contains a video
+                        $('.collapsible-content-column.art.video').on('tap', function () {
+                            $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
+                            $(this).addClass('collapsible-content-column-block-effect');
+
+                            navigator.notification.alert('Your video will be replaced by the uploaded photo', false, 'Warning', 'ok');
+
+                            $('#upload-photo-submit').button('enable');
+                        });
+
+
+                        // if a user clicks on an existing block
                         $('.collapsible-content-column-block.image').on('tap', function () {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
@@ -1743,6 +1950,8 @@ var app = {
 
                             $('#upload-photo-submit').button('enable');
                         });
+
+                        // if a user clicks on the + to create a new block
                         $('.collapsible-content-column-block.new').on('tap', function () {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
@@ -1926,11 +2135,13 @@ var app = {
     */
     postToFacebook: function() {
         // set loading animation options for uploading photo
+        var loading_text = '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />' + app.app_lang.loading.post_social_media + '</p>';
+
         var loadingAnimationOptions = {
             text: '',
             textVisible: true,
             theme: 'b',
-            html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />post naar social media...</p>'
+            html: loading_text
         };
 
         // show custom loading animation
@@ -2128,12 +2339,14 @@ var app = {
     * @memberOf app
     */
     postToTwitter: function() {
+        var loading_text = '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />' + app.app_lang.loading.post_social_media + '</p>';
+
         // set loading animation options for uploading photo
         var loadingAnimationOptions = {
             text: '',
             textVisible: true,
             theme: 'b',
-            html: '<p style="text-align: center;"><i class="icon-refresh icon-spin icon-4x"></i><br />post naar social media...</p>'
+            html: loading_text
         };
 
         // show custom loading animation
@@ -2228,12 +2441,12 @@ var app = {
     checkIfAccountsSelected: function() {
         console.log('checkIfAccountsSelected');
         // if non accounts selected show warning else go ahead and attempt post
-        //app.socialMediaUploadPhoto();
 
         if ($('.twitter_account_is_selected').length == 0 && $('.facebook_account_is_selected').length == 0) {
-            navigator.notification.alert('pannekoek, kies wel een account');
+            navigator.notification.alert(app.app_lang.alert.select_social_media_account_warning, false, app.app_lang.alert.warning_alert, app.app_lang.alert.warning_close);
         } else {
-            navigator.notification.alert('minstens een account geselecteerd!');
+            // at least one account selected -> proceed to post
+            app.socialMediaUploadPhoto();
         }
     },
 
@@ -2251,7 +2464,7 @@ var app = {
         app.postToTwitter();
 
         // re-enable the submit button and refresh (jqm 'feature')
-        // note: don't reanable the button here because the ajax requests are asynchronous
+        // note: don't reanable the button here because the ajax requests are asynchronous -> reanble on ajax complete (for both requests)
         //$('#social_media_accounts_publish').button('enable');
         //$('#social_media_accounts_publish').button('refresh');
     },

@@ -23,7 +23,8 @@ var nl = {
         feedback_thanks: 'Bedankt voor je feedback',
         photo_replace_warning: 'Deze foto zal vervangen worden door de geüploade foto',
         message_sent_success: 'Je bericht is succesvol gepost',
-        image_or_message_warning: 'Vergeet niet om een bericht te typen of neem een foto'
+        image_or_message_warning: 'Vergeet niet om een bericht te typen of neem een foto',
+        select_social_media_account_warning: 'Kies minstens een account'
     },
     placeholder: {
         password: 'Wachtwoord',
@@ -63,6 +64,11 @@ var nl = {
         social_media_message: 'Social media',
         feedback: 'Feedback',
         social_media_accounts: 'Kies accounts'
+    },
+    loading: {
+        upload: 'uploaden...',
+        upload_photo: 'uploaden foto...',
+        post_social_media: 'post naar social media...'
     }
 };
 
@@ -91,7 +97,8 @@ var en = {
         feedback_thanks: 'Many thanks for your feedback',
         photo_replace_warning: 'This photo will be replaced by the uploaded photo',
         message_sent_success: 'Your message was posted successfully',
-        image_or_message_warning: "Don't forget to type a message or select a photo"
+        image_or_message_warning: "Don't forget to type a message or select a photo",
+        select_social_media_account_warning: 'Choose atleast one account'
     },
     placeholder: {
         password: 'Password',
@@ -131,6 +138,11 @@ var en = {
         social_media_message: 'Social media',
         feedback: 'Feedback',
         social_media_accounts: 'Choose accounts'
+    },
+    loading: {
+        upload: 'uploading...',
+        upload_photo: 'uploading photo...',
+        post_social_media: 'posting to social media...'
     }
 };
 
@@ -159,7 +171,8 @@ var fr = {
         feedback_thanks: 'Merci pour ta réaction',
         photo_replace_warning: 'Cette photo sera remplacée par la photo envoyée',
         message_sent_success: 'Ton message a été envoyé avec succès',
-        image_or_message_warning: "N'oublie pas de choisir une photo ou d'entrer un message"
+        image_or_message_warning: "N'oublie pas de choisir une photo ou d'entrer un message",
+        select_social_media_account_warning: 'Choisis au moins un compte'
     },
     placeholder: {
         password: 'Mot de passe',
@@ -199,6 +212,11 @@ var fr = {
         social_media_message: 'Médias sociaux',
         feedback: 'Réaction',
         social_media_accounts: 'Choisis comptes'
+    },
+    loading: {
+        upload: 'envoi de données...',
+        upload_photo: 'envoi de photo...',
+        post_social_media: 'envoi vers médias sociaux...'
     }
 };
 
