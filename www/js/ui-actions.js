@@ -78,7 +78,7 @@ $( function () {
         var el_id = $('.collapsible-content-column-block-effect').attr('id');
         app.photo_location_id = el_id;
 
-        app.uploadPhoto2();
+        app.uploadPhoto();
     });
 
     // If user hits 'settings' icon on menu page

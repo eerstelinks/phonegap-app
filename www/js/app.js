@@ -1132,8 +1132,6 @@ var app = {
         params.image_location    = app.photo_location_id;
         params['file-type']      = 'image';
         params['image_location'] = JSON.stringify(image_location);
-        //params['image_location'] = image_location.serialize();
-        //params['image_location'] = str;
         params.isapp             = 'true';
         params.version           = app.version;
         params.noblock           = 'true';
@@ -1353,12 +1351,14 @@ var app = {
             var tmp_ar = app.photo_location_id.split('_');
 
             for (var item in tmp_ar) {
-                console.log('array item: ' + tmp_ar[item]);
+                console.log(item + tmp_ar[item]);
             }
 
             if (tmp_ar[0] == 'new') {
 
-                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, false) == true) {
+                // tmp array is built as follows ['new', 'sexyid', sexy_id, 'columnid', column_id] (all strings)
+
+                if (app.createBlock(tmp_ar[2], tmp_ar[4], responseJSON.files.url, 0, false) == true) {
 
                     navigator.notification.alert(app.app_lang.alert.photo_upload_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
@@ -1369,8 +1369,9 @@ var app = {
                     console.log('upload error')
                 }
             } else if (tmp_ar[0] == 'art') {
+                // tmp array is built as follows ['art', 'type', 'sexyid', sexy_id, 'columnid', column_id, 'blockid', block_id] (all strings)
                 // user selected art element -> art photo must be replaced by new photo
-                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 1, false)) {
+                if (app.createBlock(tmp_ar[3], tmp_ar[5], responseJSON.files.url, 1, false)) {
                     navigator.notification.alert(app.app_lang.alert.photo_upload_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
                     // reset the attempt counter
@@ -1382,11 +1383,13 @@ var app = {
             } else if (tmp_ar[0] == 'replace') {
                 // user selected existing block
 
+                // tmp array is built as follows ['replace', 'sexyid', sexy_id, 'columnid', column_id, 'blockid', block_id, 'blockorder', block_order] (all strings)
+
                 // delete existing block
-                app.deleteBlock(tmp_ar[3]);
+                app.deleteBlock(tmp_ar[6]);
 
                 // create new block with the order of the old block
-                if (app.createBlock(tmp_ar[1], tmp_ar[2], responseJSON.files.url, 0, tmp_ar[4])) {
+                if (app.createBlock(tmp_ar[2], tmp_ar[4], responseJSON.files.url, 0, tmp_ar[8])) {
                     navigator.notification.alert(app.app_lang.alert.photo_upload_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
                     // reset the attempt counter
@@ -1409,6 +1412,11 @@ var app = {
         console.log('uploadPhotoSuccess2');
         console.log('res');
         console.log(res);
+
+        navigator.notification.alert('photo upload success', false, 'success', 'ok');
+
+        $.mobile.loading('hide');
+        $.mobile.changePage('#menu-page');
     },
 
     /**
@@ -1455,6 +1463,11 @@ var app = {
         console.log('uploadPhotoError2');
         console.log('err');
         console.log(err);
+
+        navigator.notification.alert('error uploading photo', false, app.app_lang.alert_error, app.app_lang.alert_close);
+
+        $.mobile.loading('hide');
+        $.mobile.changePage('#menu-page');
     },
 
     /**
