@@ -54,6 +54,14 @@ $( function () {
         $.mobile.changePage('#menu-page');
     });
 
+    // Back buttons that return to menu page
+    $('.back_to_social_media_page').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        $.mobile.changePage('#social-media-page');
+    });
+
     // If user hits 'upload' button on menu page
     $('#upload_photo_icon').on('tap', function(event) {
         event.stopImmediatePropagation();
@@ -78,7 +86,7 @@ $( function () {
         var el_id = $('.collapsible-content-column-block-effect').attr('id');
         app.photo_location_id = el_id;
 
-        app.uploadPhoto();
+        app.uploadPhoto2();
     });
 
     // If user hits 'settings' icon on menu page
@@ -197,6 +205,13 @@ $( function () {
         app.socialMediaCapturePhoto();
     });
 
+    $('#social_media_page_remove_image_button').on('tap', function(event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        app.socialMediaRemovePhoto();
+    });
+
     $('#social_media_page_choose_accounts').on('tap', function(event) {
         event.stopImmediatePropagation();
         event.preventDefault();
@@ -283,8 +298,11 @@ $( function () {
         app.getFacebookAccounts();
         app.getTwitterAccounts();
 
+        $('#social_media_page_remove_image_button').hide();
+
         $('#social-media-page-refresh').hide();
         $('#social-media-messsage').val('');
+        $('#social-media-messsage').css('height', '50');
         $('#social-media-picture-container').empty();
         app.social_media_image_url = undefined;
 

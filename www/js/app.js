@@ -53,7 +53,8 @@ var app = {
     authenticate_url                : 'https://eerstelinks.nl/api/v1/authenticate',
     image_upload_url                : 'https://eerstelinks.nl/api/v1/post/image-ajax',
 
-    image_upload_url2               : 'http://dev.eerstelinks.nl/api/v1/app/post/image',
+    //image_upload_url2               : 'http://dev.eerstelinks.nl/api/v1/app/post/image',
+    image_upload_url2               : 'https://eerstelinks.nl/api/v1/app/post/image',
 
     create_block_url                : 'https://eerstelinks.nl/api/v1/post/block-data',
     feedback_url                    : 'https://eerstelinks.nl/api/v1/post/app-feedback',
@@ -67,7 +68,8 @@ var app = {
     facebook_exit_inappbrowser_url  : 'https://eerstelinks.nl/connect/facebook/done',
     add_twitter_account_url         : 'https://eerstelinks.nl/connect/twitter/login',
     get_twitter_accounts_url        : 'https://eerstelinks.nl/api/v1/twitter/get/accounts',
-    post_to_twitter_url             : 'https://eerstelinks.nl/api/v1/twitter/post/publish',
+    //post_to_twitter_url             : 'https://eerstelinks.nl/api/v1/twitter/post/publish',
+    post_to_twitter_url             : 'http://dev.eerstelinks.nl/api/v1/twitter/post/publish',
     twitter_exit_inappbrowser_url   : 'https://eerstelinks.nl/connect/twitter/done',
     app_lang                        : undefined,
     attempts                        : 0,
@@ -221,6 +223,10 @@ var app = {
             // if the user is on the 'settings' page and presses back -> go to menu page
             $.mobile.changePage('#menu-page');
         }
+        if ($.mobile.activePage.attr('id') == 'social-media-accounts') {
+            $.mobile.changePage('#social-media-page');
+        }
+
         if ($.mobile.activePage.attr('id') == 'choose-page-and-column-page') {
             // if the user is on the 'choose page and column' page and presses back -> go to menu page
             // acts as a 'cancel'
@@ -939,6 +945,8 @@ var app = {
         // set class variable URI so that we can use it in case we need to retry an attempt (android glitch)
         app.URI = imageURI;
 
+        $('#social_media_page_remove_image_button').show();
+
         // remove the buttons on the social media page and show a thumbnail of the picture/photo
         $('#social-media-page-refresh').show();
         $('#social-media-picture-container').append('<img src="" id="social_media_preview_image" style="max-width:100%;">');
@@ -960,6 +968,29 @@ var app = {
     */
     hideSocialMediaChangePictureAnimation: function() {
         $('#social-media-page-refresh').hide();
+    },
+
+    /**
+    * Called when user clicks on the 'delete' icon -> removes the photo from the social media message composition page
+    * @function socialMediaRemovePhoto
+    * @memberOf app
+    */
+    socialMediaRemovePhoto: function() {
+        // remove photo
+        console.log('social media remove photo');
+
+        // clear stuff etc
+        $('#social-media-picture-container').empty();
+
+        // set image url = undefined
+        app.URI = undefined;
+
+        // check message length thingy
+        app.message_max_chars = 140;
+        app.checkMessageChars();
+
+        // hide 'remove' img icon somehow
+        $('#social_media_page_remove_image_button').hide();
     },
 
     /**
@@ -2508,6 +2539,9 @@ var app = {
             }
 
             $('#social_media_accounts_publish').button('enable');
+
+            // reset the size of the text area
+            $('#social-media-messsage').css('height', '50');
 
             // hide loading animation and change page to menu page
             $.mobile.loading('hide');

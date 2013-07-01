@@ -11,7 +11,6 @@
 
 #char_counter_div {
     float: right;
-    /*background-color: green;*/
     color: #cccccc;
     height: 30px;
 }
@@ -29,7 +28,6 @@
 .social-media-photo-icons {
     width: 40px;
     height: 40px;
-    /*background-color: green;*/
     float: left;
     text-align: center;
 }
