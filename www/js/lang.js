@@ -6,6 +6,7 @@
 
 var nl = {
     info_version: 'versie <strong>3.1</strong>',
+    language_code: 'nl',
 
     alert: {
         error_alert: 'Oeps..',
@@ -22,9 +23,11 @@ var nl = {
         photo_upload_success: 'Je upload is gelukt',
         feedback_thanks: 'Bedankt voor je feedback',
         photo_replace_warning: 'Deze foto zal vervangen worden door de geüploade foto',
+        video_replace_warning: 'Deze video zal vervangen worden door de geüploade foto',
         message_sent_success: 'Je bericht is succesvol gepost',
         image_or_message_warning: 'Vergeet niet om een bericht te typen of neem een foto',
-        select_social_media_account_warning: 'Kies minstens een account'
+        select_social_media_account_warning: 'Kies minstens een account',
+        photo_upload_to_album: 'Je foto zal toegevoegd worden aan deze album'
     },
     placeholder: {
         password: 'Wachtwoord',
@@ -80,6 +83,7 @@ var nl = {
 
 var en = {
     info_version: 'version <strong>3.1</strong>',
+    language_code: 'en',
 
     alert: {
         error_alert: 'Oops..',
@@ -96,9 +100,11 @@ var en = {
         photo_upload_success: 'Your photo has been uploaded',
         feedback_thanks: 'Many thanks for your feedback',
         photo_replace_warning: 'This photo will be replaced by the uploaded photo',
+        video_replace_warning: 'This photo will be replaced by the uploaded photo',
         message_sent_success: 'Your message was posted successfully',
         image_or_message_warning: "Don't forget to type a message or select a photo",
-        select_social_media_account_warning: 'Choose atleast one account'
+        select_social_media_account_warning: 'Choose atleast one account',
+        photo_upload_to_album: 'Your photo will be added to this album'
     },
     placeholder: {
         password: 'Password',
@@ -154,6 +160,7 @@ var en = {
 
 var fr = {
     info_version: 'version <strong>3.1</strong>',
+    language_code: 'fr',
 
     alert: {
         error_alert: 'Oups..',
@@ -170,9 +177,11 @@ var fr = {
         photo_upload_success: "Ta photo a bien été envoyée",
         feedback_thanks: 'Merci pour ta réaction',
         photo_replace_warning: 'Cette photo sera remplacée par la photo envoyée',
+        video_replace_warning: 'Cette vidéo sera remplacée par la photo envoyée',
         message_sent_success: 'Ton message a été envoyé avec succès',
         image_or_message_warning: "N'oublie pas de choisir une photo ou d'entrer un message",
-        select_social_media_account_warning: 'Choisis au moins un compte'
+        select_social_media_account_warning: 'Choisis au moins un compte',
+        photo_upload_to_album: 'Ta photo sera ajoutée a cet album'
     },
     placeholder: {
         password: 'Mot de passe',

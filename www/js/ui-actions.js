@@ -158,6 +158,17 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
+        $('#social-media-page-refresh').hide();
+        $('#social-media-messsage').val('');
+        $('#social-media-messsage').css('height', '50');
+        $('#social-media-picture-container').empty();
+        app.social_media_image_url = undefined;
+
+        $('#num_chars').html('140');
+        $('#num_chars').removeClass('char_counter_message_too_long');
+
+        $('#social_media_page_remove_image_button').hide();
+
         $.mobile.changePage('#social-media-page');
     });
 
@@ -240,11 +251,9 @@ $( function () {
     });
 
     $('#test_icon').on('tap', function(event) {
-        console.log('---test---');
-        console.log('app.app_lang:');
-        console.log(app.app_lang);
 
-        console.log(app.app_lang['error_close']);
+        app.serverMessageTest();
+
     });
 
 
@@ -298,16 +307,16 @@ $( function () {
         app.getFacebookAccounts();
         app.getTwitterAccounts();
 
-        $('#social_media_page_remove_image_button').hide();
+        //$('#social_media_page_remove_image_button').hide();
 
-        $('#social-media-page-refresh').hide();
+        /*$('#social-media-page-refresh').hide();
         $('#social-media-messsage').val('');
         $('#social-media-messsage').css('height', '50');
         $('#social-media-picture-container').empty();
         app.social_media_image_url = undefined;
 
         $('#num_chars').html('140');
-        $('#num_chars').removeClass('char_counter_message_too_long');
+        $('#num_chars').removeClass('char_counter_message_too_long');*/
     });
 
     $('#social-media-messsage').on('input propertychange', function() {

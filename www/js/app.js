@@ -58,7 +58,11 @@ var app = {
 
     create_block_url                : 'https://eerstelinks.nl/api/v1/post/block-data',
     feedback_url                    : 'https://eerstelinks.nl/api/v1/post/app-feedback',
+
     server_message_url              : 'https://eerstelinks.nl/api/v1/get/server-message',
+    //server_message_url              : 'http://dev.eerstelinks.nl/api/v1/get/server-message',
+
+
     all_data_url                    : 'https://eerstelinks.nl/api/v1/get/all-data',
     delete_block_url                : 'https://eerstelinks.nl/api/v1/post/delete-element',
     send_error_message_url          : 'https://eerstelinks.nl/api/v1/post/app/error-message',
@@ -407,6 +411,8 @@ var app = {
         // return value, set to false as default to simplify and shorten the code
         var ret = false;
 
+        console.log('get server message');
+
         // page not used yet
         $.mobile.loading('show');
 
@@ -422,6 +428,7 @@ var app = {
                                 'device_cordova' : device.cordova,
                                 'device_platform' : device.platform,
                                 'device_version' : device.version,
+                                'language' : app.app_lang.language_code,
                                 'device_model' : device.model};
 
                 $.ajax({
@@ -433,6 +440,8 @@ var app = {
                 }).done(function(res) {
                     if (res.status == 'success') {
                         ret = true;
+
+                        console.log(res);
 
                         // check if message has already been seen (in local storage) and if message has been seen do NOT show it.
                         app.server_message_id = res.id;
@@ -459,6 +468,50 @@ var app = {
         $.mobile.loading('hide');
 
         return ret;
+    },
+
+    serverMessageTest: function() {
+        console.log('server message test');
+
+        // set the parameters
+        var params = {
+            'type': 'getservermessage',
+            'session': window.localStorage['session'],
+            'pathname': window.localStorage['active-pathname'],
+            'username': window.localStorage['username'],
+            'version': app.version,
+            'device_name' : device.name,
+            'device_cordova' : device.cordova,
+            'device_platform' : device.platform,
+            'device_version' : device.version,
+            'language' : app.app_lang.language_code,
+            'device_model' : device.model
+        };
+
+        // construct the ajax request
+        $.ajax({
+            async: true,
+            cache: false,
+            data: params,
+            dataType: 'json',
+            timeout: 30000,
+            type: 'GET',
+            url: app.server_message_url,
+            success: function(json) {
+
+                console.log(json);
+            },
+            error: function(xhr, status) {
+
+                console.log(xhr);
+                console.log(status);
+            },
+            complete: function(xhr, status) {
+
+                console.log(xhr);
+                console.log(status);
+            }
+        });
     },
 
     /**
@@ -1444,7 +1497,8 @@ var app = {
         console.log('res');
         console.log(res);
 
-        navigator.notification.alert('photo upload success', false, 'success', 'ok');
+        //navigator.notification.alert('photo upload success', false, 'success', 'ok');
+        navigator.notification.alert(app.app_lang.alert.photo_upload_success, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
         $.mobile.loading('hide');
         $.mobile.changePage('#menu-page');
@@ -1495,7 +1549,8 @@ var app = {
         console.log('err');
         console.log(err);
 
-        navigator.notification.alert('error uploading photo', false, app.app_lang.alert_error, app.app_lang.alert_close);
+        //navigator.notification.alert('error uploading photo', false, app.app_lang.alert_error, app.app_lang.alert_close);
+        navigator.notification.alert(app.app_lang.alert.photo_upload_error, false, app.app_lang.alert_error, app.app_lang.alert_close);
 
         $.mobile.loading('hide');
         $.mobile.changePage('#menu-page');
@@ -1969,7 +2024,8 @@ var app = {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
 
-                            navigator.notification.alert('Your photo will be added to the album', false, 'Message', 'ok');
+                            //navigator.notification.alert('Your photo will be added to the album', false, 'Message', 'ok');
+                            navigator.notification.alert(app.app_lang.alert.photo_upload_to_album, false, app.app_lang.alert.success_alert, app.app_lang.alert.success_close);
 
                             $('#upload-photo-submit').button('enable');
                         });
@@ -1979,7 +2035,8 @@ var app = {
                             $('.collapsible-content-column-block-effect').removeClass('collapsible-content-column-block-effect');
                             $(this).addClass('collapsible-content-column-block-effect');
 
-                            navigator.notification.alert('Your video will be replaced by the uploaded photo', false, 'Warning', 'ok');
+                            //navigator.notification.alert('Your video will be replaced by the uploaded photo', false, 'Warning', 'ok');
+                            navigator.notification.alert(app.app_lang.alert.video_replace_warning, false, app.app_lang.alert.warning_alert, app.app_lang.alert.warning_close);
 
                             $('#upload-photo-submit').button('enable');
                         });
