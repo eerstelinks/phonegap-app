@@ -67,6 +67,7 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
+        app.parseWebsiteStructure();
         app.getPhoto();
     });
 
@@ -75,6 +76,7 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
+        app.parseWebsiteStructure();
         app.capturePhoto();
     });
 
@@ -281,7 +283,7 @@ $( function () {
 
     $('#choose-section-and-column-page').on('pagebeforeshow', function(event) {
         $('#upload-photo-submit').button('disable');
-        app.parseWebsiteStructure();
+        //app.parseWebsiteStructure();
     });
 
     $('#stats-page').on('pagebeforeshow', function(event) {

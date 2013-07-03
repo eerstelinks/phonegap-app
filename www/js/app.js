@@ -39,6 +39,7 @@
 * @property {boolean} post_to_facebook_complete         - boolean: set to true on Facebook ajax post completion
 * @property {string} post_to_twitter_success            - boolean: set to true on Twitter ajax post success
 * @property {string} post_to_twitter_complete           - boolean: set to true on Twitter ajax post completion
+* @property {number} message_max_chars                  - number representing the max number of allowed characters for a social media message (Twitter has max 140 chars without image and max 117 chars with image)
 */
 
 var app = {
@@ -52,17 +53,10 @@ var app = {
     cordova_version                 : 'cordova-2.5.0.js',
     authenticate_url                : 'https://eerstelinks.nl/api/v1/authenticate',
     image_upload_url                : 'https://eerstelinks.nl/api/v1/post/image-ajax',
-
-    //image_upload_url2               : 'http://dev.eerstelinks.nl/api/v1/app/post/image',
     image_upload_url2               : 'https://eerstelinks.nl/api/v1/app/post/image',
-
     create_block_url                : 'https://eerstelinks.nl/api/v1/post/block-data',
     feedback_url                    : 'https://eerstelinks.nl/api/v1/post/app-feedback',
-
     server_message_url              : 'https://eerstelinks.nl/api/v1/get/server-message',
-    //server_message_url              : 'http://dev.eerstelinks.nl/api/v1/get/server-message',
-
-
     all_data_url                    : 'https://eerstelinks.nl/api/v1/get/all-data',
     delete_block_url                : 'https://eerstelinks.nl/api/v1/post/delete-element',
     send_error_message_url          : 'https://eerstelinks.nl/api/v1/post/app/error-message',
@@ -72,8 +66,8 @@ var app = {
     facebook_exit_inappbrowser_url  : 'https://eerstelinks.nl/connect/facebook/done',
     add_twitter_account_url         : 'https://eerstelinks.nl/connect/twitter/login',
     get_twitter_accounts_url        : 'https://eerstelinks.nl/api/v1/twitter/get/accounts',
-    //post_to_twitter_url             : 'https://eerstelinks.nl/api/v1/twitter/post/publish',
-    post_to_twitter_url             : 'http://dev.eerstelinks.nl/api/v1/twitter/post/publish',
+    post_to_twitter_url             : 'https://eerstelinks.nl/api/v1/twitter/post/publish',
+    //post_to_twitter_url             : 'http://dev.eerstelinks.nl/api/v1/twitter/post/publish',
     twitter_exit_inappbrowser_url   : 'https://eerstelinks.nl/connect/twitter/done',
     app_lang                        : undefined,
     attempts                        : 0,
@@ -112,7 +106,7 @@ var app = {
     },
 
     /**
-    * Checks which OS is being used.
+    * Checks which OS is being used and loads the appropriate version of Cordova.
     * @function checkOS
     * @memberOf app
     */
@@ -126,7 +120,7 @@ var app = {
     },
 
     /**
-    * Called once the 'device ready' event has been fired in 'init' and adds additional event listeners.
+    * Called once the 'device ready' event has been fired in 'init' and adds additional event listeners and sets some device features like language and resolution.
     * @method onDeviceReady
     * @memberOf app
     */
@@ -191,52 +185,18 @@ var app = {
     * @memberOf app
     */
     onBackButton : function () {
-        if ($.mobile.activePage.attr('id') == 'loading-page') {
-            // if for some reason the user gets stuck on the loading page let the user exit the app
-            app.exitApp();
-        }
-        if ($.mobile.activePage.attr('id') == 'menu-page') {
-            // if user is in the menu page and presses back -> exit app
-            app.exitApp();
-        }
-        if ($.mobile.activePage.attr('id') == 'login-page') {
-            // if user is on the 'login' page and presses 'back' -> exit app
-            app.exitApp();
-        }
-        if ($.mobile.activePage.attr('id') == 'photo-succes-page') {
-            // if the user is on the 'photo succes' page and presses back -> go to menu page
-            $.mobile.changePage('#menu-page');
-        }
-        if ($.mobile.activePage.attr('id') == 'info-page') {
-            // if the user is on the 'info' page and presses back -> go to menu page
-            $.mobile.changePage('#menu-page');
-        }
-        if ($.mobile.activePage.attr('id') == 'settings-page') {
-            // if the user is on the 'settings' page and presses back -> go to menu page
-            $.mobile.changePage('#menu-page');
-        }
-        if ($.mobile.activePage.attr('id') == 'feedback-page') {
-            // if the user is on the 'settings' page and presses back -> go to menu page
-            $.mobile.changePage('#menu-page');
-        }
-        if ($.mobile.activePage.attr('id') == 'pathname-choice-page') {
-            // if the user is on the 'pathname choice' page and presses back -> go to menu page
-            $.mobile.changePage('#menu-page');
-        }
-        if ($.mobile.activePage.attr('id') == 'social-media-page') {
-            // if the user is on the 'settings' page and presses back -> go to menu page
-            $.mobile.changePage('#menu-page');
-        }
-        if ($.mobile.activePage.attr('id') == 'social-media-accounts') {
-            $.mobile.changePage('#social-media-page');
-        }
+        var curr_page_id = $.mobile.activePage.attr('id');
 
-        if ($.mobile.activePage.attr('id') == 'choose-page-and-column-page') {
-            // if the user is on the 'choose page and column' page and presses back -> go to menu page
-            // acts as a 'cancel'
-            $.mobile.changePage('#menu-page');
-        }
-        if ($.mobile.activePage.attr('id') == 'choose-section-and-column-page') {
+        if (curr_page_id == 'loading-page' || curr_page_id == 'menu-page' || curr_page_id == 'login-page') {
+            // if for some reason the user gets stuck on the loading page let the user exit the app
+            // if user is on menu page and presses back button -> exit app
+            // if user on login page and presses back button -> exit app
+            app.exitApp();
+        } else if ($.mobile.activePage.attr('id') == 'social-media-accounts') {
+            // if user on social-media-accounts page and presses back button -> go to previous screen
+            $.mobile.changePage('#social-media-page');
+        } else {
+            // fail safe / all other scenarios -> go to menu page
             $.mobile.changePage('#menu-page');
         }
     },
@@ -258,7 +218,8 @@ var app = {
     * @memberOf app
     */
     isConnected : function () {
-        var con = navigator.connection.type;
+        //var con = navigator.connection.type;
+        var con = app.getConnectionType();
 
         if(con == 'wifi' || con == 'ethernet' || con == '2g' || con == '3g' || con == '4g' || con == 'cell') {
             return true;
@@ -320,13 +281,14 @@ var app = {
         } else {
             // no there isn't -> get device language
             // if device language is supported set that as language and store in localStorage
-            var lang_supported = false;
+            //var lang_supported = false;
 
             if (device_language in lang) {
                 app.app_lang = lang[device_language];
                 window.localStorage['language'] = device_language;
                 app.setUiLanguage();
             } else {
+                // if language is not supported -> set 'nl' as default language
                 app.app_lang = lang['nl'];
                 window.localStorage['language'] = 'nl';
             }
@@ -396,9 +358,6 @@ var app = {
 
         // info page
         $('#version').html(app.app_lang.info_version);
-
-        // loading animations
-        //$('#upload_animation_text').html(app.app_lang.loading.upload);
     },
 
     /**
@@ -1065,11 +1024,14 @@ var app = {
     },
 
     /**
-    * Attempts to upload an image to the server
+    * Attempts to upload an image to the server<br>
+    * deprecated
     * @function uploadPhoto
     * @memberOf app
     */
     uploadPhoto : function() {
+        // deprecated
+
         console.log('upload photo');
 
         // disable the submit button so users can't submit again
@@ -1400,12 +1362,14 @@ var app = {
     },
 
     /**
-    * Called after photo upload success
+    * Called after photo upload success<br>
+    * deprecated
     * @function uploadPhotoSuccess
     * @param {string} res the server response
     * @memberOf app
     */
     uploadPhotoSuccess : function(res) {
+        // deprecated
         // convert response string to JSON object
         var responseJSON = jQuery.parseJSON(res.response);
 
@@ -1502,17 +1466,23 @@ var app = {
 
         $.mobile.loading('hide');
         $.mobile.changePage('#menu-page');
+
+        // re-enable upload button
+        $('#upload-photo-submit').button('enable');
+        $('#upload-photo-submit').button('refresh');
     },
 
     /**
     * Called after photo upload error.<br>
     * Attempts the upload up to 3 times before giving up and generating an error message<br>
-    * info: first introduced for an Android 'bug', might not be necessary anymore since switching to HTTPS
+    * info: first introduced for an Android 'bug', might not be necessary anymore since switching to HTTPS<br>
+    * deprecated
     * @function uploadPhotoError
     * @param {string} error error message from the server
     * @memberOf app
     */
     uploadPhotoError : function(error) {
+        // deprecated
         console.log('uploadPhotoError');
         // for android quirk -> in case first upload fails attempt the upload again
 
@@ -1554,10 +1524,14 @@ var app = {
 
         $.mobile.loading('hide');
         $.mobile.changePage('#menu-page');
+
+        // re-enable upload button
+        $('#upload-photo-submit').button('enable');
+        $('#upload-photo-submit').button('refresh');
     },
 
     /**
-    * Sends an ajax request to the server to create a block for the new image
+    * Sends an ajax request to the server to create a block for the new image<br>deprecated
     * @function createBlock
     * @param {string} sexy the section that was selected
     * @param {string} column the column that was selected
@@ -1569,6 +1543,8 @@ var app = {
     */
     createBlock : function(sexy, column, url, isArt, order) {
         // return value, set to false as default to simplify and shorten the code
+        // deprecated
+
         var ret = false;
 
         // page not used yet
@@ -1623,12 +1599,15 @@ var app = {
     },
 
     /**
-    * Sends an ajax request to the server to delete the block with the given ID
+    * Sends an ajax request to the server to delete the block with the given ID<br>
+    * deprecated
     * @function deleteBlock
     * @param {string} id id of the block to be deleted
     * @memberOf app
     */
     deleteBlock: function(id) {
+        // deprecated
+
         try {
             var params = {'type': 'delete-element',
                             'pathname': window.localStorage['active-pathname'],
@@ -1807,6 +1786,8 @@ var app = {
     populateLanguageSelectInPanel: function () {
         $('#language_select').empty();
 
+        // could be rewritten to use html5 data elements instead of hack'ish div ID
+
         for (ln in languages) {
             var tmp = '<option value="' + ln + '"';
 
@@ -1835,13 +1816,14 @@ var app = {
     parseWebsiteStructure : function() {
         console.log('parse website structure');
 
-        $.mobile.loading('show');
-
-        // page not used yet
-        $.mobile.loading('show');
+        // show loading animation icon (will be hidden when ajax request is done)
+        $('#choose_location_loading').show();
 
         // if connected to internet then try / catch
         if (app.isConnected()) {
+
+            console.log('before ajax');
+
             try {
                 var params = {'type': 'getwebsitestructure',
                                 'pathname': window.localStorage['active-pathname'],
@@ -1853,10 +1835,13 @@ var app = {
                     dataType: 'JSON',
                     url: app.all_data_url,
                     data: params,
-                    async: false
+                    async: true
                 }).done(function(res) {
+                    //console.log(res);
+
                     if (res.status == 'success') {
 
+                        console.log('success');
                         //console.log(res);
 
                         // empty the div before rendering to clear previous content
@@ -1878,7 +1863,7 @@ var app = {
                         // search for sexies
                         var sexies = res.sexies;
                         for (var sexy in sexies) {
-                            //console.log('sexy' + sexies[sexy].sexy_id);
+                            console.log('sexy' + sexies[sexy].sexy_id);
 
                             // create the collapsible group
                             // set the title -> name of the sexy
@@ -1893,7 +1878,7 @@ var app = {
                             // search for columns
                             var columns = sexies[sexy].columns;
                             for (var column in columns) {
-                                //console.log('column' + columns[column].meta.column_id);
+                                console.log('column' + columns[column].meta.column_id);
 
                                 // inside the collapsible area ->
 
@@ -1912,11 +1897,7 @@ var app = {
                                 // if the column is 'is_art' then add some way of notifiying the user and do not create the
                                 // sub block elements
                                 if (columns[column].meta.is_art == "1") {
-
-
-
-
-
+                                    console.log('test');
 
                                     // an is_art column can contain various block types
                                     //
@@ -1928,29 +1909,40 @@ var app = {
 
                                     var blocks = columns[column].blocks;
 
+                                    console.log(blocks);
+
                                     //for (var block in blocks) {
                                         //console.log('column id: ' + columns[column].meta.column_id);
                                         //console.log('block id: ' + blocks[0].block_id);
                                         //console.log('block type: ' + blocks[0].type);
                                     //}
 
-                                    var col__id = columns[column].meta.column_id;
-                                    var block__id = blocks[0].block_id;
-                                    var block__type = blocks[0].type;
+                                    if (blocks == undefined) {
+                                        // -> no blocks already present -> show empty
 
-
-                                    if (block__type == 'image') {
-                                        // replace image with new image
                                         tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art image" style="width: ' + div_col_width + '%;">';
                                         tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-fullscreen icon-2x"></i></p></div>';
-                                    } else if (block__type == 'album') {
-                                        // add image to album
-                                        tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art album" style="width: ' + div_col_width + '%;">';
-                                        tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-picture icon-1x"></i>&nbsp;<i class="icon-picture icon-1x"></i>&nbsp;<i class="icon-picture icon-1x"></i></p></div>';
-                                    } else if (block__type == 'video') {
-                                        // do nothing -> later add possibility to upload a vid to replace it ?
-                                        tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art video" style="width: ' + div_col_width + '%;">';
-                                        tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-film icon-2x"></i></p></div>';
+                                    } else {
+                                        // there are blocks present
+
+                                        var col__id = columns[column].meta.column_id;
+                                        var block__id = blocks[0].block_id;
+                                        var block__type = blocks[0].type;
+
+
+                                        if (block__type == 'image') {
+                                            // replace image with new image
+                                            tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art image" style="width: ' + div_col_width + '%;">';
+                                            tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-fullscreen icon-2x"></i></p></div>';
+                                        } else if (block__type == 'album') {
+                                            // add image to album
+                                            tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art album" style="width: ' + div_col_width + '%;">';
+                                            tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-picture icon-1x"></i>&nbsp;<i class="icon-picture icon-1x"></i>&nbsp;<i class="icon-picture icon-1x"></i></p></div>';
+                                        } else if (block__type == 'video') {
+                                            // do nothing -> later add possibility to upload a vid to replace it ?
+                                            tmp += '<div id="art_' + block__type + '_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + block__id + '" class="collapsible-content-column art video" style="width: ' + div_col_width + '%;">';
+                                            tmp += '<div style="background-color: transparent;"><p style="margin: 0; color: #ffffff; padding: 10px; text-align: center;"><i class="icon-film icon-2x"></i></p></div>';
+                                        }
                                     }
 
 
@@ -1964,7 +1956,7 @@ var app = {
                                     // search for blocks
                                     var blocks = columns[column].blocks;
                                     for (var block in blocks) {
-                                        //console.log('block' + blocks[block].block_id);
+                                        console.log('block' + blocks[block].block_id);
                                         //tmp += '<div class="collapsible-content-column-block">';
                                         //tmp += '<div id="block_' + blocks[block].block_id + '_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '_order_' + blocks[block].order + '" class="collapsible-content-column-block';
                                         tmp += '<div id="replace_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + blocks[block].block_id + '_blockorder_' + blocks[block].order + '" class="collapsible-content-column-block';
@@ -2003,6 +1995,11 @@ var app = {
 
                             tmp += '</div><div style="clear:both;"></div></div>';
                         }
+
+                        console.log('tmp html string: ' + tmp);
+
+                        // remove loading animation icon when ready
+                        $('#choose_location_loading').hide();
 
                         $('#choose-section-and-column-content-collapsible-set').append(tmp);
                         // refresh collapsible set to fix styling
@@ -2068,6 +2065,9 @@ var app = {
                         console.log('ajax get all data error');
                     }
                 });
+
+                console.log('after ajax');
+
             } catch (err) {
                 navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
             }
