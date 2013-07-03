@@ -5,12 +5,13 @@
 * @namespace
 * @property {string} cordova_version                    - the current cordova version
 * @property {string} authenticate_url                   - the url used for authentication
-* @property {string} image_upload_url                   - the url used for uploading images
-* @property {string} create_block_url                   - the url used for creating 'blocks'
+* @property {string} image_upload_url                   - the url used for uploading images (deprecated)
+* @property {string} image_upload_url2                  - the url used for uploading images used the new function
+* @property {string} create_block_url                   - the url used for creating 'blocks' (deprecated)
 * @property {string} feedback_url                       - the url used for submitting feedback
 * @property {string} server_message_url                 - the url used to check for messages from the server
 * @property {string} all_data_url                       - the url used to get the structure of the 'active' website
-* @property {string} delete_block_url                   - the url used to delete a block
+* @property {string} delete_block_url                   - the url used to delete a block (deprecated)
 * @property {string} send_error_message_url             - the url used to send an error message to the server
 * @property {string} add_facebook_account_url           - the url used when opening an inAppBrowser window to add a Facebook account
 * @property {string} get_facebook_accounts_url          - the url used to retrieve all related Facebook accounts from the database
@@ -20,8 +21,8 @@
 * @property {string} get_twitter_accounts_url           - the url used to retrieve all related Twitter accounts from the database
 * @property {string} post_to_twitter_url                - the url used to post a message to Twitter via the server API
 * @property {string} twitter_exit_inappbrowser_url      - the url used to close the inAppBrowser window
-* @property {string} app_language                       - the language setting of the app
-* @property {number} attempts                           - the number of attempts at uploading an image
+* @property {string} app_lang                           - the language setting of the app
+* @property {number} attempts                           - the number of attempts at uploading an image (deprecated)
 * @property {string} URI                                - the URI of the selected or captured photo
 * @property {string} device_width                       - the width of the device's screen (in pixels)
 * @property {string} device_height                      - the height of the device's screen (in pixels)
@@ -67,7 +68,6 @@ var app = {
     add_twitter_account_url         : 'https://eerstelinks.nl/connect/twitter/login',
     get_twitter_accounts_url        : 'https://eerstelinks.nl/api/v1/twitter/get/accounts',
     post_to_twitter_url             : 'https://eerstelinks.nl/api/v1/twitter/post/publish',
-    //post_to_twitter_url             : 'http://dev.eerstelinks.nl/api/v1/twitter/post/publish',
     twitter_exit_inappbrowser_url   : 'https://eerstelinks.nl/connect/twitter/done',
     app_lang                        : undefined,
     attempts                        : 0,
@@ -1816,7 +1816,7 @@ var app = {
     parseWebsiteStructure : function() {
         console.log('parse website structure');
 
-        // show loading animation icon (will be hidden when ajax request is done)
+        // show loading animation icon
         $('#choose_location_loading').show();
 
         // if connected to internet then try / catch
@@ -1835,7 +1835,7 @@ var app = {
                     dataType: 'JSON',
                     url: app.all_data_url,
                     data: params,
-                    async: true
+                    async: false
                 }).done(function(res) {
                     //console.log(res);
 
@@ -1863,7 +1863,7 @@ var app = {
                         // search for sexies
                         var sexies = res.sexies;
                         for (var sexy in sexies) {
-                            console.log('sexy' + sexies[sexy].sexy_id);
+                            //console.log('sexy' + sexies[sexy].sexy_id);
 
                             // create the collapsible group
                             // set the title -> name of the sexy
@@ -1878,7 +1878,7 @@ var app = {
                             // search for columns
                             var columns = sexies[sexy].columns;
                             for (var column in columns) {
-                                console.log('column' + columns[column].meta.column_id);
+                                //console.log('column' + columns[column].meta.column_id);
 
                                 // inside the collapsible area ->
 
@@ -1897,7 +1897,7 @@ var app = {
                                 // if the column is 'is_art' then add some way of notifiying the user and do not create the
                                 // sub block elements
                                 if (columns[column].meta.is_art == "1") {
-                                    console.log('test');
+                                    //console.log('test');
 
                                     // an is_art column can contain various block types
                                     //
@@ -1909,7 +1909,7 @@ var app = {
 
                                     var blocks = columns[column].blocks;
 
-                                    console.log(blocks);
+                                    //console.log(blocks);
 
                                     //for (var block in blocks) {
                                         //console.log('column id: ' + columns[column].meta.column_id);
@@ -1956,7 +1956,7 @@ var app = {
                                     // search for blocks
                                     var blocks = columns[column].blocks;
                                     for (var block in blocks) {
-                                        console.log('block' + blocks[block].block_id);
+                                        //console.log('block' + blocks[block].block_id);
                                         //tmp += '<div class="collapsible-content-column-block">';
                                         //tmp += '<div id="block_' + blocks[block].block_id + '_column_' + columns[column].meta.column_id + '_sexy_' + sexies[sexy].sexy_id + '_order_' + blocks[block].order + '" class="collapsible-content-column-block';
                                         tmp += '<div id="replace_sexyid_' + sexies[sexy].sexy_id + '_columnid_' + columns[column].meta.column_id + '_blockid_' + blocks[block].block_id + '_blockorder_' + blocks[block].order + '" class="collapsible-content-column-block';
@@ -1996,10 +1996,7 @@ var app = {
                             tmp += '</div><div style="clear:both;"></div></div>';
                         }
 
-                        console.log('tmp html string: ' + tmp);
-
-                        // remove loading animation icon when ready
-                        $('#choose_location_loading').hide();
+                        //console.log('tmp html string: ' + tmp);
 
                         $('#choose-section-and-column-content-collapsible-set').append(tmp);
                         // refresh collapsible set to fix styling
@@ -2060,6 +2057,9 @@ var app = {
                         });
 
                         // still need to add some logic for photo albums
+                        $('#choose-section-and-column-content-collapsible-set').collapsibleset( "refresh" );
+
+                        $('#choose_location_loading').hide();
 
                     } else {
                         console.log('ajax get all data error');

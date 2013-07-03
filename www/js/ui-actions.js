@@ -67,7 +67,7 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        app.parseWebsiteStructure();
+        //app.parseWebsiteStructure();
         app.getPhoto();
     });
 
@@ -76,7 +76,7 @@ $( function () {
         event.stopImmediatePropagation();
         event.preventDefault();
 
-        app.parseWebsiteStructure();
+        //app.parseWebsiteStructure();
         app.capturePhoto();
     });
 
@@ -285,6 +285,11 @@ $( function () {
         $('#upload-photo-submit').button('disable');
         //app.parseWebsiteStructure();
     });
+
+    $('#choose-section-and-column-page').on('pageshow', function(event) {
+        app.parseWebsiteStructure();
+    });
+
 
     $('#stats-page').on('pagebeforeshow', function(event) {
         app.getStats();
