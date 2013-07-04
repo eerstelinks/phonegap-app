@@ -6,7 +6,7 @@
 // ----------------------------------------------------------------------------------------------------------
 
 var nl = {
-    info_version: 'versie <strong>3.1</strong>',
+    info_version: 'versie',
     language_code: 'nl',
 
     alert: {
@@ -83,7 +83,7 @@ var nl = {
 // ----------------------------------------------------------------------------------------------------------
 
 var en = {
-    info_version: 'version <strong>3.1</strong>',
+    info_version: 'version',
     language_code: 'en',
 
     alert: {
@@ -160,7 +160,7 @@ var en = {
 // ----------------------------------------------------------------------------------------------------------
 
 var fr = {
-    info_version: 'version <strong>3.1</strong>',
+    info_version: 'version',
     language_code: 'fr',
 
     alert: {

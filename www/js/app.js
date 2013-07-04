@@ -64,6 +64,7 @@ var app = {
     add_facebook_account_url        : 'https://eerstelinks.nl/connect/facebook/login',
     get_facebook_accounts_url       : 'https://eerstelinks.nl/api/v1/facebook/get/accounts',
     post_to_facebook_url            : 'https://eerstelinks.nl/api/v1/facebook/post/publish',
+    //post_to_facebook_url            : 'http://dev.eerstelinks.nl/api/v1/facebook/post/publish',
     facebook_exit_inappbrowser_url  : 'https://eerstelinks.nl/connect/facebook/done',
     add_twitter_account_url         : 'https://eerstelinks.nl/connect/twitter/login',
     get_twitter_accounts_url        : 'https://eerstelinks.nl/api/v1/twitter/get/accounts',
@@ -1026,7 +1027,7 @@ var app = {
 
     /**
     * Attempts to upload an image to the server<br>
-    * deprecated
+    * <em><strong>deprecated</em></strong>
     * @function uploadPhoto
     * @memberOf app
     */
@@ -1364,7 +1365,7 @@ var app = {
 
     /**
     * Called after photo upload success<br>
-    * deprecated
+    * <em><strong>deprecated</em></strong>
     * @function uploadPhotoSuccess
     * @param {string} res the server response
     * @memberOf app
@@ -1477,7 +1478,7 @@ var app = {
     * Called after photo upload error.<br>
     * Attempts the upload up to 3 times before giving up and generating an error message<br>
     * info: first introduced for an Android 'bug', might not be necessary anymore since switching to HTTPS<br>
-    * deprecated
+    * <em><strong>deprecated</em></strong>
     * @function uploadPhotoError
     * @param {string} error error message from the server
     * @memberOf app
@@ -1532,7 +1533,7 @@ var app = {
     },
 
     /**
-    * Sends an ajax request to the server to create a block for the new image<br>deprecated
+    * Sends an ajax request to the server to create a block for the new image<br><em><strong>deprecated</em></strong>
     * @function createBlock
     * @param {string} sexy the section that was selected
     * @param {string} column the column that was selected
@@ -1601,7 +1602,7 @@ var app = {
 
     /**
     * Sends an ajax request to the server to delete the block with the given ID<br>
-    * deprecated
+    * <em><strong>deprecated</em></strong>
     * @function deleteBlock
     * @param {string} id id of the block to be deleted
     * @memberOf app
@@ -2291,13 +2292,19 @@ var app = {
                 url: app.post_to_facebook_url,
                 success: function(json) {
                     app.post_to_facebook_success = true;
+                    //console.log(json);
                 },
                 error: function(xhr, status) {
                     app.post_to_facebook_success = false;
+                    //console.log(xhr);
+                    //console.log(status);
                 },
                 complete: function(xhr, status) {
                     app.post_to_facebook_complete = true;
                     app.socialMediaPostSuccessOrFail();
+
+                    //console.log(xhr);
+                    //console.log(status);
                 }
             });
         } else { /* else, nothing */
@@ -2600,7 +2607,15 @@ var app = {
             if (app.post_to_facebook_success == false || app.post_to_twitter_success == false) {
                 // if either request failed (false) then send error message to user
                 navigator.notification.alert(app.app_lang.alert.general_error, false, app.app_lang.alert.error_alert, app.app_lang.alert.error_close);
+
+                // reset the success checkers
+                app.post_to_facebook_success = undefined;
+                app.post_to_twitter_success = undefined;
             }
+
+            // reset complete checkers
+            app.post_to_facebook_complete = undefined;
+            app.post_to_twitter_complete = undefined;
 
             $('#social_media_accounts_publish').button('enable');
 
