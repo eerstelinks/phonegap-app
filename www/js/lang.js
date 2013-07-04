@@ -1,3 +1,4 @@
+
 // ----------------------------------------------------------------------------------------------------------
 //
 //                                          dutch
@@ -26,14 +27,14 @@ var nl = {
         video_replace_warning: 'Deze video zal vervangen worden door de geüploade foto',
         message_sent_success: 'Je bericht is succesvol gepost',
         image_or_message_warning: 'Vergeet niet om een bericht te typen of neem een foto',
-        select_social_media_account_warning: 'Kies minstens een account',
-        photo_upload_to_album: 'Je foto zal toegevoegd worden aan deze album'
+        select_social_media_account_warning: 'Kies minstens één account',
+        photo_upload_to_album: 'Je foto zal toegevoegd worden aan dit album'
     },
     placeholder: {
         password: 'Wachtwoord',
         username: 'E-mail',
         feedback: 'Bericht',
-        social_media_message: 'Message'
+        social_media_message: 'Bericht'
     },
     menu: {
         item: {
@@ -100,10 +101,10 @@ var en = {
         photo_upload_success: 'Your photo has been uploaded',
         feedback_thanks: 'Many thanks for your feedback',
         photo_replace_warning: 'This photo will be replaced by the uploaded photo',
-        video_replace_warning: 'This photo will be replaced by the uploaded photo',
+        video_replace_warning: 'This video will be replaced by the uploaded photo',
         message_sent_success: 'Your message was posted successfully',
         image_or_message_warning: "Don't forget to type a message or select a photo",
-        select_social_media_account_warning: 'Choose atleast one account',
+        select_social_media_account_warning: 'Choose at least one account',
         photo_upload_to_album: 'Your photo will be added to this album'
     },
     placeholder: {

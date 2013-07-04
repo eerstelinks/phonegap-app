@@ -56,7 +56,7 @@ var app = {
     image_upload_url                : 'https://eerstelinks.nl/api/v1/post/image-ajax',
     image_upload_url2               : 'https://eerstelinks.nl/api/v1/app/post/image',
     create_block_url                : 'https://eerstelinks.nl/api/v1/post/block-data',
-    feedback_url                    : 'https://eerstelinks.nl/api/v1/post/app-feedback',
+    feedback_url                    : 'https://eerstelinks.nl/api/v1/app/post/feedback',
     server_message_url              : 'https://eerstelinks.nl/api/v1/get/server-message',
     all_data_url                    : 'https://eerstelinks.nl/api/v1/get/all-data',
     delete_block_url                : 'https://eerstelinks.nl/api/v1/post/delete-element',
@@ -343,6 +343,7 @@ var app = {
         // social media page (composition)
         $('#social_media_message_header').html(app.app_lang.header.social_media_message);
         $('#social-media-messsage').attr('placeholder', app.app_lang.placeholder.social_media_message);
+
         $('#social_media_page_choose_accounts').html(app.app_lang.button.social_media_message).button().button("refresh");
 
         // social media page (account select + send)
@@ -1661,7 +1662,13 @@ var app = {
                                 'session': window.localStorage['session'],
                                 'pathname': window.localStorage['active-pathname'],
                                 'username': window.localStorage['username'],
-                                'version': app.version};
+                                'version': app.version,
+                                'device_name' : device.name,
+                                'device_cordova' : device.cordova,
+                                'device_platform' : device.platform,
+                                'device_version' : device.version,
+                                'language' : app.app_lang.language_code,
+                                'device_model' : device.model};
 
                 $.ajax({
                     type: 'POST',
